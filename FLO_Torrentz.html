@@ -11,7 +11,16 @@
       
       @import url('https://fonts.googleapis.com/css?family=Titillium+Web');
       
-      
+      ::-webkit-scrollbar { 
+        width: 5px !important;
+        background-color: lightgrey;
+      }
+      ::-webkit-scrollbar-thumb{
+        background-color: black;
+      }
+      body {
+        overflow-y: scroll;
+      }
       /*These settings will go to all divs */
       #rootDiv {
         box-sizing: border-box;
@@ -374,8 +383,6 @@
       background-color:rebeccapurple;
       font-size: 11px;
       height: 15px;
-      padding-left: 5px;
-      padding-right: 5px;
     }
     #footer-bg{
       height: 14px;
@@ -383,6 +390,9 @@
     #footer a{
       color :white;
       cursor: pointer;
+      padding-right: 10px;
+      padding-left: 5px;
+
     }
     #footer a:hover{
       color :black;
@@ -422,7 +432,10 @@
     </div>
   </div>
 
-  <div id="footer"><a href="https://github.com/ranchimall/FLO_Torrent">GitHub</a><span style="float:right;" onclick="clearLocalData()"><a>Clear Local Data</a></span></div>
+  <div id="footer">
+    <a href="https://github.com/ranchimall/FLO_Torrent">GitHub</a>
+    <span style="float:right;" onclick="clearLocalData()"><a>Clear Local Data</a></span>
+  </div>
   <div id=footer-bg></div>
 
 <script>
@@ -430,31 +443,12 @@ const  cryptocoin = "FLO";
 const mainnet = `https://flosight.duckdns.org/`;
 const testnet = `https://testnet-flosight.duckdns.org`;
 const adminID = "FDG64XNjdsA4rAgfm4ABEs2RcTgqn8Jecv";
+const kudosID = "FKAEdnPfjXLHSYwrXQu377ugN4tXU7VGdf";
 if(cryptocoin == "FLO")
   var server = mainnet;
 else if(cryptocoin == "FLO_TEST")
   var server = testnet;
-var torrents = [], searchResults = [], torrentSearchIndex;
-//Trusted Uploader IDs
-var trustedIDs = [
-  'FS4jMAcSimRMrhoRhk5cjuJERS2otiwq4A',
-  'FC8dwBuhdGPkXdoQwECaeT1nz9jt5Y5bJL',
-  'FT9qkvuWXWBDRhHd42tDr5nMYFSx7bEhV7',
-  'F6LUnwRRjFuEW97Y4av31eLqqVMK9FrgE2',
-  'F6uMddaTDCZgojENbqRnFo5PCknArE7dKz',
-  'FLjPCHRniCRXqZCVCTA3QY8wvCtmKKmHuu',
-  'FECzMqC7Mu7S8HzqivvmgnkqCsGncxRC31',
-  'FDJuTc7tF8oSDXqu8PysUmFo6KfN9SR8JE',
-  'F7taaUKtUxXCb8LvhP4xgp745GLEyWYWUp',
-  'FFCyro8xwCncK1BhHxrSRsrZomAFFXZ2hu',
-  'FAoML3etShd79AGSMGJBrSiiGg7xs9GjT2',
-  'FTobXqnpcGVNuTAqMzbYQdUmpTJXPDD2uS',
-  'FST8YJCxz2dj3LvegW2KaN4wLh8xKv92Kj',
-  'F92zPc8tsCKMfjkDn6sUinE4pbL58xwj6m',
-  'FRZUivwC2Bo1dKhhJ3u3Gzw8bTvXV5QA16',
-  'F7diGgerhZWD98j5CZpJi8BYPhe8RiMBtR',
-  'FDcV3Xn4F51K91WozakaKdaVrGBBf7BSfw'
-]
+var torrents = [], searchResults = [],trustedIDs = [], torrentSearchIndex;
 </script>
 
 <script>
@@ -518,7 +512,124 @@ var trustedIDs = [
       alert("Successfully Cleared Local Data!");
     };
   }
-  function storedata(torrentdata){
+
+  function storeTrustedIDs(data){
+    return new Promise(
+      function(resolve, reject) {
+        var idb = indexedDB.open("FLO_Kudos");
+        idb.onerror = function(event) {
+            reject("Error in opening IndexedDB!");
+        };
+        idb.onsuccess = function(event) {
+            var db = event.target.result;
+            var obs = db.transaction('trustedID', "readwrite").objectStore('trustedID');
+            for (id in data)
+              obs.put(data[id],id);
+            db.close();
+            resolve("Successfully stored Trusted IDs");
+        };
+      }
+    );
+  }
+
+  function getTrustedIDsfromAPI(){
+    return new Promise(
+      function(resolve, reject) {
+        var idb = indexedDB.open("FLO_Kudos");
+        idb.onerror = function(event) {
+            reject("Error in opening IndexedDB!");
+        };
+      idb.onupgradeneeded = function(event) {
+             var objectStore1 = event.target.result.createObjectStore("trustedID");
+             var objectStore2 = event.target.result.createObjectStore("lastTx");
+      };
+        idb.onsuccess = function(event) {
+             var db = event.target.result;
+             var lastTx = db.transaction('lastTx', "readwrite").objectStore('lastTx');
+             var addr = kudosID;
+             var lastTxReq = lastTx.get(addr);
+               lastTxReq.onsuccess = function(event){
+                  var lasttx = event.target.result
+                  if(lasttx === undefined){
+                      lasttx = 0;
+                  }
+                  var response = ajaxSync("GET",`api/addrs/${addr}/txs`);
+                  var nRequired = JSON.parse(response).totalItems - lasttx;
+                  console.log(nRequired);
+                  while(true && nRequired){
+                    var response = ajaxSync("GET",`api/addrs/${addr}/txs?from=0&to=${nRequired}`);
+                    response = JSON.parse(response);
+                    if (nRequired + lasttx != response.totalItems ){
+                      nRequired = response.totalItems - lasttx;
+                      continue;
+                    }
+                    var errorTxCount = 0; //Count of txs that didnot go into any blocks
+                    response.items.reverse().forEach(function(tx){
+                      try {
+                        if(!tx.blockhash){ //ignore error txs that did not go into any blocks
+                          errorTxCount += 1;
+                          return;
+                        }
+                        if(addr!=tx.vin[0].addr) //ignore if the tx is not from kudos ID
+                          return
+                        var kudosData = JSON.parse(tx.floData).FLO_Kudos;
+                        if(kudosData === undefined)
+                          return;
+                        storeTrustedIDs(kudosData).then(function (response) {
+                        }).catch(function (error) {
+                        });
+                      } catch (e) {
+                        //console.log(e)
+                      }
+                    });
+                    var idb2 = indexedDB.open("FLO_Kudos");
+                    idb2.onerror = function(event) {
+                        console.log("Error in opening IndexedDB!");
+                    };
+                    idb2.onsuccess = function(event) {
+                        var dbt = event.target.result;
+                        var obs = dbt.transaction('lastTx', "readwrite").objectStore('lastTx');
+                        obs.put(response.totalItems - errorTxCount ,addr);
+                        dbt.close();
+                     };
+                     break;
+                  }
+                  resolve('retrived data from API');
+                };
+                db.close();
+              };
+           });
+        }
+  function getTrustedIDsFromIDB(){
+    return new Promise(
+    function(resolve, reject) {
+      var idb = indexedDB.open("FLO_Kudos");
+       idb.onerror = function(event) {
+           reject("Error in opening IndexedDB!");
+       };
+       idb.onsuccess = function(event) {
+         var db = event.target.result;
+         var obs = db.transaction('trustedID', "readwrite").objectStore('trustedID');
+         var resultArray = [];
+         var cursorReq = obs.openCursor();
+          cursorReq.onsuccess = function(event) {
+            var cursor = event.target.result;
+            if(cursor) {
+              if(cursor.value>=2)
+                resultArray.push(cursor.key);
+              cursor.continue();
+            } else {
+              resolve(resultArray)
+            }
+          };
+         db.close();
+       };
+     }
+   );
+  }
+
+
+  function storeTorrentData(torrentdata){
     return new Promise(
       function(resolve, reject) {
         var idb = indexedDB.open("FLO_Torrent");
@@ -532,7 +643,6 @@ var trustedIDs = [
             objectRequest.onerror = function(event) {
                 reject(Error('Error occured: Unable to store data'));
               };
-
             objectRequest.onsuccess = function(event) {
                 resolve('Data saved OK');
             db.close();
@@ -597,7 +707,7 @@ var trustedIDs = [
                           return;
                         //console.log(torrentdata);
                         var data = {name : torrentdata.name, filename : torrentdata.filename, type : torrentdata.type,uploader:tx.vin[0].addr, description:torrentdata.description, size:torrentdata.size,tags:torrentdata.tags,chunks:torrentdata.chunks,startTx:torrentdata.startTx};
-                        storedata(data).then(function (response) {
+                        storeTorrentData(data).then(function (response) {
                         }).catch(function (error) {
                             //console.log(error.message);
                         });
@@ -776,36 +886,47 @@ function searchTorrents() {
 function userDataNeedingNoRePaint() {
     console.log("StartUp");
     document.getElementById("searchInput").addEventListener("input", searchTorrents, true);
-    getNewestDatafromAPI().then(function (result) {
-      torrents = result;
-      console.log(torrents);
-      searchResults = [];
-      torrentSearchIndex = new FlexSearch();
-      for (var i = 0; i < torrents.length; i++){
-        searchResults.push(i);
-        torrentSearchIndex.add(i, torrents[i].name);
-      }
-      rePaintUserData();
-      document.getElementById("downloadBar").style.display = "none";
-    }).catch(function (error) {
-      console.log(error.message);
-    });
-    getDatafromAPI().then(function (res) {
-      getDataFromIDB().then(function (response) {
-        torrents = response.reverse();
-        console.log(torrents);
-        searchResults = [];
-        torrentSearchIndex = new FlexSearch();
-        for (var i = 0; i < torrents.length; i++){
-          searchResults.push(i);
-          torrentSearchIndex.add(i, torrents[i].name);
-        }
-        rePaintUserData();
-      }).catch(function (error) {
-        console.log(error.message);
+    getTrustedIDsfromAPI().then(result=>{
+      console.log(result);
+      getTrustedIDsFromIDB().then(result=>{
+        console.log(result);
+        trustedIDs = result;
+        getNewestDatafromAPI().then(function (result) {
+          torrents = result;
+          console.log(torrents);
+          searchResults = [];
+          torrentSearchIndex = new FlexSearch();
+          for (var i = 0; i < torrents.length; i++){
+            searchResults.push(i);
+            torrentSearchIndex.add(i, torrents[i].name);
+          }
+          rePaintUserData();
+          document.getElementById("downloadBar").style.display = "none";
+        }).catch(function (error) {
+          console.log(error.message);
+        });
+        getDatafromAPI().then(function (res) {
+          getDataFromIDB().then(function (response) {
+            torrents = response.reverse();
+            console.log(torrents);
+            searchResults = [];
+            torrentSearchIndex = new FlexSearch();
+            for (var i = 0; i < torrents.length; i++){
+              searchResults.push(i);
+              torrentSearchIndex.add(i, torrents[i].name);
+            }
+            rePaintUserData();
+          }).catch(function (error) {
+            console.log(error.message);
+          });
+        }).catch(function (error) {
+          console.log(error.message);
+        });
+      }).catch(error=>{
+        console.log(error);
       });
-    }).catch(function (error) {
-      console.log(error.message);
+    }).catch(error=>{
+      console.log(error);
     });
   }
 
@@ -817,8 +938,8 @@ function userDataNeedingNoRePaint() {
    screenAlpha.codeOrderDivList = [];
    screenAlpha.userDivSpan = {};
   //Main configuration for number of boxes in grid. You only have to define minimum width, minimum height and total number of boxes. Positioning will be taken care of by the code
-  screenAlpha.boxMinimumWidth = 600;
-  screenAlpha.boxMinimumHeight = 300;
+  screenAlpha.boxMinimumWidth = 500;
+  screenAlpha.boxMinimumHeight = 250;
   screenAlpha.totalBoxes = 1500;
 
   //Turn them false when layout job is done
@@ -898,7 +1019,7 @@ anotherDivCleanUp();
 //Keep this script tag section as the last tag
 
 //Do not touch these settings
-  screenAlpha.widthAdjustment = 18;
+  screenAlpha.widthAdjustment = 5;
   screenAlpha.heightAdjustment = 20;
   screenAlpha.baseDivIdList = [];
   screenAlpha.userDivIdList = [];
