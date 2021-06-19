@@ -405,7 +405,7 @@ ul {
   grid-area: title;
   font-size: 1.1rem;
 }
-.torrent-card__tags {
+.torrent-card__tags, .torrent-card__uploader {
   grid-area: tags;
   overflow: hidden;
   white-space: nowrap;
@@ -470,7 +470,8 @@ ul {
   fill: rgba(var(--text-color), 0.3);
 }
 
-#torrent_tags {
+#torrent_tags,
+#torrent_uploader {
   font-size: 0.85rem;
   margin-bottom: 0.3rem;
   color: rgba(var(--text-color), 0.8);
@@ -484,6 +485,16 @@ ul {
 #torrent__description {
   font-size: 0.9rem;
   color: rgba(var(--text-color), 0.8);
+}
+
+#torrent_uploader {
+  display: inline-flex;
+  background-color: rgba(var(--text-color), 0.1);
+  padding: 0.3rem 0.8rem;
+  border-radius: 1.5rem;
+  font-weight: 500;
+  line-height: 1.7;
+  margin-top: 1rem;
 }
 
 #torrent_download_button {
@@ -519,8 +530,8 @@ ul {
   .torrent-card__title {
     font-size: 1rem;
   }
-  .torrent-card__tags {
-    margin-bottom: 0;
+  .torrent-card__tags, .torrent-card__uploader {
+    margin-top: 0.5rem;
     font-size: 0.8rem;
   }
   .torrent-card__description {
