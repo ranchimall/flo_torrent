@@ -138,7 +138,7 @@ sm-textarea {
 }
 
 sm-button {
-  --border-radius: 0.2rem;
+  --border-radius: 0.3rem;
 }
 
 ul {
@@ -366,7 +366,14 @@ ul {
   display: grid;
   gap: 1rem;
   padding: 3rem 0;
-  justify-content: flex-start;
+}
+
+#search_torrent {
+  width: min(22rem, 100%);
+}
+#search_torrent .icon {
+  height: 1.2rem;
+  fill: rgba(var(--text-color), 0.7);
 }
 
 #torrent_container {
@@ -383,6 +390,7 @@ ul {
   cursor: pointer;
   padding: 1rem;
   border-radius: 0.3rem;
+  -webkit-tap-highlight-color: transparent;
   background-color: rgba(var(--foreground-color), 1);
 }
 .torrent-card__icon {
@@ -436,6 +444,7 @@ ul {
   background-color: rgba(var(--text-color), 0.1);
 }
 .torrent-card__download-button .icon {
+  height: 1.4rem;
   margin-right: 0.5rem;
 }
 

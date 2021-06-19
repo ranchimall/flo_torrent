@@ -197,7 +197,9 @@ border: none;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
+    --width: 100%;
     --font-size: 1rem;
+    --icon-gap: 0.5rem;
     --border-radius: 0.3rem;
     --padding: 0.7rem 1rem;
     --background: rgba(var(--text-color), 0.06);
@@ -232,7 +234,7 @@ border: none;
         -ms-flex-align: center;
             align-items: center;
     position: relative;
-    gap: 0.5rem;
+    gap: var(--icon-gap);
     padding: var(--padding);
     border-radius: var(--border-radius);
     -webkit-transition: opacity 0.3s;
@@ -282,7 +284,7 @@ border: none;
 }
 .outer-container{
     position: relative;
-    width: 100%;
+    width: var(--width);
 }
 .container{
     width: 100%;

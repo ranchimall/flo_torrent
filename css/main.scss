@@ -121,7 +121,7 @@ sm-textarea{
     --background: rgba(var(--text-color), 0.06);
 }
 sm-button{
-    --border-radius: 0.2rem;
+    --border-radius: 0.3rem;
 }
 ul{
     list-style: none;
@@ -313,7 +313,13 @@ ul{
     display: grid;
     gap: 1rem;
     padding: 3rem 0;
-    justify-content: flex-start;
+}
+#search_torrent{
+    width: min(22rem, 100%);
+    .icon{
+        height: 1.2rem;
+        fill: rgba(var(--text-color), 0.7);
+    }
 }
 
 #torrent_container{
@@ -329,6 +335,7 @@ ul{
     cursor: pointer;
     padding: 1rem;
     border-radius: 0.3rem;
+    -webkit-tap-highlight-color: transparent;
     background-color: rgba(var(--foreground-color), 1);
     &__icon{
         grid-area: icon;
@@ -380,6 +387,7 @@ ul{
         justify-content: center;
         background-color: rgba(var(--text-color), 0.1);
         .icon{
+            height: 1.4rem;
             margin-right: 0.5rem;
         }
     }

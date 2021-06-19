@@ -60,14 +60,14 @@
         <p>Powered by FLO blockchain</p>
     </footer>
     <template id="torrent_card_template">
-        <li class="torrent-card">
+        <li class="torrent-card interact">
             <div class="torrent-card__icon"></div>
             <h3 class="torrent-card__title"></h3>
             <span class="torrent-card__tags"></span>
             <!-- <p class="torrent-card__description"></p> -->
             <!-- <h5 class="torrent-card__size">1.2GB</h5> -->
             <button class="torrent-card__download-button">
-                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M7 20.981a6.5 6.5 0 0 1-2.936-12 8.001 8.001 0 0 1 15.872 0 6.5 6.5 0 0 1-2.936 12V21H7v-.019zM13 12V8h-2v4H8l4 5 4-5h-3z"/></svg>
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M16 2l5 5v14.008a.993.993 0 0 1-.993.992H3.993A1 1 0 0 1 3 21.008V2.992C3 2.444 3.445 2 3.993 2H16zm-3 10V8h-2v4H8l4 4 4-4h-3z"/></svg>
                 Download
             </button>
         </li>
@@ -382,9 +382,10 @@
         }
 
         function getTorrentMetafromAPI(txid, i, N) {
-            return new Promise((resolve, reject) => {
-                getResponce(`/api/tx/${txid}`).then(response => {
-                    var floData = JSON.parse(JSON.parse(response).floData);
+            return new Promise(async (resolve, reject) => {
+                try {
+                    let response = await getResponce(`/api/tx/${txid}`)
+                    var floData = JSON.parse(response.floData);
                     var percent = Math.round((i / N) * 100);
                     console.log(percent)
                     console.log(i, N, percent, floData.next);
@@ -397,9 +398,10 @@
                             reject(error);
                         });
                     }
-                }).catch(error => {
+                }
+                catch(error){
                     reject(error);
-                });
+                }
             });
         }
         async function downloadTorrent(filename, txid, totalChunks) {
@@ -409,11 +411,11 @@
             console.log(txid);
             getTorrentMetafromAPI(txid, 1, totalChunks).then(chunks => {
                 var filedata = chunks.join("");
-                console.log(filedata);
+                // console.log(filedata);
                 download(filename, filedata);
             }).catch(error => {
                 alert(error);
-                console.log(error);
+                console.error(error);
             }).finally(_ => {
                 // document.getElementById('downloadBar').style.display = "none";
             });
@@ -784,7 +786,7 @@
         async function showLatestTorrents(){
             getRef('torrent_container').innerHTML = ``
             let allTorrents = await getTorrents()
-            allTorrents = allTorrents.reverse().slice(0, 10)
+            allTorrents = allTorrents.reverse().slice(0, 8)
             getRef('torrent_container').append(renderTorrents(allTorrents))
         }
     </script>
