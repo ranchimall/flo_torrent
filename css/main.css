@@ -472,6 +472,8 @@ ul {
 
 #torrent_tags,
 #torrent_uploader {
+  display: flex;
+  width: 100%;
   font-size: 0.85rem;
   margin-bottom: 0.3rem;
   color: rgba(var(--text-color), 0.8);
