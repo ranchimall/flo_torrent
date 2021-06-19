@@ -15,7 +15,7 @@ html, body {
 }
 
 body {
-  --accent-color: #2353FF;
+  --accent-color: #304FFE;
   --light-shade: rgba(var(--text-color), 0.06);
   --text-color: 17, 17, 17;
   --text-color-light: 100, 100, 100;
@@ -28,7 +28,6 @@ body {
 }
 
 body[data-theme=dark] {
-  --accent-color: #2353FF;
   --green: #13ff5a;
   --text-color: 240, 240, 240;
   --text-color-light: 170, 170, 170;
@@ -464,7 +463,14 @@ ul {
   width: 2rem;
 }
 
+#torrent_tags {
+  font-size: 0.85rem;
+  margin-bottom: 0.3rem;
+  color: rgba(var(--text-color), 0.8);
+}
+
 #torrent_name {
+  font-size: 1.5rem;
   margin-bottom: 1rem;
 }
 
@@ -479,7 +485,7 @@ ul {
   background-color: var(--accent-color);
   width: 100%;
   justify-content: center;
-  padding: 1rem;
+  padding: 0.7rem;
 }
 #torrent_download_button .icon {
   fill: white;
@@ -514,6 +520,10 @@ ul {
   }
   .torrent-card__download-button {
     margin-top: 1rem;
+  }
+
+  #torrent_tags {
+    font-size: 0.7rem;
   }
 }
 @media only screen and (min-width: 640px) {
