@@ -336,7 +336,7 @@ ul{
     padding: 1rem;
     border-radius: 0.3rem;
     -webkit-tap-highlight-color: transparent;
-    background-color: rgba(var(--foreground-color), 1);
+    background-color: rgba(var(--text-color), 0.06);
     &__icon{
         grid-area: icon;
         display: flex;
@@ -409,8 +409,12 @@ ul{
         &__icon{
             margin: 0;
         }
+        &__title{
+            font-size: 1.1rem;
+        }
         &__tags{
             margin-bottom: 0;
+            font-size: 0.7rem;
         } 
         &__description{
             display: none;
