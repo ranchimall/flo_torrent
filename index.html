@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FLO Torrent</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..900&display=swap" rel="stylesheet">
+</head>
+
+<body data-theme="">
+    <sm-notifications id="notification_drawer"></sm-notifications>
+    <audio id="notification_sound">
+        <source src="https://rmservices.duckdns.org/files/notification-sound.mp3" type="audio/mpeg">
+        <source src="https://rmservices.duckdns.org/files/notification-sound.ogg" type="audio/ogg">
+    </audio>
+    <sm-popup id="confirmation">
+        <p id="confirm_message"></p>
+        <div class="flex align-center">
+            <sm-button variant="no-outline" class="cancel-btn">Cancel</sm-button>
+            <sm-button variant="no-outline" class="submit-btn">OK</button>
+        </div>
+    </sm-popup>
+    <sm-popup id="torrent_popup">
+        <header slot="header" class="popup__header">
+            <button class="popup__header__close" onclick="this.closest('sm-popup').hide()">
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z"/></svg>
+            </button>
+        </header>
+        <h1 id="torrent_name"></h1>
+        <p id="torrent_description"></p>
+    </sm-popup>
+    <header id="main_header">
+        <div class="flex align-center">
+            <svg id="main_header__logo" class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.46,21.32C20,19.78,18.6,18.59,15.3,17a12.67,12.67,0,0,1-2.64-1.56,4.27,4.27,0,0,1-.79-1,2.6,2.6,0,0,1,0-1.41c.24-.68.49-1,2.43-2.85a7.18,7.18,0,0,0,2.09-2.92,4.25,4.25,0,0,0,0-1.77,6.52,6.52,0,0,0-2.85-3.11c-.56-.36-.81-.4-.81-.15a2.33,2.33,0,0,1-.18.45L12.4,3l-.53-.36c-.28-.21-.64-.41-.77-.49s-.46-.11-.46,0a6.21,6.21,0,0,1-.37.83s-.08,0-.17-.08c-1.15-.83-1.64-1-1.64-.73A7.33,7.33,0,0,1,7.7,3.65C6.48,5.68,5.24,6.7,4,6.7c-.56,0-.54,0-.37.64s.2.58.68.43a3.37,3.37,0,0,0,1.09-.54.86.86,0,0,1,.3-.17,1.34,1.34,0,0,1,.13.39.79.79,0,0,0,.17.4A3.5,3.5,0,0,0,7.37,7.3L7.8,7l.09.34c.12.45.19.51.62.39a4.25,4.25,0,0,0,2.17-1.54l.38-.45,0,.39A5.92,5.92,0,0,1,8.89,9.54L7.67,10.71c-2,1.93-1.89,3.51.37,5a27.41,27.41,0,0,0,2.89,1.51c.17.07.62.32,1,.54C14,19,15,20.23,15,21.48a2,2,0,0,0,0,.49h0c0,.05,0,.05.56-.1a1.89,1.89,0,0,0,.53-.21,2.41,2.41,0,0,0-.34-1.15,7.05,7.05,0,0,0-1.68-1.77,21.91,21.91,0,0,0-3.2-1.83A9.53,9.53,0,0,1,8.16,15.2a2.18,2.18,0,0,1-.74-1.55C7.42,12.79,7.86,12,9,11c1.77-1.64,2.45-2.45,2.92-3.55a2.28,2.28,0,0,0,.26-1.26A2,2,0,0,0,12,5.06l-.2-.45L12,4.3l.28-.49.09-.18L12.6,4a3.69,3.69,0,0,1,.61,1.76A3.47,3.47,0,0,1,12.94,7l-.09.25s-.21.37-.41.69A17.78,17.78,0,0,1,9.91,10.6c-1.07,1-1.43,1.62-1.47,2.47a2.05,2.05,0,0,0,.7,1.73,10.47,10.47,0,0,0,3.28,2.08c2.28,1.13,3.26,1.81,4,2.73a2.94,2.94,0,0,1,.74,1.75,1.26,1.26,0,0,0,.09.57.48.48,0,0,0,.26,0l.51-.13.29-.08,0-.28c-.13-1-1-2-2.47-3a25.52,25.52,0,0,0-3.26-1.77,8.59,8.59,0,0,1-2.23-1.43,2.09,2.09,0,0,1-.5-2.62c.26-.53.5-.83,2.35-2.6,1.51-1.45,2.15-2.58,2.15-3.79A3.67,3.67,0,0,0,13,3.48a3,3,0,0,1-.4-.42A1.85,1.85,0,0,1,13,2.33a6.74,6.74,0,0,1,1.83,1.73,2.62,2.62,0,0,1,.47,1.68,3,3,0,0,1-.55,1.84c-.45.78-.79,1.14-2.67,2.93a5.56,5.56,0,0,0-1.3,1.64,1.77,1.77,0,0,0-.21,1,1.76,1.76,0,0,0,.19.92,6.28,6.28,0,0,0,2.9,2.34,21.6,21.6,0,0,1,3.66,2c1.35,1,2,2,2,3a1.06,1.06,0,0,0,.05.47,2.83,2.83,0,0,0,1-.24C20.56,21.68,20.56,21.66,20.46,21.32ZM7.29,6.4h0a2.23,2.23,0,0,1-.9.28L6,6.72l.43-.53a15.22,15.22,0,0,0,1.89-3,3.52,3.52,0,0,1,.38-.67c.07-.08.49.2,1,.64l.39.35L9.66,4A6.7,6.7,0,0,1,7.29,6.4Zm3.58-1.11A5.8,5.8,0,0,1,9.25,6.51h0a3.3,3.3,0,0,1-.74.17l-.35,0,.39-.49a15.64,15.64,0,0,0,1.32-2,4.63,4.63,0,0,1,.28-.49c.06-.08.33.26.57.77l.28.57Zm1-1.4a1.63,1.63,0,0,1-.28.4A6.63,6.63,0,0,1,11,3.72l-.53-.56.12-.29c.2-.49.24-.51.64-.19a5.57,5.57,0,0,1,.85.78A2.78,2.78,0,0,1,11.87,3.89Z"/></svg>
+            <h5 class="header__company-name">RanchiMall</h5>
+        </div>
+        <label class="theme-switcher" title="Change theme">
+            <input id="theme_switcher" class="theme-switcher__checkbox" type="checkbox">
+            <svg class="icon moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M10 6a8 8 0 0 0 11.955 6.956C21.474 18.03 17.2 22 12 22 6.477 22 2 17.523 2 12c0-5.2 3.97-9.474 9.044-9.955A7.963 7.963 0 0 0 10 6zm-6 6a8 8 0 0 0 8 8 8.006 8.006 0 0 0 6.957-4.045c-.316.03-.636.045-.957.045-5.523 0-10-4.477-10-10 0-.321.015-.64.045-.957A8.006 8.006 0 0 0 4 12zm14.164-9.709L19 2.5v1l-.836.209a2 2 0 0 0-1.455 1.455L16.5 6h-1l-.209-.836a2 2 0 0 0-1.455-1.455L13 3.5v-1l.836-.209A2 2 0 0 0 15.29.836L15.5 0h1l.209.836a2 2 0 0 0 1.455 1.455zm5 5L24 7.5v1l-.836.209a2 2 0 0 0-1.455 1.455L21.5 11h-1l-.209-.836a2 2 0 0 0-1.455-1.455L18 8.5v-1l.836-.209a2 2 0 0 0 1.455-1.455L20.5 5h1l.209.836a2 2 0 0 0 1.455 1.455z"/></svg>
+            <svg class="icon sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 18a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm0-2a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM11 1h2v3h-2V1zm0 19h2v3h-2v-3zM3.515 4.929l1.414-1.414L7.05 5.636 5.636 7.05 3.515 4.93zM16.95 18.364l1.414-1.414 2.121 2.121-1.414 1.414-2.121-2.121zm2.121-14.85l1.414 1.415-2.121 2.121-1.414-1.414 2.121-2.121zM5.636 16.95l1.414 1.414-2.121 2.121-1.414-1.414 2.121-2.121zM23 11v2h-3v-2h3zM4 11v2H1v-2h3z"/></svg>
+        </label>
+    </header>
+    <main class="page-layout">
+        <section id="search_section">
+            <h1>FLO Torrent</h1>
+            <sm-input id="search_torrent" placeholder="Search">
+                <svg class="icon" slot="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z"/></svg>
+            </sm-input>
+        </section>
+        <section>
+            <h4>Recent</h4>
+            <ul id="torrent_container"></ul>
+        </section>
+    </main>
+    <footer id="main_footer" class="page-layout">
+        <p>Powered by FLO blockchain</p>
+    </footer>
+    <template id="torrent_card_template">
+        <li class="torrent-card">
+            <div class="torrent-card__icon"></div>
+            <h3 class="torrent-card__title"></h3>
+            <span class="torrent-card__tags"></span>
+            <!-- <p class="torrent-card__description"></p> -->
+            <!-- <h5 class="torrent-card__size">1.2GB</h5> -->
+            <button class="torrent-card__download-button">
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M7 20.981a6.5 6.5 0 0 1-2.936-12 8.001 8.001 0 0 1 15.872 0 6.5 6.5 0 0 1-2.936 12V21H7v-.019zM13 12V8h-2v4H8l4 5 4-5h-3z"/></svg>
+                Download
+            </button>
+        </li>
+    </template>
+    <script src="components.js"></script>
+    <script>
+        const cryptocoin = "FLO";
+        const mainnet = `https://flosight.duckdns.org/`;
+        const testnet = `https://testnet-flosight.duckdns.org`;
+        const adminID = "FDG64XNjdsA4rAgfm4ABEs2RcTgqn8Jecv";
+        const kudosID = "FKAEdnPfjXLHSYwrXQu377ugN4tXU7VGdf";
+        if (cryptocoin == "FLO")
+            var server = mainnet;
+        else if (cryptocoin == "FLO_TEST")
+            var server = testnet;
+        var torrents = [], searchResults = [], trustedIDs = [], torrentSearchIndex;
+    </script>
+
+    <script id="userNonPresentationData">
+        function clearLocalData() {
+            if (!confirm("Do you want to clear all local data?!"))
+                return;
+            var DBDeleteRequest = window.indexedDB.deleteDatabase("FLO_Torrent");
+            DBDeleteRequest.onsuccess = function (event) {
+                console.log("Database deleted successfully");
+                alert("Successfully Cleared Local Data!");
+            };
+        }
+
+        async function getResponce(uri) {
+            try{
+                const url = `${server}/${uri}`
+                const res = await fetch(url)
+                return res.json()
+            }
+            catch(err){
+                console.error(err)
+            }
+        }
+
+        function storeTrustedIDs(data) {
+            return new Promise(
+                function (resolve, reject) {
+                    var idb = indexedDB.open("FLO_Kudos");
+                    idb.onerror = function (event) {
+                        reject("Error in opening IndexedDB!");
+                    };
+                    idb.onsuccess = function (event) {
+                        var db = event.target.result;
+                        var obs = db.transaction('trustedID', "readwrite").objectStore('trustedID');
+                        for (id in data)
+                            obs.put(data[id], id);
+                        db.close();
+                        resolve("Successfully stored Trusted IDs");
+                    };
+                }
+            );
+        }
+
+        function getTrustedIDsfromAPI() {
+            return new Promise(
+                function (resolve, reject) {
+                    var idb = indexedDB.open("FLO_Kudos");
+                    idb.onerror = function (event) {
+                        reject("Error in opening IndexedDB!");
+                    };
+                    idb.onupgradeneeded = function (event) {
+                        var objectStore1 = event.target.result.createObjectStore("trustedID");
+                        var objectStore2 = event.target.result.createObjectStore("lastTx");
+                    };
+                    idb.onsuccess = function (event) {
+                        var db = event.target.result;
+                        var lastTx = db.transaction('lastTx', "readwrite").objectStore('lastTx');
+                        var addr = kudosID;
+                        var lastTxReq = lastTx.get(addr);
+                        lastTxReq.onsuccess = async function (event) {
+                            var lasttx = event.target.result
+                            if (lasttx === undefined) {
+                                lasttx = 0;
+                            }
+                            var response = await getResponce(`api/addrs/${addr}/txs`);
+                            var nRequired = response.totalItems - lasttx;
+                            console.log(nRequired);
+                            while (true && nRequired) {
+                                var response = await getResponce(`api/addrs/${addr}/txs?from=0&to=${nRequired}`);
+                                if (nRequired + lasttx != response.totalItems) {
+                                    nRequired = response.totalItems - lasttx;
+                                    continue;
+                                }
+                                var errorTxCount = 0; //Count of txs that didnot go into any blocks
+                                response.items.reverse().forEach(function (tx) {
+                                    try {
+                                        if (!tx.blockhash) { //ignore error txs that did not go into any blocks
+                                            errorTxCount += 1;
+                                            return;
+                                        }
+                                        if (addr != tx.vin[0].addr) //ignore if the tx is not from kudos ID
+                                            return
+                                        var kudosData = JSON.parse(tx.floData).FLO_Kudos;
+                                        if (kudosData === undefined)
+                                            return;
+                                        storeTrustedIDs(kudosData).then(function (response) {
+                                        }).catch(function (error) {
+                                        });
+                                    } catch (e) {
+                                        //console.log(e)
+                                    }
+                                });
+                                var idb2 = indexedDB.open("FLO_Kudos");
+                                idb2.onerror = function (event) {
+                                    console.log("Error in opening IndexedDB!");
+                                };
+                                idb2.onsuccess = function (event) {
+                                    var dbt = event.target.result;
+                                    var obs = dbt.transaction('lastTx', "readwrite").objectStore('lastTx');
+                                    obs.put(response.totalItems - errorTxCount, addr);
+                                    dbt.close();
+                                };
+                                break;
+                            }
+                            resolve('retrived data from API');
+                        };
+                        db.close();
+                    };
+                });
+        }
+        function getTrustedIDsFromIDB() {
+            return new Promise(
+                function (resolve, reject) {
+                    var idb = indexedDB.open("FLO_Kudos");
+                    idb.onerror = function (event) {
+                        reject("Error in opening IndexedDB!");
+                    };
+                    idb.onsuccess = function (event) {
+                        var db = event.target.result;
+                        var obs = db.transaction('trustedID', "readwrite").objectStore('trustedID');
+                        var resultArray = [];
+                        var cursorReq = obs.openCursor();
+                        cursorReq.onsuccess = function (event) {
+                            var cursor = event.target.result;
+                            if (cursor) {
+                                if (cursor.value >= 2)
+                                    resultArray.push(cursor.key);
+                                cursor.continue();
+                            } else {
+                                resolve(resultArray)
+                            }
+                        };
+                        db.close();
+                    };
+                }
+            );
+        }
+
+
+        function storeTorrentData(torrentdata) {
+            return new Promise(
+                function (resolve, reject) {
+                    var idb = indexedDB.open("FLO_Torrent");
+                    idb.onerror = function (event) {
+                        console.log("Error in opening IndexedDB!");
+                    };
+                    idb.onsuccess = function (event) {
+                        var db = event.target.result;
+                        var obs = db.transaction('torrents', "readwrite").objectStore('torrents');
+                        objectRequest = obs.put(torrentdata);
+                        objectRequest.onerror = function (event) {
+                            reject(Error('Error occured: Unable to store data'));
+                        };
+                        objectRequest.onsuccess = function (event) {
+                            resolve('Data saved OK');
+                            db.close();
+                        };
+                    };
+                }
+            );
+        }
+
+        function getDatafromAPI() {
+            return new Promise(
+                function (resolve, reject) {
+                    var idb = indexedDB.open("FLO_Torrent");
+                    idb.onerror = function (event) {
+                        reject("Error in opening IndexedDB!");
+                    };
+                    idb.onupgradeneeded = function (event) {
+                        var objectStore = event.target.result.createObjectStore("torrents", { keyPath: "id", autoIncrement: true });
+                        objectStore.createIndex("name", "name", { unique: false });
+                        objectStore.createIndex("filename", "filename", { unique: false });
+                        objectStore.createIndex("type", "type", { unique: false });
+                        objectStore.createIndex("size", "size", { unique: false });
+                        objectStore.createIndex("description", "description", { unique: false });
+                        objectStore.createIndex("tags", "tags", { unique: false });
+                        objectStore.createIndex("chunks", "chunks", { unique: false });
+                        objectStore.createIndex("startTx", "startTx", { unique: false });
+                        objectStore.createIndex("uploader", "uploader", { unique: false });
+                        var objectStore2 = event.target.result.createObjectStore("lastTx");
+                    };
+                    idb.onsuccess = function (event) {
+                        var db = event.target.result;
+                        var lastTx = db.transaction('lastTx', "readwrite").objectStore('lastTx');
+                        var addr = adminID;
+                        var lastTxReq = lastTx.get(addr);
+                        lastTxReq.onsuccess = async function (event) {
+                            var lasttx = event.target.result
+                            if (lasttx === undefined) {
+                                lasttx = 0;
+                            }
+                            var response = await getResponce(`api/addrs/${addr}/txs`);
+                            var nRequired = response.totalItems - lasttx;
+                            console.log(nRequired);
+                            while (true && nRequired) {
+                                var response = await getResponce(`api/addrs/${addr}/txs?from=0&to=${nRequired}`);
+                                if (nRequired + lasttx != response.totalItems) {
+                                    nRequired = response.totalItems - lasttx;
+                                    continue;
+                                }
+                                var errorTxCount = 0; //Count of txs that didnot go into any blocks
+                                response.items.reverse().forEach(function (tx) {
+                                    try {
+                                        //console.log(tx.floData)
+                                        if (!tx.blockhash) { //ignore error txs that did not go into any blocks
+                                            errorTxCount += 1;
+                                            return;
+                                        }
+                                        if (!trustedIDs.includes(tx.vin[0].addr)) //ignore if torrent is not from trusted ID
+                                            return
+                                        var torrentdata = JSON.parse(tx.floData).FLO_Torrent;
+                                        if (torrentdata === undefined)
+                                            return;
+                                        //console.log(torrentdata);
+                                        var data = { name: torrentdata.name, filename: torrentdata.filename, type: torrentdata.type, uploader: tx.vin[0].addr, description: torrentdata.description, size: torrentdata.size, tags: torrentdata.tags, chunks: torrentdata.chunks, startTx: torrentdata.startTx };
+                                        storeTorrentData(data).then(function (response) {
+                                        }).catch(function (error) {
+                                            //console.log(error.message);
+                                        });
+                                    } catch (e) {
+                                        //console.log(e)
+                                    }
+                                });
+                                var idb2 = indexedDB.open("FLO_Torrent");
+                                idb2.onerror = function (event) {
+                                    console.log("Error in opening IndexedDB!");
+                                };
+                                idb2.onsuccess = function (event) {
+                                    var dbt = event.target.result;
+                                    var obs = dbt.transaction('lastTx', "readwrite").objectStore('lastTx');
+                                    obs.put(response.totalItems - errorTxCount, addr);
+                                    dbt.close();
+                                };
+                                break;
+                            }
+                            resolve('retrived data from API');
+                        };
+                        db.close();
+                    };
+                });
+        }
+        function getDataFromIDB(torrentId) {
+            return new Promise(
+                function (resolve, reject) {
+                    var idb = indexedDB.open("FLO_Torrent");
+                    idb.onerror = function (event) {
+                        reject("Error in opening IndexedDB!");
+                    };
+                    idb.onsuccess = function (event) {
+                        var db = event.target.result;
+                        var obs = db.transaction('torrents', "readwrite").objectStore('torrents');
+                        torrentdetails = [];
+                        if(torrentId){
+                            obs.get(torrentId).onsuccess = e => {
+                                resolve(e.target.result)
+                            }
+                        }
+                        else{
+                            var getReq = obs.getAll();
+                            getReq.onsuccess = function (event) {
+                                resolve(event.target.result);
+                            };
+                        }
+                        db.close();
+                    };
+                }
+            );
+        }
+        function getNewestDatafromAPI() {
+            return new Promise(
+                async function (resolve, reject) {
+                    var addr = adminID;
+                    var response = await getResponce(`api/addrs/${addr}/txs?from=0&to=100`);
+                    var tmpData = [];
+                    response.items.forEach(function (tx) {
+                        try {
+                            if (!tx.blockhash) { //ignore error txs that did not go into any blocks
+                                errorTxCount += 1;
+                                return;
+                            }
+                            if (!trustedIDs.includes(tx.vin[0].addr)) //ignore if torrent is not from trusted ID
+                                return
+                            var torrentdata = JSON.parse(tx.floData).FLO_Torrent;
+                            if (torrentdata === undefined)
+                                return;
+                            var data = { name: torrentdata.name, filename: torrentdata.filename, type: torrentdata.type, uploader: tx.vin[0].addr, description: torrentdata.description, size: torrentdata.size, tags: torrentdata.tags, chunks: torrentdata.chunks, startTx: torrentdata.startTx };
+                            tmpData.push(data);
+                        } catch (e) {
+                            //console.log(e)
+                        }
+                    });
+                    resolve(tmpData);
+                }
+            );
+        }
+
+        function getTorrentMetafromAPI(txid, i, N) {
+            return new Promise((resolve, reject) => {
+                getResponce(`/api/tx/${txid}`).then(response => {
+                    var floData = JSON.parse(JSON.parse(response).floData);
+                    var percent = Math.round((i / N) * 100);
+                    console.log(percent)
+                    console.log(i, N, percent, floData.next);
+                    if (!floData.next)
+                        resolve([floData.data]);
+                    else {
+                        getTorrentMetafromAPI(floData.next, i + 1, N).then(chunks => {
+                            resolve([floData.data].concat(chunks))
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    }
+                }).catch(error => {
+                    reject(error);
+                });
+            });
+        }
+        async function downloadTorrent(filename, txid, totalChunks) {
+/*             document.getElementById('downloadBar').style.display = "block";
+            document.getElementById('progressBar').setAttribute("class", "progress-circle p0");
+            document.getElementById('progressValue').innerHTML = `0%`; */
+            console.log(txid);
+            getTorrentMetafromAPI(txid, 1, totalChunks).then(chunks => {
+                var filedata = chunks.join("");
+                console.log(filedata);
+                download(filename, filedata);
+            }).catch(error => {
+                alert(error);
+                console.log(error);
+            }).finally(_ => {
+                // document.getElementById('downloadBar').style.display = "none";
+            });
+        }
+
+        function download(filename, data) {
+            var element = document.createElement('a');
+            element.setAttribute('href', 'data:application/octet-stream;charset=utf-8;base64,' + data);
+            element.setAttribute('download', filename);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+
+        //This function will be called by framework for you
+        async function getTorrents() {
+            console.log("StartUp");
+            try {
+                await getTrustedIDsfromAPI()
+                trustedIDs = await getTrustedIDsFromIDB()
+                await Promise.all([
+                    getNewestDatafromAPI(),
+                    getDatafromAPI()
+                ])
+                return getDataFromIDB()
+            }
+            catch (err) {
+                console.error(err)
+            }
+            /*             getTrustedIDsfromAPI().then(result => {
+                            //   console.log(result);
+                            getTrustedIDsFromIDB().then(result => {
+                                // console.log(result);
+                                trustedIDs = result;
+                                getNewestDatafromAPI().then(function (result) {
+                                    console.log(result);
+                                }).catch(function (error) {
+                                    console.log(error.message);
+                                });
+                                getDatafromAPI().then(function (res) {
+                                    getDataFromIDB().then(function (response) {
+                                        console.log(res.reverse);
+                                        return res.reverse
+                                    }).catch(function (error) {
+                                        console.log(error.message);
+                                    });
+                                }).catch(function (error) {
+                                    console.log(error.message);
+                                });
+                            }).catch(error => {
+                                console.log(error);
+                            });
+                        }).catch(error => {
+                            console.log(error);
+                        }); */
+        }
+
+    </script>
+    <script id="default_ui_library">
+        const domRefs = {};
+
+        function getRef(elementId) {
+            if (!domRefs.hasOwnProperty(elementId)) {
+                domRefs[elementId] = {
+                    count: 1,
+                    ref: null,
+                };
+                return document.getElementById(elementId);
+            } else {
+                if (domRefs[elementId].count < 3) {
+                    domRefs[elementId].count = domRefs[elementId].count + 1;
+                    return document.getElementById(elementId);
+                } else {
+                    if (!domRefs[elementId].ref)
+                        domRefs[elementId].ref = document.getElementById(elementId);
+                    return domRefs[elementId].ref;
+                }
+            }
+        }
+
+        function create(tagName, obj) {
+            const { className, text } = obj
+            const elem = document.createElement(tagName)
+            elem.className = className
+            elem.textContent = text
+            return elem
+        }
+
+        //Checks for internet connection status
+        if (!navigator.onLine)
+            notify(
+                "There seems to be a problem connecting to the internet, Please check you internet connection.",
+                "error",
+                "",
+                true
+            );
+        window.addEventListener("offline", () => {
+            notify(
+                "There seems to be a problem connecting to the internet, Please check you internet connection.",
+                "error",
+                true,
+                true
+            );
+        });
+        window.addEventListener("online", () => {
+            getRef("notification_drawer").clearAll();
+            notify("We are back online.", "success");
+        });
+
+        if (getRef("theme_switcher")) {
+            if (localStorage.theme === "dark") {
+                nightlight();
+                getRef("theme_switcher").checked = true;
+            } else if (localStorage.theme === "light") {
+                daylight();
+                getRef("theme_switcher").checked = false;
+            }
+            else {
+                if (window.matchMedia(`(prefers-color-scheme: dark)`).matches) {
+                    nightlight();
+                    getRef("theme_switcher").checked = true;
+                } else {
+                    daylight();
+                    getRef("theme_switcher").checked = false;
+                }
+            }
+
+            function daylight() {
+                document.body.setAttribute("data-theme", "light");
+            }
+
+            function nightlight() {
+                document.body.setAttribute("data-theme", "dark");
+            }
+            getRef("theme_switcher").addEventListener("change", function (e) {
+                if (this.checked) {
+                    nightlight();
+                    localStorage.setItem("theme", "dark");
+                } else {
+                    daylight();
+                    localStorage.setItem("theme", "light");
+                }
+            });
+        }
+
+        function setAttributes(el, attrs) {
+            for (key in attrs) {
+                el.setAttribute(key, attrs[key]);
+            }
+        }
+
+        function randomHsl(saturation = 80, lightness = 80) {
+            let hue = Math.random() * 360;
+            let color = {
+                primary: `hsla( ${hue}, ${saturation}%, ${lightness}%, 1)`,
+                light: `hsla( ${hue}, ${saturation}%, 90%, 0.6)`,
+            };
+            return color;
+        }
+
+        const selectedColors = [
+            "#FF1744",
+            "#F50057",
+            "#8E24AA",
+            "#5E35B1",
+            "#3F51B5",
+            "#3D5AFE",
+            "#00B0FF",
+            "#00BCD4",
+            "#16c79a",
+            "#66BB6A",
+            "#8BC34A",
+            "#11698e",
+            "#FF6F00",
+            "#FF9100",
+            "#FF3D00",
+        ];
+        function randomColor() {
+            return selectedColors[Math.floor(Math.random() * selectedColors.length)];
+        }
+
+        //Function for displaying toast notifications. pass in error for mode param if you want to show an error.
+        function notify(message, mode, pinned, sound) {
+            if (mode === "error") console.error(message);
+            else console.log(message);
+            getRef("notification_drawer").push(message, mode, pinned);
+            if (navigator.onLine && sound) {
+                getRef("notification_sound").currentTime = 0;
+                getRef("notification_sound").play();
+            }
+        }
+
+        const currentYear = new Date().getFullYear();
+        function getFormatedTime(time, relative) {
+            try {
+                if (String(time).indexOf("_")) time = String(time).split("_")[0];
+                const intTime = parseInt(time);
+                if (String(intTime).length < 13) time *= 1000;
+                let timeFrag = new Date(intTime).toString().split(" "),
+                    day = timeFrag[0],
+                    month = timeFrag[1],
+                    date = timeFrag[2],
+                    year = timeFrag[3],
+                    minutes = new Date(intTime).getMinutes(),
+                    hours = new Date(intTime).getHours(),
+                    currentTime = new Date().toString().split(" ");
+
+                minutes = minutes < 10 ? `0${minutes}` : minutes;
+                let finalHours = ``;
+                if (hours > 12) finalHours = `${hours - 12}:${minutes}`;
+                else if (hours === 0) finalHours = `12:${minutes}`;
+                else finalHours = `${hours}:${minutes}`;
+
+                finalHours = hours >= 12 ? `${finalHours} PM` : `${finalHours} AM`;
+                if (relative) {
+                    return `${date} ${month} ${year}`;
+                } else return `${finalHours} ${month} ${date} ${year}`;
+            } catch (e) {
+                console.error(e);
+                return time;
+            }
+        }
+
+        window.addEventListener("load", () => {
+            document.addEventListener("keyup", (e) => {
+/*                 if (e.code === "Escape") {
+                    if (isSiteMapOpen) {
+                        hideSiteMap();
+                    }
+                    else if (isRoomOpen) {
+                        hideRoom()
+                    }
+                } */
+            });
+            document.addEventListener("pointerdown", (e) => {
+                if (e.target.closest("button, sm-button:not([disable]), .interact")) {
+                    createRipple(e, e.target.closest("button, sm-button, .interact"));
+                }
+            });
+        });
+        function createRipple(event, target) {
+            const circle = document.createElement("span");
+            const diameter = Math.max(target.clientWidth, target.clientHeight);
+            const radius = diameter / 2;
+            const targetDimensions = target.getBoundingClientRect();
+            circle.style.width = circle.style.height = `${diameter}px`;
+            circle.style.left = `${event.clientX - (targetDimensions.left + radius)}px`;
+            circle.style.top = `${event.clientY - (targetDimensions.top + radius)}px`;
+            circle.classList.add("ripple");
+            const rippleAnimation = circle.animate(
+                [
+                    {
+                        transform: "scale(3)",
+                        opacity: 0,
+                    },
+                ],
+                {
+                    duration: 1000,
+                    fill: "forwards",
+                    easing: "ease-out",
+                }
+            );
+            target.append(circle);
+            rippleAnimation.onfinish = () => {
+                circle.remove();
+            };
+        }
+
+        function debounce(func, wait, immediate) {
+            let timeout;
+            return function () {
+                let context = this,
+                    args = arguments;
+                let later = function () {
+                    timeout = null;
+                    if (!immediate) func.apply(context, args);
+                };
+                let callNow = immediate && !timeout;
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+                if (callNow) func.apply(context, args);
+            };
+        }
+
+        let timerId;
+        function throttle(func, delay) {
+            // If setTimeout is already scheduled, no need to do anything
+            if (timerId) {
+                return;
+            }
+
+            // Schedule a setTimeout after delay seconds
+            timerId = setTimeout(function () {
+                func();
+
+                // Once setTimeout function execution is finished, timerId = undefined so that in
+                // the next scroll event function execution can be scheduled by the setTimeout
+                timerId = undefined;
+            }, delay);
+        }
+
+    </script>
+    <script>
+        window.addEventListener('load', e => {
+            showLatestTorrents()
+        })
+        getRef('torrent_container').addEventListener('click', async e => {
+            if(e.target.closest('.torrent-card__download-button')){
+                const _target = e.target.closest('.torrent-card__download-button')
+                const card = _target.closest('.torrent-card')
+                const cardId = parseInt(card.id)
+                const {filename, chunks, startTx} = await getDataFromIDB(cardId)
+                downloadTorrent(filename, startTx, chunks)
+            }
+        })
+        const render = {
+            torrentCard(obj){
+                const {id, name, description, tags, type = 'misc', size, uploader, startTx, filename, chunks} = obj
+                const card = getRef('torrent_card_template').content.cloneNode(true).firstElementChild
+                card.id = id
+                card.querySelector('.torrent-card__title').textContent = name 
+                card.querySelector('.torrent-card__tags').textContent = tags 
+                // card.querySelector('.torrent-card__description').textContent = description 
+                // card.querySelector('.torrent-card__size').textContent = size 
+                let icon
+                switch(type.toLowerCase()){
+                    case 'movie': 
+                        icon = `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M17.998 7l2.31-4h.7c.548 0 .992.445.992.993v16.014a1 1 0 0 1-.992.993H2.992A.993.993 0 0 1 2 20.007V3.993A1 1 0 0 1 2.992 3h3.006l-2.31 4h2.31l2.31-4h3.69l-2.31 4h2.31l2.31-4h3.69l-2.31 4h2.31z"/></svg>`
+                    break
+                    case 'tv series': 
+                        icon = `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M2 3.993A1 1 0 0 1 2.992 3h18.016c.548 0 .992.445.992.993v16.014a1 1 0 0 1-.992.993H2.992A.993.993 0 0 1 2 20.007V3.993zm8.622 4.422a.4.4 0 0 0-.622.332v6.506a.4.4 0 0 0 .622.332l4.879-3.252a.4.4 0 0 0 0-.666l-4.88-3.252z"/></svg>`
+                    break
+                    case 'video': 
+                        icon = `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M16 4a1 1 0 0 1 1 1v4.2l5.213-3.65a.5.5 0 0 1 .787.41v12.08a.5.5 0 0 1-.787.41L17 14.8V19a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h14zM7.4 8.829a.4.4 0 0 0-.392.32L7 9.228v5.542a.4.4 0 0 0 .542.374l.073-.036 4.355-2.772a.4.4 0 0 0 .063-.624l-.063-.05L7.615 8.89A.4.4 0 0 0 7.4 8.83z"/></svg>`
+                    break
+                    case 'music': 
+                        icon = `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M20 3v14a4 4 0 1 1-2-3.465V6H9v11a4 4 0 1 1-2-3.465V3h13z"/></svg>`
+                    break
+                    case 'software': 
+                        icon = `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M3 3h18a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm17 7H4v9h16v-9zm-5-4v2h4V6h-4z"/></svg>`
+                    break
+                    case 'game': 
+                        icon = `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M17 4a6 6 0 0 1 6 6v4a6 6 0 0 1-6 6H7a6 6 0 0 1-6-6v-4a6 6 0 0 1 6-6h10zm-7 5H8v2H6v2h1.999L8 15h2l-.001-2H12v-2h-2V9zm8 4h-2v2h2v-2zm-2-4h-2v2h2V9z"/></svg>`
+                    break
+                    case 'image': 
+                        icon = `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M5 11.1l2-2 5.5 5.5 3.5-3.5 3 3V5H5v6.1zM4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm11.5 7a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/></svg>`
+                    break
+                    case 'audio': 
+                        icon = `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M16 2l5 5v14.008a.993.993 0 0 1-.993.992H3.993A1 1 0 0 1 3 21.008V2.992C3 2.444 3.445 2 3.993 2H16zm-5 10.05a2.5 2.5 0 1 0 2 2.45V10h3V8h-5v4.05z"/></svg>`
+                    break
+                    default : 
+                        icon = `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M16 2l5 5v14.008a.993.993 0 0 1-.993.992H3.993A1 1 0 0 1 3 21.008V2.992C3 2.444 3.445 2 3.993 2H16zm-5 13v2h2v-2h-2zm2-1.645A3.502 3.502 0 0 0 12 6.5a3.501 3.501 0 0 0-3.433 2.813l1.962.393A1.5 1.5 0 1 1 12 11.5a1 1 0 0 0-1 1V14h2v-.645z"/></svg>`
+                    break
+
+                }
+                card.querySelector('.torrent-card__icon').innerHTML = icon 
+                return card
+            }
+        }
+        function renderTorrents(torrents){
+            const torrentsFrag = document.createDocumentFragment()
+            torrents.forEach(torrent => {
+                torrentsFrag.append(render.torrentCard(torrent))
+            })
+            return torrentsFrag
+        }
+        async function showLatestTorrents(){
+            getRef('torrent_container').innerHTML = ``
+            let allTorrents = await getTorrents()
+            allTorrents = allTorrents.reverse().slice(0, 10)
+            getRef('torrent_container').append(renderTorrents(allTorrents))
+        }
+    </script>
+</body>
+
+</html>
