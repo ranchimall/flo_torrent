@@ -27,11 +27,17 @@
     <sm-popup id="torrent_popup">
         <header slot="header" class="popup__header">
             <button class="popup__header__close" onclick="this.closest('sm-popup').hide()">
-                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z"/></svg>
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414z"/></svg>
             </button>
         </header>
+        <div id="torrent_type_icon" class="torrent-type-icon"></div>
+        <div id="torrent_tags"></div>
         <h1 id="torrent_name"></h1>
         <p id="torrent_description"></p>
+        <button id="torrent_download_button" class="torrent-card__download-button" onclick="downloadTorrent(currentTorrent.filename, currentTorrent.startTx, currentTorrent.chunks)">
+            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M16 2l5 5v14.008a.993.993 0 0 1-.993.992H3.993A1 1 0 0 1 3 21.008V2.992C3 2.444 3.445 2 3.993 2H16zm-3 10V8h-2v4H8l4 4 4-4h-3z"/></svg>
+            Get torrent
+        </button>
     </sm-popup>
     <header id="main_header">
         <div class="flex align-center">
@@ -61,7 +67,7 @@
     </footer>
     <template id="torrent_card_template">
         <li class="torrent-card interact">
-            <div class="torrent-card__icon"></div>
+            <div class="torrent-card__icon torrent-type-icon"></div>
             <h3 class="torrent-card__title"></h3>
             <span class="torrent-card__tags"></span>
             <!-- <p class="torrent-card__description"></p> -->
@@ -723,13 +729,25 @@
         window.addEventListener('load', e => {
             showLatestTorrents()
         })
+        
+        let currentTorrent
         getRef('torrent_container').addEventListener('click', async e => {
             if(e.target.closest('.torrent-card__download-button')){
                 const _target = e.target.closest('.torrent-card__download-button')
                 const card = _target.closest('.torrent-card')
                 const cardId = parseInt(card.id)
-                const {filename, chunks, startTx} = await getDataFromIDB(cardId)
                 downloadTorrent(filename, startTx, chunks)
+            }
+            else if(e.target.closest('.torrent-card')){
+                const card = e.target.closest('.torrent-card')
+                const cardId = parseInt(card.id)
+                currentTorrent = await getDataFromIDB(cardId)
+                const {id, name, description, tags, type = 'misc', size, uploader, startTx, filename, chunks} = currentTorrent
+                getRef('torrent_type_icon').innerHTML = getIcon(type)
+                getRef('torrent_name').textContent = name
+                getRef('torrent_description').textContent = description
+                getRef('torrent_tags').textContent = tags.split('/').join('•')
+                getRef('torrent_popup').show()
             }
         })
         const render = {
@@ -738,11 +756,16 @@
                 const card = getRef('torrent_card_template').content.cloneNode(true).firstElementChild
                 card.id = id
                 card.querySelector('.torrent-card__title').textContent = name 
-                card.querySelector('.torrent-card__tags').textContent = tags 
+                card.querySelector('.torrent-card__tags').textContent = tags.split('/').join('•')
                 // card.querySelector('.torrent-card__description').textContent = description 
                 // card.querySelector('.torrent-card__size').textContent = size 
-                let icon
-                switch(type.toLowerCase()){
+                card.querySelector('.torrent-card__icon').innerHTML = getIcon(type)
+                return card
+            }
+        }
+        function getIcon(type){
+            let icon
+            switch(type.toLowerCase()){
                     case 'movie': 
                         icon = `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M17.998 7l2.31-4h.7c.548 0 .992.445.992.993v16.014a1 1 0 0 1-.992.993H2.992A.993.993 0 0 1 2 20.007V3.993A1 1 0 0 1 2.992 3h3.006l-2.31 4h2.31l2.31-4h3.69l-2.31 4h2.31l2.31-4h3.69l-2.31 4h2.31z"/></svg>`
                     break
@@ -770,11 +793,8 @@
                     default : 
                         icon = `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M16 2l5 5v14.008a.993.993 0 0 1-.993.992H3.993A1 1 0 0 1 3 21.008V2.992C3 2.444 3.445 2 3.993 2H16zm-5 13v2h2v-2h-2zm2-1.645A3.502 3.502 0 0 0 12 6.5a3.501 3.501 0 0 0-3.433 2.813l1.962.393A1.5 1.5 0 1 1 12 11.5a1 1 0 0 0-1 1V14h2v-.645z"/></svg>`
                     break
-
                 }
-                card.querySelector('.torrent-card__icon').innerHTML = icon 
-                return card
-            }
+                return icon
         }
         function renderTorrents(torrents){
             const torrentsFrag = document.createDocumentFragment()
@@ -786,7 +806,7 @@
         async function showLatestTorrents(){
             getRef('torrent_container').innerHTML = ``
             let allTorrents = await getTorrents()
-            allTorrents = allTorrents.reverse().slice(0, 8)
+            allTorrents = allTorrents.reverse().slice(0, 50)
             getRef('torrent_container').append(renderTorrents(allTorrents))
         }
     </script>

@@ -327,11 +327,14 @@ ul{
     display: grid;
     gap: 0.5rem;
     padding-bottom: 4rem;
-    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    // grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
 }
 .torrent-card{
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    gap: 0 1rem;
+    align-items: center;
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas: 'icon title button' 'icon tags button';
     cursor: pointer;
     padding: 1rem;
     border-radius: 0.3rem;
@@ -339,26 +342,14 @@ ul{
     background-color: rgba(var(--text-color), 0.06);
     &__icon{
         grid-area: icon;
-        display: flex;
-        padding: 0.6rem;
-        border-radius: 50%;
-        margin-bottom: 1.5rem;
-        align-items: center;
-        justify-content: center;
-        align-self: flex-start;
-        aspect-ratio: 1/1;
-        flex-shrink: 0;
-        background-color: var(--accent-color);
         .icon{
             height: 1.6rem;
             width: 1.6rem;
-            fill: white;
         }
     }
     &__title{
         grid-area: title;
-        font-size: 1.2rem;
-        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
     }
     &__tags{
         grid-area: tags;
@@ -366,7 +357,6 @@ ul{
         white-space: nowrap;
         text-overflow: ellipsis;
         font-size: 0.85rem;
-        margin-bottom: 1.5rem;
         color: rgba(var(--text-color), 0.7);
     }
     &__description{
@@ -383,8 +373,7 @@ ul{
     &__download-button{
         grid-area: button;
         justify-self: flex-end;
-        margin-top: auto;
-        justify-content: center;
+        align-self: flex-start;
         background-color: rgba(var(--text-color), 0.1);
         .icon{
             height: 1.4rem;
@@ -395,22 +384,62 @@ ul{
 #torrent_popup{
     --width: min(42rem, 100%);
 }
+.torrent-type-icon{
+    display: flex;
+    padding: 1rem;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-start;
+    aspect-ratio: 1/1;
+    flex-shrink: 0;
+    background-color: var(--accent-color);
+    .icon{
+        fill: white;
+    }
+}
+#torrent_type_icon{
+    grid-area: icon;
+    margin-bottom: 1rem;
+    .icon{
+        height: 2rem;
+        width: 2rem;
+    }
+}
+#torrent_name{
+    margin-bottom: 1rem;
+}
+#torrent__description{
+    font-size: 0.9rem;
+    color: rgba(var(--text-color), 0.8);
+}
+#torrent_download_button{
+    color: white;
+    margin-top: 2rem;
+    background-color: var(--accent-color);
+    width: 100%;
+    justify-content: center;
+    padding: 1rem;
+    .icon{
+        fill: white;
+    }
+}
 #main_footer{
     padding: 3rem 0;
     background-color: rgba(var(--text-color), 0.06);
 }
 @media only screen and (max-width: 640px) {
+    .popup__header{
+        padding: 0 1.5rem;
+    }
     .torrent-card{
-        display: grid;
-        gap: 0 1rem;
-        align-items: center;
         grid-template-columns: auto 1fr;
         grid-template-areas: 'icon title' 'icon tags' 'icon button';
         &__icon{
             margin: 0;
         }
         &__title{
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
         &__tags{
             margin-bottom: 0;
@@ -425,6 +454,9 @@ ul{
     }
 }
 @media only screen and (min-width: 640px) {
+    .popup__header{
+        padding: 1.5rem 1.5rem 0 1.5rem;
+    }
     .page-layout{
         grid-template-columns: 1fr 90vw 1fr;
     }
@@ -433,7 +465,6 @@ ul{
     }
     .torrent-card{
         padding: 1.5rem;
-        min-height: 22rem;
     }
 }
 @media only screen and (min-width: 1280px) {
