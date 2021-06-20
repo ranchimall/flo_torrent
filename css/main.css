@@ -394,12 +394,15 @@ ul {
   -webkit-tap-highlight-color: transparent;
   background-color: rgba(var(--text-color), 0.06);
 }
+.torrent-card .torrent-type-icon {
+  padding: 0.8rem;
+}
 .torrent-card__icon {
   grid-area: icon;
 }
 .torrent-card__icon .icon {
-  height: 1.6rem;
-  width: 1.6rem;
+  height: 1.4rem;
+  width: 1.4rem;
 }
 .torrent-card__title {
   grid-area: title;
@@ -441,6 +444,12 @@ ul {
 
 .torrent-preview {
   display: grid;
+}
+
+.torrent-preview__info-section {
+  display: flex;
+  flex-direction: column;
+  align-content: flex-start;
 }
 
 .torrent-type-icon {
@@ -490,23 +499,24 @@ ul {
 }
 
 #torrent_uploader {
-  display: inline-flex;
-  background-color: rgba(var(--text-color), 0.1);
-  padding: 0.3rem 0.8rem;
-  border-radius: 1.5rem;
   font-weight: 500;
   line-height: 1.7;
   margin-top: 1rem;
+  width: auto;
+  border-radius: 1.5rem;
+  padding: 0.3rem 0.8rem;
+  align-self: flex-start;
+  background-color: rgba(var(--text-color), 0.1);
 }
 
 #torrent_download_button {
   color: white;
-  margin-top: 2rem;
-  background-color: var(--accent-color);
   width: 100%;
-  justify-content: center;
-  padding: 0.7rem;
   flex-shrink: 0;
+  padding: 0.7rem;
+  margin-top: 2rem;
+  justify-content: center;
+  background-color: var(--accent-color);
 }
 #torrent_download_button .icon {
   fill: white;
@@ -519,7 +529,7 @@ ul {
 
 @media only screen and (max-width: 640px) {
   .popup__header {
-    padding: 0 1.5rem;
+    padding: 0 1.5rem 0 0.5rem;
   }
 
   .torrent-card {

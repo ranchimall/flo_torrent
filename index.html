@@ -32,7 +32,7 @@
         </header>
         <section class="torrent-preview">
             <div id="torrent_type_icon" class="torrent-type-icon"></div>
-            <div>
+            <div class="torrent-preview__info-section">
                 <div id="torrent_tags"></div>
                 <h1 id="torrent_name"></h1>
                 <p id="torrent_description"></p>
@@ -85,6 +85,7 @@
         </li>
     </template>
     <script src="components.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6"></script>
     <script>
         const cryptocoin = "FLO";
         const mainnet = `https://flosight.duckdns.org/`;
@@ -738,10 +739,12 @@
         
         let currentTorrent
         getRef('torrent_container').addEventListener('click', async e => {
+            console.log(e.target)
             if(e.target.closest('.torrent-card__download-button')){
                 const _target = e.target.closest('.torrent-card__download-button')
                 const card = _target.closest('.torrent-card')
                 const cardId = parseInt(card.id)
+                const {id, name, description, tags, type = 'misc', size, uploader, startTx, filename, chunks} = await getDataFromIDB(cardId)
                 downloadTorrent(filename, startTx, chunks)
             }
             else if(e.target.closest('.torrent-card')){
@@ -817,6 +820,21 @@
             allTorrents = allTorrents.reverse().slice(0, 20)
             getRef('torrent_container').append(renderTorrents(allTorrents))
         }
+
+        getRef('search_torrent').addEventListener('keyup', async e => {
+            if(e.key === 'Enter'){
+                const torrents = await getDataFromIDB()
+                const searchKey = getRef('search_torrent').value
+                const options = {
+                    keys: ['name', 'filename'],
+                    threshold: 0.3,
+                }
+                const fuseSearch = new Fuse(torrents, options)
+                let result = fuseSearch.search(searchKey).map(elem => elem.item)
+                getRef('torrent_container').innerHTML = ``
+                getRef('torrent_container').append(renderTorrents(result))
+            }
+        })
     </script>
 </body>
 
