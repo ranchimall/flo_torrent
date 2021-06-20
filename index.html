@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FLO Torrent</title>
+    <link rel="shortcut icon" href="flo-torrent.png" type="image/png">
     <link rel="stylesheet" href="css/main.min.css">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..900&display=swap" rel="stylesheet">
@@ -57,7 +58,8 @@
     </header>
     <main class="page-layout">
         <section id="search_section">
-            <h1>FLO Torrent</h1>
+            <svg class="app-icon icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M54.69,14.28l8.83-8.83a1.62,1.62,0,0,0-1.14-2.77H21.15A1.63,1.63,0,0,0,19.53,4.3V59.7a1.62,1.62,0,0,0,2.78,1.13l8.83-9a1.62,1.62,0,0,0,.46-1.14V38.06a1.58,1.58,0,0,1,.48-1.14l8.81-8.83a1.62,1.62,0,0,0-1.15-2.77H33.22A1.62,1.62,0,0,1,31.6,23.7V16.37a1.63,1.63,0,0,1,1.62-1.62H53.55A1.63,1.63,0,0,0,54.69,14.28Z"/><path d="M1.62,14.75H12.36A1.62,1.62,0,0,0,14,13.13V4.3a1.63,1.63,0,0,0-1.62-1.62H7.47a1.6,1.6,0,0,0-1.35.73L.27,12.24A1.62,1.62,0,0,0,1.62,14.75Z"/></svg>
+            <h4 class="app-name">FLO Torrent</h4>
             <sm-input id="search_torrent" placeholder="Search">
                 <svg class="icon" slot="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z"/></svg>
             </sm-input>
@@ -765,7 +767,7 @@
                 const {id, name, description, tags, type = 'misc', size, uploader, startTx, filename, chunks} = obj
                 const card = getRef('torrent_card_template').content.cloneNode(true).firstElementChild
                 card.id = id
-                card.querySelector('.torrent-card__title').textContent = name 
+                card.querySelector('.torrent-card__title').textContent = filename 
                 card.querySelector('.torrent-card__uploader').textContent = `by ${uploader}`
                 // card.querySelector('.torrent-card__tags').textContent = tags.split('/').join('•')
                 // card.querySelector('.torrent-card__description').textContent = description 
@@ -824,13 +826,13 @@
         getRef('search_torrent').addEventListener('keyup', async e => {
             if(e.key === 'Enter'){
                 const torrents = await getDataFromIDB()
-                const searchKey = getRef('search_torrent').value
                 const options = {
                     keys: ['name', 'filename'],
                     threshold: 0.3,
                 }
                 const fuseSearch = new Fuse(torrents, options)
-                let result = fuseSearch.search(searchKey).map(elem => elem.item)
+                const searchKey = getRef('search_torrent').value
+                const result = fuseSearch.search(searchKey).map(elem => elem.item)
                 getRef('torrent_container').innerHTML = ``
                 getRef('torrent_container').append(renderTorrents(result))
             }

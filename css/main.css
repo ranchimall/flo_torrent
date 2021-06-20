@@ -130,12 +130,6 @@ a:any-link:focus-visible {
   outline: rgba(var(--text-color), 1) 0.1rem solid;
 }
 
-sm-input,
-sm-textarea {
-  --border-radius: 2rem;
-  --background: rgba(var(--text-color), 0.06);
-}
-
 sm-button {
   --border-radius: 0.3rem;
 }
@@ -362,13 +356,28 @@ ul {
 }
 
 #search_section {
+  position: relative;
   display: grid;
   gap: 1rem;
-  padding: 3rem 0;
+  padding: 4rem 0;
+  justify-items: center;
+}
+
+.app-icon {
+  height: 3rem;
+  width: 3rem;
+}
+
+.app-name {
+  font-weight: 500;
+  margin-bottom: 1rem;
+  color: rgba(var(--text-color), 0.7);
 }
 
 #search_torrent {
-  width: min(22rem, 100%);
+  width: min(28rem, 100%);
+  --border-radius: 2rem;
+  --background: rgba(var(--text-color), 0.06);
 }
 #search_torrent .icon {
   height: 1.2rem;
@@ -405,6 +414,7 @@ ul {
   width: 1.4rem;
 }
 .torrent-card__title {
+  font-weight: 600;
   grid-area: title;
   font-size: 1.1rem;
 }
