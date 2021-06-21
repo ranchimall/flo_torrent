@@ -56,15 +56,15 @@
             <svg class="icon sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 18a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm0-2a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM11 1h2v3h-2V1zm0 19h2v3h-2v-3zM3.515 4.929l1.414-1.414L7.05 5.636 5.636 7.05 3.515 4.93zM16.95 18.364l1.414-1.414 2.121 2.121-1.414 1.414-2.121-2.121zm2.121-14.85l1.414 1.415-2.121 2.121-1.414-1.414 2.121-2.121zM5.636 16.95l1.414 1.414-2.121 2.121-1.414-1.414 2.121-2.121zM23 11v2h-3v-2h3zM4 11v2H1v-2h3z"/></svg>
         </label>
     </header>
-    <main class="page-layout">
-        <section id="search_section">
+    <main>
+        <section id="search_section" class="page-layout">
             <svg class="app-icon icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M54.69,14.28l8.83-8.83a1.62,1.62,0,0,0-1.14-2.77H21.15A1.63,1.63,0,0,0,19.53,4.3V59.7a1.62,1.62,0,0,0,2.78,1.13l8.83-9a1.62,1.62,0,0,0,.46-1.14V38.06a1.58,1.58,0,0,1,.48-1.14l8.81-8.83a1.62,1.62,0,0,0-1.15-2.77H33.22A1.62,1.62,0,0,1,31.6,23.7V16.37a1.63,1.63,0,0,1,1.62-1.62H53.55A1.63,1.63,0,0,0,54.69,14.28Z"/><path d="M1.62,14.75H12.36A1.62,1.62,0,0,0,14,13.13V4.3a1.63,1.63,0,0,0-1.62-1.62H7.47a1.6,1.6,0,0,0-1.35.73L.27,12.24A1.62,1.62,0,0,0,1.62,14.75Z"/></svg>
             <h4 class="app-name">FLO Torrent</h4>
             <sm-input id="search_torrent" placeholder="Search">
                 <svg class="icon" slot="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z"/></svg>
             </sm-input>
         </section>
-        <section>
+        <section class="page-layout">
             <h4>Recent</h4>
             <ul id="torrent_container"></ul>
         </section>
@@ -75,11 +75,10 @@
     <template id="torrent_card_template">
         <li class="torrent-card interact">
             <div class="torrent-card__icon torrent-type-icon"></div>
-            <h3 class="torrent-card__title"></h3>
-            <span class="torrent-card__uploader"></span>
-            <!-- <span class="torrent-card__tags"></span> -->
-            <!-- <p class="torrent-card__description"></p> -->
-            <!-- <h5 class="torrent-card__size">1.2GB</h5> -->
+            <div class="grid">
+                <h3 class="torrent-card__title"></h3>
+                <span class="torrent-card__uploader"></span>
+            </div>
             <button class="torrent-card__download-button">
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M16 2l5 5v14.008a.993.993 0 0 1-.993.992H3.993A1 1 0 0 1 3 21.008V2.992C3 2.444 3.445 2 3.993 2H16zm-3 10V8h-2v4H8l4 4 4-4h-3z"/></svg>
                 Get torrent
@@ -396,18 +395,20 @@
             );
         }
 
-        function getTorrentMetafromAPI(txid, i, N) {
+        function getTorrentMetafromAPI(txid, i, N, torrentId) {
             return new Promise(async (resolve, reject) => {
                 try {
                     let response = await getResponce(`/api/tx/${txid}`)
-                    var floData = JSON.parse(response.floData);
-                    var percent = Math.round((i / N) * 100);
-                    console.log(percent)
-                    console.log(i, N, percent, floData.next);
+                    let floData = JSON.parse(response.floData);
+                    let percent = Math.round((i / N) * 100);
+                    console.log(torrentId)
+                    getRef(torrentId).querySelector('.progress-loader').setAttribute('style', `stroke-dashoffset: ${201 - (2.01 * percent)}`)
+                    getRef(torrentId).querySelector('.progress-percent').textContent = `${percent}% done`
+                    // console.log(i, N, percent, floData.next);
                     if (!floData.next)
                         resolve([floData.data]);
                     else {
-                        getTorrentMetafromAPI(floData.next, i + 1, N).then(chunks => {
+                        getTorrentMetafromAPI(floData.next, i + 1, N, torrentId).then(chunks => {
                             resolve([floData.data].concat(chunks))
                         }).catch(error => {
                             reject(error);
@@ -419,21 +420,27 @@
                 }
             });
         }
-        async function downloadTorrent(filename, txid, totalChunks) {
-/*             document.getElementById('downloadBar').style.display = "block";
-            document.getElementById('progressBar').setAttribute("class", "progress-circle p0");
-            document.getElementById('progressValue').innerHTML = `0%`; */
+        async function downloadTorrent(filename, txid, totalChunks, torrentId) {
             console.log(txid);
-            getTorrentMetafromAPI(txid, 1, totalChunks).then(chunks => {
-                var filedata = chunks.join("");
+            getRef(torrentId).querySelector('.torrent-card__download-button').classList.add('hide-completely')
+            const progressIndicator = create('div', {
+                className: 'progress-indicator flex align-center',
+                innerHTML: `
+                    <svg class="progress-loader" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="32"/></svg>
+                    <span class="progress-percent"></span>
+                `
+            })
+            getRef(torrentId).append(progressIndicator)
+            getTorrentMetafromAPI(txid, 1, totalChunks, torrentId).then(chunks => {
+                let filedata = chunks.join("");
                 // console.log(filedata);
                 download(filename, filedata);
+                progressIndicator.remove()
+                getRef(torrentId).querySelector('.torrent-card__download-button').classList.remove('hide-completely')
             }).catch(error => {
                 alert(error);
                 console.error(error);
-            }).finally(_ => {
-                // document.getElementById('downloadBar').style.display = "none";
-            });
+            })
         }
 
         function download(filename, data) {
@@ -513,10 +520,11 @@
         }
 
         function create(tagName, obj) {
-            const { className, text } = obj
+            const { className, text, innerHTML } = obj
             const elem = document.createElement(tagName)
             elem.className = className
             elem.textContent = text
+            elem.innerHTML = innerHTML
             return elem
         }
 
@@ -747,7 +755,7 @@
                 const card = _target.closest('.torrent-card')
                 const cardId = parseInt(card.id)
                 const {id, name, description, tags, type = 'misc', size, uploader, startTx, filename, chunks} = await getDataFromIDB(cardId)
-                downloadTorrent(filename, startTx, chunks)
+                downloadTorrent(filename, startTx, chunks, cardId)
             }
             else if(e.target.closest('.torrent-card')){
                 const card = e.target.closest('.torrent-card')
@@ -767,7 +775,7 @@
                 const {id, name, description, tags, type = 'misc', size, uploader, startTx, filename, chunks} = obj
                 const card = getRef('torrent_card_template').content.cloneNode(true).firstElementChild
                 card.id = id
-                card.querySelector('.torrent-card__title').textContent = filename 
+                card.querySelector('.torrent-card__title').textContent = name 
                 card.querySelector('.torrent-card__uploader').textContent = `by ${uploader}`
                 // card.querySelector('.torrent-card__tags').textContent = tags.split('/').join('•')
                 // card.querySelector('.torrent-card__description').textContent = description 
@@ -819,7 +827,7 @@
         async function showLatestTorrents(){
             getRef('torrent_container').innerHTML = ``
             let allTorrents = await getTorrents()
-            allTorrents = allTorrents.reverse().slice(0, 20)
+            allTorrents = allTorrents.reverse().slice(0, 12)
             getRef('torrent_container').append(renderTorrents(allTorrents))
         }
 
