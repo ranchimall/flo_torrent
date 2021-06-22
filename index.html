@@ -77,34 +77,38 @@
             </section>
         </section>
         <section id="search" class="page hide-completely page-layout">
-            <section id="advance_search_section" class="grid gap-1">
-                <h1>Search</h1>
-                <sm-input id="advance_torrent_search" class="search-torrent">
-                    <svg class="icon" slot="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z"/></svg>
-                </sm-input>
-                <sm-switch id="advance_search_switch">
-                    <h4 slot="left">Advanced search</h4>
-                </sm-switch>
-                <section id="advance_search_panel" class="hide-completely">
-                    <div class="grid justify-start gap-0-5">
-                        <h5>Category</h5>
-                        <sm-select id="category_selector">
-                            <sm-option value="movie">Movie</sm-option>
-                            <sm-option value="tv series">TV series</sm-option>
-                            <sm-option value="video">Video</sm-option>
-                            <sm-option value="music">Music</sm-option>
-                            <sm-option value="software">Software</sm-option>
-                            <sm-option value="game">Game</sm-option>
-                            <sm-option value="image">Image</sm-option>
-                            <sm-option value="audio">Audio</sm-option>
-                            <sm-option value="misc">Misc</sm-option>
-                        </sm-select>
-                    </div>
-                </section>
+            <section id="advance_search_section" class="grid gap-1 auto-grid-2">
+                <div class="grid gap-1">
+                    <h1>Search</h1>
+                    <sm-input id="advance_torrent_search" class="search-torrent">
+                        <svg class="icon" slot="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z"/></svg>
+                    </sm-input>
+                </div>
+                <div class="grid gap-1">
+                    <sm-switch id="advance_search_switch">
+                        <h4 slot="right">Advanced search</h4>
+                    </sm-switch>
+                    <section id="advance_search_panel" class="grid flow-column align-center justify-start gap-1-5 hide-completely">
+                        <div class="grid flow-column align-center justify-start gap-0-5">
+                            <h5>Category</h5>
+                            <sm-select id="category_selector">
+                                <sm-option value="movie">Movie</sm-option>
+                                <sm-option value="tv series">TV series</sm-option>
+                                <sm-option value="video">Video</sm-option>
+                                <sm-option value="music">Music</sm-option>
+                                <sm-option value="software">Software</sm-option>
+                                <sm-option value="game">Game</sm-option>
+                                <sm-option value="image">Image</sm-option>
+                                <sm-option value="audio">Audio</sm-option>
+                                <sm-option value="misc">Misc</sm-option>
+                            </sm-select>
+                        </div>
+                        <button onclick="renderSearchResult('', true)" class="button button--primary">Fliter</button>
+                    </section>
+                </div>
             </section>
             <div id="result_for"></div>
             <ul id="search_result" class="torrent-container observe-empty-state"></ul>
-            <!-- <h4 id="search_empty_state" class="empty-state">No torrents found</h4> -->
         </section>
 
     </main>
@@ -817,9 +821,6 @@
                 card.id = id
                 card.querySelector('.torrent-card__title').textContent = name 
                 card.querySelector('.torrent-card__uploader').textContent = `by ${uploader}`
-                // card.querySelector('.torrent-card__tags').textContent = tags.split('/').join('•')
-                // card.querySelector('.torrent-card__description').textContent = description 
-                // card.querySelector('.torrent-card__size').textContent = size 
                 card.querySelector('.torrent-card__icon').innerHTML = getIcon(type)
                 return card
             }
@@ -884,27 +885,25 @@
             }
         })
 
-        function getParts(url){
-            let page = '', query = ''
-            if(url){
-                page = url[0] === '#'? url.split('#')[1]: url
-                if(page.includes('?')){
-                    let parts = page.split('?')
-                    page = parts[0]
-                    query = parts[1]
-                }
-            }
-            return [page, query]
+        function getParts(){
+            const urlSearchParams = new URLSearchParams(window.location.search);
+            const params = Object.fromEntries(urlSearchParams.entries());
+            return params
         }
 
         let advancedSearch = {
             active: false,
+            query: '',
             category: ''
         }
+        let lastQuery = ''
         
-        async function renderSearchResult(searchKey){
-            const query = getParts(window.location.path)[1]
-            if(query !== searchKey){
+        async function renderSearchResult(searchKey, shouldFilter = false){
+            if(lastQuery !== searchKey || shouldFilter){
+                if(shouldFilter){
+                    searchKey = getRef('advance_torrent_search').value.trim() !== '' ? getRef('advance_torrent_search').value.trim() : lastQuery
+                }
+                advancedSearch['query'] = searchKey
                 const torrents = await getDataFromIDB()
                 const options = {
                     keys: ['name', 'filename'],
@@ -932,17 +931,34 @@
                 }
                 getRef('search_result').innerHTML = ``
                 getRef('search_result').append(renderTorrents(result))
-                history.pushState(null, null, `#search?${searchKey}`)
+                let params = ''
+                for (let prop in advancedSearch) {
+                    if(prop !== 'isActive' && advancedSearch[prop] && advancedSearch[prop] !== ''){
+                        params += `${prop}=${advancedSearch[prop]}&`
+                    }
+                }
+                if(params.slice(-1) === '&'){
+                    params = params.slice(0, -1)
+                }
+                history.pushState(null, null, `?${params}#search`)
                 showPage('search')
+                lastQuery = searchKey
             }
         }
 
         function showPage(target){
-            let [page, query] = getParts(target)
+            let params = getParts()
+            let page = target.includes('#') ? target.split('#')[1] : target
             switch(page){
                 case 'search':
-                    if(query){
-                        renderSearchResult(query)
+                    if(params.query){
+                        if(params.category){
+                            advancedSearch = {
+                                isActive: true,
+                                ...params
+                            }
+                        }
+                        renderSearchResult(params.query)
                     }
                 break
                 default:
@@ -964,12 +980,10 @@
                 getRef('advance_search_panel').classList.remove('hide-completely')
             }
             else{
-                advancedSearch = {
-                    isActive: false,
-                    category: ''
-                }
+                advancedSearch.isActive = false
                 getRef('advance_search_panel').classList.add('hide-completely')
             }
+            advancedSearch['query'] = getRef('advance_torrent_search').value.trim()
         })
         getRef('category_selector').addEventListener('change', e => {
                 advancedSearch.category = e.detail.value

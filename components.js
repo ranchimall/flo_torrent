@@ -1130,6 +1130,7 @@ smSwitch.innerHTML = `
         <div class="track"></div>
         <div class="button"></div>
     </div>
+    <slot name="right"></slot>
 </label>`
 
 customElements.define('sm-switch', class extends HTMLElement {
@@ -1264,6 +1265,7 @@ smSelect.innerHTML = `
     -webkit-tap-highlight-color: transparent;
 }
 .option-text{
+    font-size: 0.9rem;
     overflow: hidden;
     -o-text-overflow: ellipsis;
        text-overflow: ellipsis;
