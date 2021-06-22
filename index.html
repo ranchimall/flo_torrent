@@ -88,7 +88,7 @@
                 <section id="advance_search_panel" class="hide-completely">
                     <div class="grid justify-start gap-0-5">
                         <h5>Category</h5>
-                        <sm-select id="">
+                        <sm-select id="category_selector">
                             <sm-option value="movie">Movie</sm-option>
                             <sm-option value="tv series">TV series</sm-option>
                             <sm-option value="video">Video</sm-option>
@@ -896,19 +896,40 @@
             }
             return [page, query]
         }
+
+        let advancedSearch = {
+            active: false,
+            category: ''
+        }
         
         async function renderSearchResult(searchKey){
             const query = getParts(window.location.path)[1]
-            console.log(query, searchKey)
             if(query !== searchKey){
-                getRef('result_for').innerHTML = `Showing results for <b>${searchKey}</b>`
                 const torrents = await getDataFromIDB()
                 const options = {
                     keys: ['name', 'filename'],
-                    threshold: 0.3
+                    threshold: 0.3,
+                    useExtendedSearch: advancedSearch.isActive,
                 }
-                const fuseSearch = new Fuse(torrents, options)
-                const result = fuseSearch.search(searchKey).map(elem => elem.item)
+                let result
+                if(advancedSearch.isActive){
+                    options.keys = ['type']
+                    let fuseSearch = new Fuse(torrents, options)
+                    result = fuseSearch.search(`'${advancedSearch.category}`).map(elem => elem.item)
+                    options.keys = ['name', 'filename']
+                    fuseSearch = new Fuse(result, options)
+                    result = fuseSearch.search(searchKey).map(elem => elem.item)
+                }
+                else{
+                    const fuseSearch = new Fuse(torrents, options)
+                    result = fuseSearch.search(searchKey).map(elem => elem.item)
+                }
+                if(result.length){
+                    getRef('result_for').innerHTML = `Showing results for <strong>${searchKey}</strong>`
+                }
+                else{
+                    getRef('result_for').innerHTML = `No results for <strong>${searchKey}</strong>`
+                }
                 getRef('search_result').innerHTML = ``
                 getRef('search_result').append(renderTorrents(result))
                 history.pushState(null, null, `#search?${searchKey}`)
@@ -936,11 +957,22 @@
         })
         getRef('advance_search_switch').addEventListener('change', e => {
             if(e.detail.value){
+                advancedSearch = {
+                    isActive: true,
+                    category: getRef('category_selector').value
+                }
                 getRef('advance_search_panel').classList.remove('hide-completely')
             }
             else{
+                advancedSearch = {
+                    isActive: false,
+                    category: ''
+                }
                 getRef('advance_search_panel').classList.add('hide-completely')
             }
+        })
+        getRef('category_selector').addEventListener('change', e => {
+                advancedSearch.category = e.detail.value
         })
     </script>
 </body>
