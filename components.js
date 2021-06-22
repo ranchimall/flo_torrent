@@ -1175,7 +1175,10 @@ customElements.define('sm-switch', class extends HTMLElement {
     dispatch = () => {
         this.dispatchEvent(new CustomEvent('change', {
             bubbles: true,
-            composed: true
+            composed: true,
+            detail: {
+                value: this.isChecked 
+            }
         }))
     }
 
@@ -1245,8 +1248,7 @@ smSelect.innerHTML = `
     --max-height: auto;
 }
 .hide{
-    opacity: 0;
-    pointer-events: none;
+    display: none !important;
 }
 .select{
     position: relative;
@@ -1311,9 +1313,6 @@ smSelect.innerHTML = `
     min-width: 100%;
     max-height: var(--max-height);
     background: rgba(var(--foreground-color), 1);
-    -webkit-transition: opacity 0.3s, top 0.3s;
-    -o-transition: opacity 0.3s, top 0.3s;
-    transition: opacity 0.3s, top 0.3s;
     border: solid 1px rgba(var(--text-color), 0.2);
     border-radius: 0.3rem;
     z-index: 2;
@@ -1355,10 +1354,12 @@ customElements.define('sm-select', class extends HTMLElement {
     }
 
     collapse() {
-        this.optionList.animate(this.slideUp, this.animationOptions)
-        this.optionList.classList.add('hide')
         this.chevron.classList.remove('rotate')
-        this.open = false
+        this.optionList.animate(this.slideUp, this.animationOptions)
+        .onfinish = () => {
+            this.optionList.classList.add('hide')
+            this.open = false
+        }
     }
     connectedCallback() {
         this.availableOptions
@@ -1369,24 +1370,28 @@ customElements.define('sm-select', class extends HTMLElement {
             previousOption
         this.open = false;
         this.slideDown = [{
-                    transform: `translateY(-0.5rem)`
-                },
-                {
-                    transform: `translateY(0)`
-                }
-            ],
-            this.slideUp = [{
-                    transform: `translateY(0)`
-                },
-                {
-                    transform: `translateY(-0.5rem)`
-                }
-            ],
-            this.animationOptions = {
-                duration: 300,
-                fill: "forwards",
-                easing: 'ease'
+                transform: `translateY(-0.5rem)`,
+                opacity: 0
+            },
+            {
+                transform: `translateY(0)`,
+                opacity: 1
             }
+        ]
+        this.slideUp = [{
+                transform: `translateY(0)`,
+                opacity: 1
+            },
+            {
+                transform: `translateY(-0.5rem)`,
+                opacity: 0
+            }
+        ]
+        this.animationOptions = {
+            duration: 300,
+            fill: "forwards",
+            easing: 'ease'
+        }
         selection.addEventListener('click', e => {
             if (!this.open) {
                 this.optionList.classList.remove('hide')
@@ -1846,7 +1851,6 @@ smStripOption.innerHTML = `
 .option{
     padding: 0.4rem 0.8rem;
     cursor: pointer;
-    overflow-wrap: break-word;
     white-space: nowrap;
     outline: none;
     border-radius: 2rem;
