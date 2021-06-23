@@ -250,7 +250,7 @@ ul{
 .page-layout{
     position: relative;
     display: grid;
-    grid-template-columns: 1rem 1fr 1rem;
+    grid-template-columns: 1rem minmax(0, 1fr) 1rem;
     & > * {
         grid-column: 2/3;
     }
@@ -327,6 +327,9 @@ ul{
 
 .page{
     padding-bottom: 2rem;
+}
+.page__title{
+    font-size: 2rem;
 }
 
 #search_section{
@@ -579,6 +582,9 @@ sm-option{
     }
     #main_header{
         padding: 1.5rem;
+    }
+    .page__title{
+        font-size: 3rem;
     }
     .torrent-card{
         padding: 1.5rem;

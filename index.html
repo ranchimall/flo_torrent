@@ -79,7 +79,7 @@
         <section id="search" class="page hide-completely page-layout">
             <section id="advance_search_section" class="grid gap-1 auto-grid-2">
                 <div class="grid gap-1">
-                    <h1>Search</h1>
+                    <h1 class="page__title">Search</h1>
                     <sm-input id="advance_torrent_search" class="search-torrent">
                         <svg class="icon" slot="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z"/></svg>
                     </sm-input>
@@ -109,6 +109,22 @@
             </section>
             <div id="result_for"></div>
             <ul id="search_result" class="torrent-container observe-empty-state"></ul>
+        </section>
+        <section id="browse" class="hide-completely page page-layout">
+            <section class="flex direction-column">
+                <h1 class="page__title">Browse</h1>
+                <strip-select id="browse_category_selector">
+                    <strip-option value="movie">Movie</strip-option>
+                    <strip-option value="tv series">TV series</strip-option>
+                    <strip-option value="video">Video</strip-option>
+                    <strip-option value="music">Music</strip-option>
+                    <strip-option value="software">Software</strip-option>
+                    <strip-option value="game">Game</strip-option>
+                    <strip-option value="image">Image</strip-option>
+                    <strip-option value="audio">Audio</strip-option>
+                    <strip-option value="misc">Misc</strip-option>
+                </strip-select>
+            </section>
         </section>
 
     </main>
@@ -960,6 +976,9 @@
                         }
                         renderSearchResult(params.query)
                     }
+                break
+                case 'browse':
+                    
                 break
                 default:
                     page = 'homepage'

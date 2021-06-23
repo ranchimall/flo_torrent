@@ -1590,328 +1590,247 @@ customElements.define('sm-option', class extends HTMLElement {
     }
 })
 
-// select
-const smStripSelect = document.createElement('template')
-smStripSelect.innerHTML = `
-<style>     
-*{
-    padding: 0;
-    margin: 0;
-    -webkit-box-sizing: border-box;
-            box-sizing: border-box;
-}    
-:host{
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-}
-.icon {
-    position: absolute;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    fill: none;
-    height: 2.6rem;
-    width: 2.6rem;
-    padding: 0.9rem;
-    stroke: rgba(var(--text-color), 0.7);
-    stroke-width: 10;
-    overflow: visible;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    cursor: pointer;
-    min-width: 0;
-    z-index: 1;
-    background: rgba(var(--foreground-color), 1);
-    -webkit-tap-highlight-color: transparent;
-    -webkit-transition: opacity 0.3s;
-    -o-transition: opacity 0.3s;
-    transition: opacity 0.3s; 
-}
-.hide{
-    pointer-events: none;
-    opacity: 0;
-}
-.select-container{
-    position: relative;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    width: 100%;
-    -webkit-box-align: center;
-        -ms-flex-align: center;
-            align-items: center;
-}
-.select{
-    position: relative;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    gap: 0.5rem;
-    max-width: 100%;
-    overflow: auto hidden;
-}
-.previous-item{
-    left: 0;
-}
-.next-item{
-    right: 0;
-}
-.left,.right{
-    position: absolute;
-    width: 1rem;
-    height: 100%; 
-    -webkit-transition: opacity 0.3s; 
-    -o-transition: opacity 0.3s; 
-    transition: opacity 0.3s;
-    z-index: 1;
-}
-.left{
-    background: -webkit-gradient(linear, right top, left top, from(transparent), to(rgba(var(--foreground-color), 1)));
-    background: -o-linear-gradient(right, transparent, rgba(var(--foreground-color), 1));
-    background: linear-gradient(to left, transparent, rgba(var(--foreground-color), 1))
-}
-.right{
-    right: 0;
-    background: -webkit-gradient(linear, left top, right top, from(transparent), to(rgba(var(--foreground-color), 1)));
-    background: -o-linear-gradient(left, transparent, rgba(var(--foreground-color), 1));
-    background: linear-gradient(to right, transparent, rgba(var(--foreground-color), 1))
-}
-slot::slotted(.active){
-    border-radius: 2rem;
-    opacity: 1;
-    background-color: rgba(var(--text-color), .6);  
-    color: rgba(var(--foreground-color), 1);
-}
-@media (hover: none){
-    ::-webkit-scrollbar-track {
-        -webkit-box-shadow: none !important;
-        background-color: transparent !important;
+// strip select
+const stripSelect = document.createElement('template')
+stripSelect.innerHTML = `
+<style>
+    *{
+        padding: 0;
+        margin: 0;
+        -webkit-box-sizing: border-box;
+                box-sizing: border-box;
+    }  
+    :host{
+        --background-color: inherit;
+        --active-option-color: inherit;
+        --active-option-backgroud-color: rgba(var(--text-color), .2);
     }
-    ::-webkit-scrollbar {
-        height: 0;
-        background-color: transparent;
+    .hide{
+        display: none !important;
+    }
+    input[type="radio"]{
+        display: none;
+    }
+    .scrolling-container{
+        position: relative;
+        display: flex;
+        align-items: center;
+        padding: 1rem 0;
+    }
+    .strip-select{
+        display: flex;
+        position: relative;
+        max-width: 100%;   
+        align-items: center;
+        overflow: auto hidden;
+    }
+    .strip-option{
+        display: flex;
+        flex-strink: 0;
+        cursor: pointer;
+        white-space: nowrap;
+        border-radius: 2rem;
+        padding: 0.5rem 0.8rem;
+    }
+    .strip-option[active]{
+        color: var(--active-option-color);
+        background-color: var(--active-option-backgroud-color);
+    }
+    .nav-button{
+        position: absolute;
+        z-index: 2;
+        border: none;
+        top: 50%;
+        padding: 0.3rem;
+        cursor: pointer;
+        background: none;
+        transform: translateY(-50%);
+    }
+    .nav-button--right{
+        right: 0;
+    }
+    .cover{
+        position: absolute;
+        z-index: 1;
+        width: 4rem;
+        height: 100%;
+        pointer-events: none;
+    }
+    .cover--left{
+        background: linear-gradient(90deg, var(--background-color) 60%, transparent);
+    }
+    .cover--right{
+        right: 0;
+        background: linear-gradient(90deg, transparent 0%, var(--background-color) 40%);
+    }
+    .nav-button--right::before{
+        background-color: red;
     }
     .icon{
-        display: none;
+        height: 1.5rem;
+        width: 1.5rem;
+        fill: rgba(var(--text-color), .8);
     }
-    .left,.right{
-        display: block;
+    @media (hover: none){
+        ::-webkit-scrollbar-track {
+            background-color: transparent !important;
+        }
+        ::-webkit-scrollbar {
+            height: 0;
+            background-color: transparent;
+        }
+        .nav-button{
+            display: none;
+        }
+        .strip-select{
+            overflow: auto hidden;
+        }
     }
-}
-@media (hover: hover){
-    .select{
-        overflow: hidden;
+    @media (hover: hover){
+        .strip-select{
+            overflow: hidden;
+        }
     }
-    .left,.right{
-        display: none;
-    }
-}
 </style>
-<div class="select-container">
-    <div class="left hide"></div>
-    <svg class="icon previous-item hide" viewBox="4 0 64 64">
-        <title>Previous</title>
-        <polyline points="48.01 0.35 16.35 32 48.01 63.65"/>
-    </svg>
-    <div class="select">
-        <slot></slot> 
-    </div>
-    <svg class="icon next-item hide" viewBox="-6 0 64 64">
-        <title>Next</title>
-        <polyline points="15.99 0.35 47.65 32 15.99 63.65"/>
-    </svg>
-    <div class="right hide"></div>
-</div>`;
-customElements.define('sm-strip-select', class extends HTMLElement {
+<section class="scrolling-container">
+    <div class="cover cover--left hide"></div>
+    <button class="nav-button nav-button--left hide">
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M10.828 12l4.95 4.95-1.414 1.414L8 12l6.364-6.364 1.414 1.414z"/></svg>
+    </button>
+    <section class="strip-select">
+        <slot></slot>
+    </section>
+    <button class="nav-button nav-button--right hide">
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M13.172 12l-4.95-4.95 1.414-1.414L16 12l-6.364 6.364-1.414-1.414z"/></svg>
+    </button>
+    <div class="cover cover--right hide"></div>
+</section>
+
+`
+customElements.define('strip-select', class extends HTMLElement{
     constructor() {
         super()
         this.attachShadow({
             mode: 'open'
-        }).append(smStripSelect.content.cloneNode(true))
-    }
-    static get observedAttributes() {
-        return ['value']
+        }).append(stripSelect.content.cloneNode(true))
+        this.stripSelect = this.shadowRoot.querySelector('.strip-select')
+        this.slottedOptions
+        this._value
+        this.scrollDistance = 200
     }
     get value() {
-        return this.getAttribute('value')
+        return this._value
     }
-    set value(val) {
-        this.setAttribute('value', val)
+    randString = (length) => {
+        let result = '';
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        for (let i = 0; i < length; i++)
+            result += characters.charAt(Math.floor(Math.random() * characters.length));
+        return result;
+    }
+    fireEvent = () => {
+        this.dispatchEvent(
+            new CustomEvent("change", {
+                bubbles: true,
+                composed: true,
+                detail: {
+                    value: this.value
+                }
+            })
+        )
     }
     scrollLeft = () => {
-        this.select.scrollBy({
-            top: 0,
+        this.stripSelect.scrollBy({
             left: -this.scrollDistance,
             behavior: 'smooth'
         })
     }
 
     scrollRight = () => {
-        this.select.scrollBy({
-            top: 0,
+        this.stripSelect.scrollBy({
             left: this.scrollDistance,
             behavior: 'smooth'
         })
     }
     connectedCallback() {
-        let previousOption,
-            slot = this.shadowRoot.querySelector('slot');
-        this.selectContainer = this.shadowRoot.querySelector('.select-container')
-        this.select = this.shadowRoot.querySelector('.select')
-        this.nextArrow = this.shadowRoot.querySelector('.next-item')
-        this.previousArrow = this.shadowRoot.querySelector('.previous-item')
-        this.nextGradient = this.shadowRoot.querySelector('.right')
-        this.previousGradient = this.shadowRoot.querySelector('.left')
-        this.selectOptions
-        this.scrollDistance = this.selectContainer.getBoundingClientRect().width
-        const firstElementObserver = new IntersectionObserver(entries => {
-            if (entries[0].isIntersecting) {
-                this.previousArrow.classList.add('hide')
-                this.previousGradient.classList.add('hide')
-            } else {
-                this.previousArrow.classList.remove('hide')
-                this.previousGradient.classList.remove('hide')
-            }
-        }, {
-            root: this.selectContainer,
-            threshold: 0.95
-        })
-        const lastElementObserver = new IntersectionObserver(entries => {
-            if (entries[0].isIntersecting) {
-                this.nextArrow.classList.add('hide')
-                this.nextGradient.classList.add('hide')
-            } else {
-                this.nextArrow.classList.remove('hide')
-                this.nextGradient.classList.remove('hide')
-            }
-        }, {
-            root: this.selectContainer,
-            threshold: 0.95
-        })
-
-        const selectObserver = new IntersectionObserver(entries => {
-            if (entries[0].isIntersecting) {
-                this.scrollDistance = this.selectContainer.getBoundingClientRect().width
-            }
-        })
-
-        selectObserver.observe(this.selectContainer)
-        this.addEventListener('optionSelected', e => {
-            if (previousOption === e.target) return;
-            if (previousOption)
-                previousOption.classList.remove('active')
-            e.target.classList.add('active')
-            e.target.scrollIntoView({
-                behavior: 'smooth',
-                inline: 'center',
-                block: 'nearest'
-            })
-            this.setAttribute('value', e.detail.value)
-            this.dispatchEvent(new CustomEvent('change', {
-                bubbles: true,
-                composed: true
-            }))
-            previousOption = e.target;
-        })
+        const slot = this.shadowRoot.querySelector('slot')
+        const groupName = this.randString(8)
+        const coverLeft = this.shadowRoot.querySelector('.cover--left')
+        const coverRight = this.shadowRoot.querySelector('.cover--right')
+        const navButtonLeft = this.shadowRoot.querySelector('.nav-button--left')
+        const navButtonRight = this.shadowRoot.querySelector('.nav-button--right')
         slot.addEventListener('slotchange', e => {
-            this.selectOptions = slot.assignedElements()
-            firstElementObserver.observe(this.selectOptions[0])
-            lastElementObserver.observe(this.selectOptions[this.selectOptions.length - 1])
-            if (this.selectOptions[0]) {
-                let firstElement = this.selectOptions[0];
-                this.setAttribute('value', firstElement.getAttribute('value'))
-                firstElement.classList.add('active')
-                previousOption = firstElement;
-            }
-        });
-        this.nextArrow.addEventListener('click', this.scrollRight)
-        this.previousArrow.addEventListener('click', this.scrollLeft)
-    }
-
-    disconnectedCallback() {
-        this.nextArrow.removeEventListener('click', this.scrollRight)
-        this.previousArrow.removeEventListener('click', this.scrollLeft)
-    }
-})
-
-// option
-const smStripOption = document.createElement('template')
-smStripOption.innerHTML = `
-<style>     
-*{
-    padding: 0;
-    margin: 0;
-    -webkit-box-sizing: border-box;
-            box-sizing: border-box;
-}     
-:host{
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-}
-.option{
-    padding: 0.4rem 0.8rem;
-    cursor: pointer;
-    white-space: nowrap;
-    outline: none;
-    border-radius: 2rem;
-    text-transform: capitalize;
-    border: solid 1px rgba(var(--text-color), .3);
-    opacity: 0.9;
-}
-.option:focus{
-    background: rgba(var(--text-color), 0.1);
-}
-
-@media (hover: hover){
-    .option{
-        -webkit-transition: background 0.3s;
-        -o-transition: background 0.3s;
-        transition: background 0.3s;
-    }
-    .option:hover{
-        background: rgba(var(--text-color), 0.1);
-    }
-}
-</style>
-<div class="option" tabindex="0">
-    <slot></slot> 
-</div>`;
-customElements.define('sm-strip-option', class extends HTMLElement {
-    constructor() {
-        super()
-        this.attachShadow({
-            mode: 'open'
-        }).append(smStripOption.content.cloneNode(true))
-    }
-    sendDetails() {
-        let optionSelected = new CustomEvent('optionSelected', {
-            bubbles: true,
-            composed: true,
-            detail: {
-                text: this.textContent,
-                value: this.getAttribute('value')
+            slot.assignedElements().forEach(elem => {
+                const label = document.createElement('label')
+                const input = document.createElement('input')
+                label.className = 'strip-option'
+                label.tabIndex = 0
+                input.type = 'radio'
+                input.name = groupName
+                input.setAttribute('value', elem.getAttribute('value'))
+                label.append(input, elem)
+                this.stripSelect.append(label)
+            })
+            slot.remove()
+            firstOptionObserver.observe(this.stripSelect.firstElementChild)
+            lastOptionObserver.observe(this.stripSelect.lastElementChild)
+        })
+        this.stripSelect.addEventListener('change', e => {
+            this._value = e.target.value
+            e.target.closest('label').scrollIntoView({behavior: "smooth", block: "start", inline: "center"})
+            Array.from(this.stripSelect.children).forEach(elem => elem.removeAttribute('active'))
+            e.target.closest('.strip-option').setAttribute('active', '')
+            this.fireEvent()
+        })
+        this.stripSelect.addEventListener('keyup', e => {
+            if (e.key === 'Enter' || e.key === 'Space') {
+                e.target.click()
             }
         })
-        this.dispatchEvent(optionSelected)
-    }
-
-    connectedCallback() {
-        this.addEventListener('click', e => {
-            this.sendDetails()
+        const widthObserver = new ResizeObserver(entries => {
+            entries.forEach(entry => {
+                if(entry.contentBoxSize) {
+                    const contentBoxSize = Array.isArray(entry.contentBoxSize) ? entry.contentBoxSize[0] : entry.contentBoxSize;
+                    this.style.width = `${contentBoxSize.inlineSize}px`
+                } else {
+                    this.style.width = `${contentRect.width}px`
+                  }
+            })
         })
-        this.addEventListener('keyup', e => {
-            if (e.code === 'Enter' || e.code === 'Space') {
-                e.preventDefault()
-                this.sendDetails(false)
-            }
+        widthObserver.observe(this.parentNode)
+        
+        const firstOptionObserver = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    navButtonLeft.classList.add('hide')
+                    coverLeft.classList.add('hide')
+                }
+                else {
+                    navButtonLeft.classList.remove('hide')
+                    coverLeft.classList.remove('hide')
+                }
+            })
+        },
+        {
+            threshold: 0.9
         })
-        if (this.hasAttribute('default')) {
-            setTimeout(() => {
-                this.sendDetails()
-            }, 0);
-        }
+        const lastOptionObserver = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    navButtonRight.classList.add('hide')
+                    coverRight.classList.add('hide')
+                }
+                else {
+                    navButtonRight.classList.remove('hide')
+                    coverRight.classList.remove('hide')
+                }
+            })
+        },
+        {
+            threshold: 0.9
+        })
+        navButtonLeft.addEventListener('click', this.scrollLeft)
+        navButtonRight.addEventListener('click', this.scrollRight)
     }
 })
 
