@@ -108,13 +108,13 @@
                 </div>
             </section>
             <div id="result_for"></div>
-            <ul id="search_result" class="torrent-container observe-empty-state"></ul>
+            <ul id="search_result" class="torrent-container"></ul>
         </section>
         <section id="browse" class="hide-completely page page-layout">
             <section class="flex direction-column">
                 <h1 class="page__title">Browse</h1>
                 <strip-select id="browse_category_selector">
-                    <strip-option value="movie">Movie</strip-option>
+                    <strip-option value="movie" selected>Movie</strip-option>
                     <strip-option value="tv series">TV series</strip-option>
                     <strip-option value="video">Video</strip-option>
                     <strip-option value="music">Music</strip-option>
@@ -125,6 +125,8 @@
                     <strip-option value="misc">Misc</strip-option>
                 </strip-select>
             </section>
+            <ul id="browser_category_torrents" class="torrent-container"></ul>
+            <strip-select id="page_selector"></strip-select>
         </section>
 
     </main>
@@ -581,11 +583,13 @@
         }
 
         function create(tagName, obj) {
-            const { className, text, innerHTML } = obj
+            const { className, textContent, innerHTML } = obj
             const elem = document.createElement(tagName)
-            elem.className = className
-            elem.textContent = text
-            elem.innerHTML = innerHTML
+            if(className)
+                elem.className = className
+            elem.textContent = textContent
+            if(innerHTML)
+                elem.innerHTML = innerHTML
             return elem
         }
 
@@ -901,7 +905,7 @@
             }
         })
 
-        function getParts(){
+        function getSearchParams(){
             const urlSearchParams = new URLSearchParams(window.location.search);
             const params = Object.fromEntries(urlSearchParams.entries());
             return params
@@ -963,7 +967,7 @@
         }
 
         function showPage(target){
-            let params = getParts()
+            let params = getSearchParams()
             let page = target.includes('#') ? target.split('#')[1] : target
             switch(page){
                 case 'search':
@@ -978,7 +982,8 @@
                     }
                 break
                 case 'browse':
-                    
+                    const category = getRef('browse_category_selector').value
+                    showCategoryTorrents(category)
                 break
                 default:
                     page = 'homepage'
@@ -1000,12 +1005,61 @@
             }
             else{
                 advancedSearch.isActive = false
+                advancedSearch.category = ''
                 getRef('advance_search_panel').classList.add('hide-completely')
             }
             advancedSearch['query'] = getRef('advance_torrent_search').value.trim()
         })
         getRef('category_selector').addEventListener('change', e => {
-                advancedSearch.category = e.detail.value
+            advancedSearch.category = e.detail.value
+        })
+        getRef('browse_category_selector').addEventListener('change', e => {
+            showCategoryTorrents(e.detail.value)
+        })
+        
+        async function showCategoryTorrents(category){
+            const torrents = await getDataFromIDB()
+            const options = {
+                keys: ['type'],
+                threshold: 0.2,
+            }
+            const fuseSearch = new Fuse(torrents, options)
+            const result = fuseSearch.search(category).map(elem => elem.item)
+            getRef('browser_category_torrents').innerHTML = ``
+            getRef('browser_category_torrents').append(renderTorrents(result.slice(0,  20)))
+            
+            const paginationFrag = document.createDocumentFragment()
+            const pages = Math.round(result.length / 20)
+            for(let i = 0; i < pages; i++){
+                const pageButton = create('strip-option', {
+                    textContent : (i + 1)
+                })
+                pageButton.setAttribute('value', i)
+                if(i === 0){
+                    pageButton.setAttribute('selected', '')
+                }
+                paginationFrag.append(pageButton)
+            }
+            getRef('page_selector').innerHTML = ''
+            getRef('page_selector').append(paginationFrag)
+        }
+
+        getRef('page_selector').addEventListener('change', async e => {
+            const torrents = await getDataFromIDB()
+            const options = {
+                keys: ['type'],
+                threshold: 0.2,
+            }
+            const fuseSearch = new Fuse(torrents, options)
+            const category = getRef('browse_category_selector').value
+            const result = fuseSearch.search(category).map(elem => elem.item)
+            
+            const startIndex = parseInt(e.detail.value) * 20
+            const endIndex = (parseInt(e.detail.value) * 20) + 20
+
+            getRef('browser_category_torrents').innerHTML = ``
+            getRef('browser_category_torrents').append(renderTorrents(result.slice(startIndex,  endIndex)))
+            getRef('browser_category_torrents').scrollIntoView({behavior: 'smooth', block: 'start'})
         })
     </script>
 </body>
