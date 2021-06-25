@@ -383,7 +383,7 @@ ul {
 }
 
 .page {
-  padding-bottom: 2rem;
+  padding-bottom: 3rem;
 }
 
 .page__title {
@@ -444,7 +444,7 @@ ul {
   padding: 0.5rem 0;
 }
 
-a.search-suggestion {
+.search-suggestion {
   display: flex;
   cursor: pointer;
   font-weight: 700;
@@ -453,16 +453,19 @@ a.search-suggestion {
   color: rgba(var(--text-color), 0.8);
   outline: none;
 }
-a.search-suggestion:focus, a.search-suggestion:active {
+.search-suggestion:focus, .search-suggestion:active {
   outline: none;
   border: 0;
 }
-a.search-suggestion:focus-visible {
+.search-suggestion:focus-visible {
   outline: transparent;
   background-color: rgba(var(--text-color), 0.1);
 }
-a.search-suggestion span {
-  font-weight: 500;
+.search-suggestion span {
+  font-weight: 450;
+}
+.search-suggestion pre {
+  white-space: pre-wrap;
 }
 
 .torrent-container {

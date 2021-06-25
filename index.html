@@ -908,7 +908,14 @@
             return torrentsFrag
         }
         async function showLatestTorrents() {
-            let allTorrents = await getTorrents()
+            // load data from IDB first
+            let allTorrents = await getDataFromIDB()
+            allTorrents = allTorrents.reverse().slice(0, 8)
+            getRef('torrent_container').innerHTML = ``
+            getRef('torrent_container').append(renderTorrents(allTorrents))
+            
+            // render latest torrent when available
+            allTorrents = await getTorrents()
             allTorrents = allTorrents.reverse().slice(0, 8)
             getRef('torrent_container').innerHTML = ``
             getRef('torrent_container').append(renderTorrents(allTorrents))
@@ -945,8 +952,10 @@
             }
         })
         getRef('search_torrent').addEventListener('input', async e => {
-            const searchKey = getRef('search_torrent').value.trim()
-            renderSearchSuggestions(searchKey)
+            throttle(() => {
+                const searchKey = getRef('search_torrent').value.trim()
+                renderSearchSuggestions(searchKey)
+            }, 100)
         })
         getRef('advance_torrent_search').addEventListener('keyup', async e => {
             if (e.target.value.trim() !== '' && e.key === 'Enter') {
@@ -1046,6 +1055,7 @@
                     break;
                 default:
                     page = 'homepage'
+                    history.replaceState(null, null, ' ')
                     showLatestTorrents()
             }
             document.querySelector('.page:not(.hide-completely)')?.classList.add('hide-completely')
@@ -1153,8 +1163,11 @@
                     const regEx = new RegExp(`(${searchKey})`, 'gi')
                     const suggestion = create('a', {
                         className: 'search-suggestion',
-                        innerHTML: elem.name.replace(regEx, `<span>${searchKey}</span>`),
                     })
+                    const pre = create('pre', {
+                        innerHTML: elem.name.replace(regEx, `<span>$&</span>`),
+                    })
+                    suggestion.append(pre)
                     suggestion.href = `?id=${elem.id}#torrent`
                     suggestionsFrag.append(suggestion)
                 })
