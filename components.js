@@ -369,8 +369,6 @@ input{
 `;
 customElements.define('sm-input',
     class extends HTMLElement {
-
-        static formAssociated = true;
         
         constructor() {
             super()
@@ -1765,9 +1763,9 @@ customElements.define('strip-select', class extends HTMLElement{
         this.stripSelect.addEventListener('change', e => {
             if (this._value !== e.target.value) {
                 this._value = e.target.value
-                e.target.scrollIntoView({behavior: "smooth", block: "nearest", inline: "center"})
                 slot.assignedElements().forEach(elem => elem.removeAttribute('active'))
                 e.target.setAttribute('active', '')
+                e.target.scrollIntoView({behavior: "smooth", block: "nearest", inline: "center"})
                 this.fireEvent()
             }
         })
@@ -1826,7 +1824,7 @@ stripOption.innerHTML = `
     }
     .strip-option{
         display: flex;
-        flex-strink: 0;
+        flex-shrink: 0;
         cursor: pointer;
         white-space: nowrap;
         border-radius: var(--border-radius);

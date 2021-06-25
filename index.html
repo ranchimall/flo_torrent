@@ -25,55 +25,87 @@
             <sm-button variant="no-outline" class="submit-btn">OK</button>
         </div>
     </sm-popup>
-    <sm-popup id="torrent_popup">
-        <header slot="header" class="popup__header">
-            <button class="popup__header__close" onclick="this.closest('sm-popup').hide()">
-                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414z"/></svg>
-            </button>
-        </header>
-        <section class="torrent-preview">
-            <div id="torrent_type_icon" class="torrent-type-icon"></div>
-            <div class="torrent-preview__info-section">
-                <div id="torrent_tags"></div>
-                <h1 id="torrent_name"></h1>
-                <p id="torrent_description"></p>
-                <h5 id="torrent_uploader"></h5>
-                <button id="torrent_download_button" class="torrent-card__download-button" onclick="downloadTorrent(currentTorrent.filename, currentTorrent.startTx, currentTorrent.chunks, currentTorrent.id)">
-                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M16 2l5 5v14.008a.993.993 0 0 1-.993.992H3.993A1 1 0 0 1 3 21.008V2.992C3 2.444 3.445 2 3.993 2H16zm-3 10V8h-2v4H8l4 4 4-4h-3z"/></svg>
-                    Get torrent
-                </button>
-            </div>
-        </section>
-    </sm-popup>
     <header id="main_header">
         <div class="flex align-center">
-            <svg id="main_header__logo" class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.46,21.32C20,19.78,18.6,18.59,15.3,17a12.67,12.67,0,0,1-2.64-1.56,4.27,4.27,0,0,1-.79-1,2.6,2.6,0,0,1,0-1.41c.24-.68.49-1,2.43-2.85a7.18,7.18,0,0,0,2.09-2.92,4.25,4.25,0,0,0,0-1.77,6.52,6.52,0,0,0-2.85-3.11c-.56-.36-.81-.4-.81-.15a2.33,2.33,0,0,1-.18.45L12.4,3l-.53-.36c-.28-.21-.64-.41-.77-.49s-.46-.11-.46,0a6.21,6.21,0,0,1-.37.83s-.08,0-.17-.08c-1.15-.83-1.64-1-1.64-.73A7.33,7.33,0,0,1,7.7,3.65C6.48,5.68,5.24,6.7,4,6.7c-.56,0-.54,0-.37.64s.2.58.68.43a3.37,3.37,0,0,0,1.09-.54.86.86,0,0,1,.3-.17,1.34,1.34,0,0,1,.13.39.79.79,0,0,0,.17.4A3.5,3.5,0,0,0,7.37,7.3L7.8,7l.09.34c.12.45.19.51.62.39a4.25,4.25,0,0,0,2.17-1.54l.38-.45,0,.39A5.92,5.92,0,0,1,8.89,9.54L7.67,10.71c-2,1.93-1.89,3.51.37,5a27.41,27.41,0,0,0,2.89,1.51c.17.07.62.32,1,.54C14,19,15,20.23,15,21.48a2,2,0,0,0,0,.49h0c0,.05,0,.05.56-.1a1.89,1.89,0,0,0,.53-.21,2.41,2.41,0,0,0-.34-1.15,7.05,7.05,0,0,0-1.68-1.77,21.91,21.91,0,0,0-3.2-1.83A9.53,9.53,0,0,1,8.16,15.2a2.18,2.18,0,0,1-.74-1.55C7.42,12.79,7.86,12,9,11c1.77-1.64,2.45-2.45,2.92-3.55a2.28,2.28,0,0,0,.26-1.26A2,2,0,0,0,12,5.06l-.2-.45L12,4.3l.28-.49.09-.18L12.6,4a3.69,3.69,0,0,1,.61,1.76A3.47,3.47,0,0,1,12.94,7l-.09.25s-.21.37-.41.69A17.78,17.78,0,0,1,9.91,10.6c-1.07,1-1.43,1.62-1.47,2.47a2.05,2.05,0,0,0,.7,1.73,10.47,10.47,0,0,0,3.28,2.08c2.28,1.13,3.26,1.81,4,2.73a2.94,2.94,0,0,1,.74,1.75,1.26,1.26,0,0,0,.09.57.48.48,0,0,0,.26,0l.51-.13.29-.08,0-.28c-.13-1-1-2-2.47-3a25.52,25.52,0,0,0-3.26-1.77,8.59,8.59,0,0,1-2.23-1.43,2.09,2.09,0,0,1-.5-2.62c.26-.53.5-.83,2.35-2.6,1.51-1.45,2.15-2.58,2.15-3.79A3.67,3.67,0,0,0,13,3.48a3,3,0,0,1-.4-.42A1.85,1.85,0,0,1,13,2.33a6.74,6.74,0,0,1,1.83,1.73,2.62,2.62,0,0,1,.47,1.68,3,3,0,0,1-.55,1.84c-.45.78-.79,1.14-2.67,2.93a5.56,5.56,0,0,0-1.3,1.64,1.77,1.77,0,0,0-.21,1,1.76,1.76,0,0,0,.19.92,6.28,6.28,0,0,0,2.9,2.34,21.6,21.6,0,0,1,3.66,2c1.35,1,2,2,2,3a1.06,1.06,0,0,0,.05.47,2.83,2.83,0,0,0,1-.24C20.56,21.68,20.56,21.66,20.46,21.32ZM7.29,6.4h0a2.23,2.23,0,0,1-.9.28L6,6.72l.43-.53a15.22,15.22,0,0,0,1.89-3,3.52,3.52,0,0,1,.38-.67c.07-.08.49.2,1,.64l.39.35L9.66,4A6.7,6.7,0,0,1,7.29,6.4Zm3.58-1.11A5.8,5.8,0,0,1,9.25,6.51h0a3.3,3.3,0,0,1-.74.17l-.35,0,.39-.49a15.64,15.64,0,0,0,1.32-2,4.63,4.63,0,0,1,.28-.49c.06-.08.33.26.57.77l.28.57Zm1-1.4a1.63,1.63,0,0,1-.28.4A6.63,6.63,0,0,1,11,3.72l-.53-.56.12-.29c.2-.49.24-.51.64-.19a5.57,5.57,0,0,1,.85.78A2.78,2.78,0,0,1,11.87,3.89Z"/></svg>
+            <svg id="main_header__logo" class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path
+                    d="M20.46,21.32C20,19.78,18.6,18.59,15.3,17a12.67,12.67,0,0,1-2.64-1.56,4.27,4.27,0,0,1-.79-1,2.6,2.6,0,0,1,0-1.41c.24-.68.49-1,2.43-2.85a7.18,7.18,0,0,0,2.09-2.92,4.25,4.25,0,0,0,0-1.77,6.52,6.52,0,0,0-2.85-3.11c-.56-.36-.81-.4-.81-.15a2.33,2.33,0,0,1-.18.45L12.4,3l-.53-.36c-.28-.21-.64-.41-.77-.49s-.46-.11-.46,0a6.21,6.21,0,0,1-.37.83s-.08,0-.17-.08c-1.15-.83-1.64-1-1.64-.73A7.33,7.33,0,0,1,7.7,3.65C6.48,5.68,5.24,6.7,4,6.7c-.56,0-.54,0-.37.64s.2.58.68.43a3.37,3.37,0,0,0,1.09-.54.86.86,0,0,1,.3-.17,1.34,1.34,0,0,1,.13.39.79.79,0,0,0,.17.4A3.5,3.5,0,0,0,7.37,7.3L7.8,7l.09.34c.12.45.19.51.62.39a4.25,4.25,0,0,0,2.17-1.54l.38-.45,0,.39A5.92,5.92,0,0,1,8.89,9.54L7.67,10.71c-2,1.93-1.89,3.51.37,5a27.41,27.41,0,0,0,2.89,1.51c.17.07.62.32,1,.54C14,19,15,20.23,15,21.48a2,2,0,0,0,0,.49h0c0,.05,0,.05.56-.1a1.89,1.89,0,0,0,.53-.21,2.41,2.41,0,0,0-.34-1.15,7.05,7.05,0,0,0-1.68-1.77,21.91,21.91,0,0,0-3.2-1.83A9.53,9.53,0,0,1,8.16,15.2a2.18,2.18,0,0,1-.74-1.55C7.42,12.79,7.86,12,9,11c1.77-1.64,2.45-2.45,2.92-3.55a2.28,2.28,0,0,0,.26-1.26A2,2,0,0,0,12,5.06l-.2-.45L12,4.3l.28-.49.09-.18L12.6,4a3.69,3.69,0,0,1,.61,1.76A3.47,3.47,0,0,1,12.94,7l-.09.25s-.21.37-.41.69A17.78,17.78,0,0,1,9.91,10.6c-1.07,1-1.43,1.62-1.47,2.47a2.05,2.05,0,0,0,.7,1.73,10.47,10.47,0,0,0,3.28,2.08c2.28,1.13,3.26,1.81,4,2.73a2.94,2.94,0,0,1,.74,1.75,1.26,1.26,0,0,0,.09.57.48.48,0,0,0,.26,0l.51-.13.29-.08,0-.28c-.13-1-1-2-2.47-3a25.52,25.52,0,0,0-3.26-1.77,8.59,8.59,0,0,1-2.23-1.43,2.09,2.09,0,0,1-.5-2.62c.26-.53.5-.83,2.35-2.6,1.51-1.45,2.15-2.58,2.15-3.79A3.67,3.67,0,0,0,13,3.48a3,3,0,0,1-.4-.42A1.85,1.85,0,0,1,13,2.33a6.74,6.74,0,0,1,1.83,1.73,2.62,2.62,0,0,1,.47,1.68,3,3,0,0,1-.55,1.84c-.45.78-.79,1.14-2.67,2.93a5.56,5.56,0,0,0-1.3,1.64,1.77,1.77,0,0,0-.21,1,1.76,1.76,0,0,0,.19.92,6.28,6.28,0,0,0,2.9,2.34,21.6,21.6,0,0,1,3.66,2c1.35,1,2,2,2,3a1.06,1.06,0,0,0,.05.47,2.83,2.83,0,0,0,1-.24C20.56,21.68,20.56,21.66,20.46,21.32ZM7.29,6.4h0a2.23,2.23,0,0,1-.9.28L6,6.72l.43-.53a15.22,15.22,0,0,0,1.89-3,3.52,3.52,0,0,1,.38-.67c.07-.08.49.2,1,.64l.39.35L9.66,4A6.7,6.7,0,0,1,7.29,6.4Zm3.58-1.11A5.8,5.8,0,0,1,9.25,6.51h0a3.3,3.3,0,0,1-.74.17l-.35,0,.39-.49a15.64,15.64,0,0,0,1.32-2,4.63,4.63,0,0,1,.28-.49c.06-.08.33.26.57.77l.28.57Zm1-1.4a1.63,1.63,0,0,1-.28.4A6.63,6.63,0,0,1,11,3.72l-.53-.56.12-.29c.2-.49.24-.51.64-.19a5.57,5.57,0,0,1,.85.78A2.78,2.78,0,0,1,11.87,3.89Z" />
+            </svg>
             <a href="" class="header__company-name">RanchiMall</a>
         </div>
         <label class="theme-switcher" title="Change theme">
             <input id="theme_switcher" class="theme-switcher__checkbox" type="checkbox">
-            <svg class="icon moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M10 6a8 8 0 0 0 11.955 6.956C21.474 18.03 17.2 22 12 22 6.477 22 2 17.523 2 12c0-5.2 3.97-9.474 9.044-9.955A7.963 7.963 0 0 0 10 6zm-6 6a8 8 0 0 0 8 8 8.006 8.006 0 0 0 6.957-4.045c-.316.03-.636.045-.957.045-5.523 0-10-4.477-10-10 0-.321.015-.64.045-.957A8.006 8.006 0 0 0 4 12zm14.164-9.709L19 2.5v1l-.836.209a2 2 0 0 0-1.455 1.455L16.5 6h-1l-.209-.836a2 2 0 0 0-1.455-1.455L13 3.5v-1l.836-.209A2 2 0 0 0 15.29.836L15.5 0h1l.209.836a2 2 0 0 0 1.455 1.455zm5 5L24 7.5v1l-.836.209a2 2 0 0 0-1.455 1.455L21.5 11h-1l-.209-.836a2 2 0 0 0-1.455-1.455L18 8.5v-1l.836-.209a2 2 0 0 0 1.455-1.455L20.5 5h1l.209.836a2 2 0 0 0 1.455 1.455z"/></svg>
-            <svg class="icon sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 18a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm0-2a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM11 1h2v3h-2V1zm0 19h2v3h-2v-3zM3.515 4.929l1.414-1.414L7.05 5.636 5.636 7.05 3.515 4.93zM16.95 18.364l1.414-1.414 2.121 2.121-1.414 1.414-2.121-2.121zm2.121-14.85l1.414 1.415-2.121 2.121-1.414-1.414 2.121-2.121zM5.636 16.95l1.414 1.414-2.121 2.121-1.414-1.414 2.121-2.121zM23 11v2h-3v-2h3zM4 11v2H1v-2h3z"/></svg>
+            <svg class="icon moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                <path fill="none" d="M0 0h24v24H0z" />
+                <path
+                    d="M10 6a8 8 0 0 0 11.955 6.956C21.474 18.03 17.2 22 12 22 6.477 22 2 17.523 2 12c0-5.2 3.97-9.474 9.044-9.955A7.963 7.963 0 0 0 10 6zm-6 6a8 8 0 0 0 8 8 8.006 8.006 0 0 0 6.957-4.045c-.316.03-.636.045-.957.045-5.523 0-10-4.477-10-10 0-.321.015-.64.045-.957A8.006 8.006 0 0 0 4 12zm14.164-9.709L19 2.5v1l-.836.209a2 2 0 0 0-1.455 1.455L16.5 6h-1l-.209-.836a2 2 0 0 0-1.455-1.455L13 3.5v-1l.836-.209A2 2 0 0 0 15.29.836L15.5 0h1l.209.836a2 2 0 0 0 1.455 1.455zm5 5L24 7.5v1l-.836.209a2 2 0 0 0-1.455 1.455L21.5 11h-1l-.209-.836a2 2 0 0 0-1.455-1.455L18 8.5v-1l.836-.209a2 2 0 0 0 1.455-1.455L20.5 5h1l.209.836a2 2 0 0 0 1.455 1.455z" />
+            </svg>
+            <svg class="icon sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                <path fill="none" d="M0 0h24v24H0z" />
+                <path
+                    d="M12 18a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm0-2a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM11 1h2v3h-2V1zm0 19h2v3h-2v-3zM3.515 4.929l1.414-1.414L7.05 5.636 5.636 7.05 3.515 4.93zM16.95 18.364l1.414-1.414 2.121 2.121-1.414 1.414-2.121-2.121zm2.121-14.85l1.414 1.415-2.121 2.121-1.414-1.414 2.121-2.121zM5.636 16.95l1.414 1.414-2.121 2.121-1.414-1.414 2.121-2.121zM23 11v2h-3v-2h3zM4 11v2H1v-2h3z" />
+            </svg>
         </label>
     </header>
     <main>
         <section id="homepage" class="page">
             <section id="search_section" class="page-layout">
-                <svg class="app-icon icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M54.69,14.28l8.83-8.83a1.62,1.62,0,0,0-1.14-2.77H21.15A1.63,1.63,0,0,0,19.53,4.3V59.7a1.62,1.62,0,0,0,2.78,1.13l8.83-9a1.62,1.62,0,0,0,.46-1.14V38.06a1.58,1.58,0,0,1,.48-1.14l8.81-8.83a1.62,1.62,0,0,0-1.15-2.77H33.22A1.62,1.62,0,0,1,31.6,23.7V16.37a1.63,1.63,0,0,1,1.62-1.62H53.55A1.63,1.63,0,0,0,54.69,14.28Z"/><path d="M1.62,14.75H12.36A1.62,1.62,0,0,0,14,13.13V4.3a1.63,1.63,0,0,0-1.62-1.62H7.47a1.6,1.6,0,0,0-1.35.73L.27,12.24A1.62,1.62,0,0,0,1.62,14.75Z"/></svg>
+                <svg class="app-icon icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+                    <path
+                        d="M54.69,14.28l8.83-8.83a1.62,1.62,0,0,0-1.14-2.77H21.15A1.63,1.63,0,0,0,19.53,4.3V59.7a1.62,1.62,0,0,0,2.78,1.13l8.83-9a1.62,1.62,0,0,0,.46-1.14V38.06a1.58,1.58,0,0,1,.48-1.14l8.81-8.83a1.62,1.62,0,0,0-1.15-2.77H33.22A1.62,1.62,0,0,1,31.6,23.7V16.37a1.63,1.63,0,0,1,1.62-1.62H53.55A1.63,1.63,0,0,0,54.69,14.28Z" />
+                    <path
+                        d="M1.62,14.75H12.36A1.62,1.62,0,0,0,14,13.13V4.3a1.63,1.63,0,0,0-1.62-1.62H7.47a1.6,1.6,0,0,0-1.35.73L.27,12.24A1.62,1.62,0,0,0,1.62,14.75Z" />
+                </svg>
                 <h4 class="app-name">FLO Torrent</h4>
-                <sm-input id="search_torrent" class="search-torrent" placeholder="Search">
-                    <svg class="icon" slot="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z"/></svg>
-                </sm-input>
+                <section class="search-container">
+                    <sm-input id="search_torrent" class="search-torrent" placeholder="Search">
+                        <svg class="icon" slot="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+                            height="24">
+                            <path fill="none" d="M0 0h24v24H0z" />
+                            <path
+                                d="M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z" />
+                        </svg>
+                    </sm-input>
+                    <section id="search_suggestions"></section>
+                </section>
             </section>
             <section class="page-layout">
                 <div class="flex align-center space-between">
                     <h4>Recent</h4>
-                    <a href="#browse">
-                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"><path d="M0 0h24v24H0z" fill="none"/><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
-                        Browse torrents
+                    <a class="button" href="#browse">
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24"
+                            width="24px">
+                            <path d="M0 0h24v24H0z" fill="none" />
+                            <path
+                                d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z" />
+                        </svg>
+                        Browse
                     </a>
                 </div>
-                <ul id="torrent_container" class="torrent-container"></ul>
+                <section id="torrent_container" class="torrent-container"></section>
+            </section>
+        </section>
+        <section id="torrent" class="page hide-completely page-layout">
+            <section class="torrent-preview">
+                <div id="torrent_type_icon" class="torrent-type-icon"></div>
+                <div class="torrent-preview__info-section">
+                    <div id="torrent_tags"></div>
+                    <h1 id="torrent_name"></h1>
+                    <p id="torrent_description"></p>
+                    <h5 id="torrent_uploader"></h5>
+                    <div id="download_container">
+                        <button id="torrent_download_button"
+                            onclick="downloadTorrent(currentTorrent.filename, currentTorrent.startTx, currentTorrent.chunks, currentTorrent.id, true)">
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                                <path fill="none" d="M0 0h24v24H0z" />
+                                <path
+                                    d="M16 2l5 5v14.008a.993.993 0 0 1-.993.992H3.993A1 1 0 0 1 3 21.008V2.992C3 2.444 3.445 2 3.993 2H16zm-3 10V8h-2v4H8l4 4 4-4h-3z" />
+                            </svg>
+                            Get torrent
+                        </button>
+                        <div id="loader_container" class="flex"></div>
+                    </div>
+                </div>
             </section>
         </section>
         <section id="search" class="page hide-completely page-layout">
@@ -81,14 +113,20 @@
                 <div class="grid gap-1">
                     <h1 class="page__title">Search</h1>
                     <sm-input id="advance_torrent_search" class="search-torrent">
-                        <svg class="icon" slot="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z"/></svg>
+                        <svg class="icon" slot="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+                            height="24">
+                            <path fill="none" d="M0 0h24v24H0z" />
+                            <path
+                                d="M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z" />
+                        </svg>
                     </sm-input>
                 </div>
                 <div class="grid gap-1">
                     <sm-switch id="advance_search_switch">
                         <h4 slot="right">Advanced search</h4>
                     </sm-switch>
-                    <section id="advance_search_panel" class="grid flow-column align-center justify-start gap-1-5 hide-completely">
+                    <section id="advance_search_panel"
+                        class="grid flow-column align-center justify-start gap-1-5 hide-completely">
                         <div class="grid flow-column align-center justify-start gap-0-5">
                             <h5>Category</h5>
                             <sm-select id="category_selector">
@@ -108,7 +146,7 @@
                 </div>
             </section>
             <div id="result_for"></div>
-            <ul id="search_result" class="torrent-container"></ul>
+            <section id="search_result" class="torrent-container"></section>
         </section>
         <section id="browse" class="hide-completely page page-layout">
             <section class="flex direction-column">
@@ -125,7 +163,7 @@
                     <strip-option value="misc">Misc</strip-option>
                 </strip-select>
             </section>
-            <ul id="browser_category_torrents" class="torrent-container"></ul>
+            <section id="browser_category_torrents" class="torrent-container"></section>
             <strip-select id="page_selector"></strip-select>
         </section>
 
@@ -134,14 +172,18 @@
         <p>Powered by FLO blockchain</p>
     </footer>
     <template id="torrent_card_template">
-        <li class="torrent-card interact">
-            <div class="torrent-card__icon torrent-type-icon"></div>
-            <div class="grid">
+        <li class="torrent-card">
+            <a class="torrent-info grid">
+                <div class="torrent-card__icon torrent-type-icon"></div>
                 <h3 class="torrent-card__title"></h3>
                 <span class="torrent-card__uploader"></span>
-            </div>
+            </a>
             <button class="torrent-card__download-button">
-                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M16 2l5 5v14.008a.993.993 0 0 1-.993.992H3.993A1 1 0 0 1 3 21.008V2.992C3 2.444 3.445 2 3.993 2H16zm-3 10V8h-2v4H8l4 4 4-4h-3z"/></svg>
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                    <path fill="none" d="M0 0h24v24H0z" />
+                    <path
+                        d="M16 2l5 5v14.008a.993.993 0 0 1-.993.992H3.993A1 1 0 0 1 3 21.008V2.992C3 2.444 3.445 2 3.993 2H16zm-3 10V8h-2v4H8l4 4 4-4h-3z" />
+                </svg>
                 Get torrent
             </button>
         </li>
@@ -173,12 +215,12 @@
         }
 
         async function getResponce(uri) {
-            try{
+            try {
                 const url = `${server}/${uri}`
                 const res = await fetch(url)
                 return res.json()
             }
-            catch(err){
+            catch (err) {
                 console.error(err)
             }
         }
@@ -412,12 +454,12 @@
                         var db = event.target.result;
                         var obs = db.transaction('torrents', "readwrite").objectStore('torrents');
                         torrentdetails = [];
-                        if(torrentId){
+                        if (torrentId) {
                             obs.get(torrentId).onsuccess = e => {
                                 resolve(e.target.result)
                             }
                         }
-                        else{
+                        else {
                             var getReq = obs.getAll();
                             getReq.onsuccess = function (event) {
                                 resolve(event.target.result);
@@ -456,34 +498,39 @@
             );
         }
 
-        function getTorrentMetafromAPI(txid, i, N, torrentId) {
+        function getTorrentMetafromAPI(txid, i, N, torrentId, fromTorrentPage = false) {
             return new Promise(async (resolve, reject) => {
                 try {
                     let response = await getResponce(`/api/tx/${txid}`)
                     let floData = JSON.parse(response.floData);
                     let percent = Math.round((i / N) * 100);
                     console.log(torrentId)
-                    getRef(torrentId).querySelector('.progress-loader').setAttribute('style', `stroke-dashoffset: ${201 - (2.01 * percent)}`)
-                    getRef(torrentId).querySelector('.progress-percent').textContent = `${percent}% done`
+                    if (fromTorrentPage) {
+                        getRef('loader_container').querySelector('.progress-loader').setAttribute('style', `stroke-dashoffset: ${201 - (2.01 * percent)}`)
+                        getRef('loader_container').querySelector('.progress-percent').textContent = `${percent}% done`
+                    }
+                    else {
+                        getRef(torrentId).querySelector('.progress-loader').setAttribute('style', `stroke-dashoffset: ${201 - (2.01 * percent)}`)
+                        getRef(torrentId).querySelector('.progress-percent').textContent = `${percent}% done`
+                    }
                     // console.log(i, N, percent, floData.next);
                     if (!floData.next)
                         resolve([floData.data]);
                     else {
-                        getTorrentMetafromAPI(floData.next, i + 1, N, torrentId).then(chunks => {
+                        getTorrentMetafromAPI(floData.next, i + 1, N, torrentId, fromTorrentPage).then(chunks => {
                             resolve([floData.data].concat(chunks))
                         }).catch(error => {
                             reject(error);
                         });
                     }
                 }
-                catch(error){
+                catch (error) {
                     reject(error);
                 }
             });
         }
-        async function downloadTorrent(filename, txid, totalChunks, torrentId) {
+        async function downloadTorrent(filename, txid, totalChunks, torrentId, fromTorrentPage = false) {
             console.log(txid);
-            getRef(torrentId).querySelector('.torrent-card__download-button').classList.add('hide-completely')
             const progressIndicator = create('div', {
                 className: 'progress-indicator flex align-center',
                 innerHTML: `
@@ -491,14 +538,26 @@
                     <span class="progress-percent">0% done</span>
                 `
             })
-            getRef(torrentId).append(progressIndicator)
-            getTorrentMetafromAPI(txid, 1, totalChunks, torrentId).then(chunks => {
+            if (fromTorrentPage) {
+                getRef('torrent_download_button').classList.add('hide-completely')
+                getRef('loader_container').append(progressIndicator)
+            }
+            else {
+                getRef(torrentId).querySelector('.torrent-card__download-button').classList.add('hide-completely')
+                getRef(torrentId).append(progressIndicator)
+            }
+            getTorrentMetafromAPI(txid, 1, totalChunks, torrentId, fromTorrentPage).then(chunks => {
                 let filedata = chunks.join("");
                 // console.log(filedata);
                 download(filename, filedata);
                 setTimeout(() => {
                     progressIndicator.remove()
-                    getRef(torrentId).querySelector('.torrent-card__download-button').classList.remove('hide-completely')
+                    if (fromTorrentPage) {
+                        getRef('torrent_download_button').classList.remove('hide-completely')
+                    }
+                    else {
+                        getRef(torrentId).querySelector('.torrent-card__download-button').classList.remove('hide-completely')
+                    }
                 }, 300);
             }).catch(error => {
                 alert(error);
@@ -531,32 +590,6 @@
             catch (err) {
                 console.error(err)
             }
-            /*             getTrustedIDsfromAPI().then(result => {
-                            //   console.log(result);
-                            getTrustedIDsFromIDB().then(result => {
-                                // console.log(result);
-                                trustedIDs = result;
-                                getNewestDatafromAPI().then(function (result) {
-                                    console.log(result);
-                                }).catch(function (error) {
-                                    console.log(error.message);
-                                });
-                                getDatafromAPI().then(function (res) {
-                                    getDataFromIDB().then(function (response) {
-                                        console.log(res.reverse);
-                                        return res.reverse
-                                    }).catch(function (error) {
-                                        console.log(error.message);
-                                    });
-                                }).catch(function (error) {
-                                    console.log(error.message);
-                                });
-                            }).catch(error => {
-                                console.log(error);
-                            });
-                        }).catch(error => {
-                            console.log(error);
-                        }); */
         }
 
     </script>
@@ -585,10 +618,10 @@
         function create(tagName, obj) {
             const { className, textContent, innerHTML } = obj
             const elem = document.createElement(tagName)
-            if(className)
+            if (className)
                 elem.className = className
             elem.textContent = textContent
-            if(innerHTML)
+            if (innerHTML)
                 elem.innerHTML = innerHTML
             return elem
         }
@@ -730,14 +763,14 @@
 
         window.addEventListener("load", () => {
             document.addEventListener("keyup", (e) => {
-/*                 if (e.code === "Escape") {
-                    if (isSiteMapOpen) {
-                        hideSiteMap();
-                    }
-                    else if (isRoomOpen) {
-                        hideRoom()
-                    }
-                } */
+                /*                 if (e.code === "Escape") {
+                                    if (isSiteMapOpen) {
+                                        hideSiteMap();
+                                    }
+                                    else if (isRoomOpen) {
+                                        hideRoom()
+                                    }
+                                } */
             });
             document.addEventListener("pointerdown", (e) => {
                 if (e.target.closest("button, sm-button:not([disable]), .interact")) {
@@ -811,101 +844,118 @@
         window.addEventListener('load', e => {
             showPage(window.location.hash)
         })
-        
+
         let currentTorrent
         document.addEventListener('click', async e => {
-            if(e.target.closest('.torrent-card__download-button')){
+            if (e.target.closest('.torrent-card__download-button')) {
                 const _target = e.target.closest('.torrent-card__download-button')
                 const card = _target.closest('.torrent-card')
                 const cardId = parseInt(card.id)
-                const {id, name, description, tags, type = 'misc', size, uploader, startTx, filename, chunks} = await getDataFromIDB(cardId)
+                const { id, name, description, tags, type = 'misc', size, uploader, startTx, filename, chunks } = await getDataFromIDB(cardId)
                 downloadTorrent(filename, startTx, chunks, cardId)
-            }
-            else if(e.target.closest('.torrent-card')){
-                const card = e.target.closest('.torrent-card')
-                const cardId = parseInt(card.id)
-                currentTorrent = await getDataFromIDB(cardId)
-                const {id, name, description, tags, type = 'misc', size, uploader, startTx, filename, chunks} = currentTorrent
-                getRef('torrent_type_icon').innerHTML = getIcon(type)
-                getRef('torrent_name').textContent = name
-                getRef('torrent_description').textContent = description
-                getRef('torrent_tags').textContent = tags.split('/').join('•')
-                getRef('torrent_uploader').textContent = `Uploaded by ${uploader}`
-                getRef('torrent_popup').show()
             }
         })
         const render = {
-            torrentCard(obj){
-                const {id, name, description, tags, type = 'misc', size, uploader, startTx, filename, chunks} = obj
+            torrentCard(obj) {
+                const { id, name, description, tags, type = 'misc', size, uploader, startTx, filename, chunks } = obj
                 const card = getRef('torrent_card_template').content.cloneNode(true).firstElementChild
                 card.id = id
-                card.querySelector('.torrent-card__title').textContent = name 
+                card.querySelector('.torrent-info').href = `?id=${id}#torrent`
+                card.querySelector('.torrent-card__title').textContent = name
                 card.querySelector('.torrent-card__uploader').textContent = `by ${uploader}`
                 card.querySelector('.torrent-card__icon').innerHTML = getIcon(type)
                 return card
             }
         }
-        function getIcon(type){
+        function getIcon(type) {
             let icon
-            switch(type.toLowerCase()){
-                    case 'movie': 
-                        icon = `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M17.998 7l2.31-4h.7c.548 0 .992.445.992.993v16.014a1 1 0 0 1-.992.993H2.992A.993.993 0 0 1 2 20.007V3.993A1 1 0 0 1 2.992 3h3.006l-2.31 4h2.31l2.31-4h3.69l-2.31 4h2.31l2.31-4h3.69l-2.31 4h2.31z"/></svg>`
+            switch (type.toLowerCase()) {
+                case 'movie':
+                    icon = `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M17.998 7l2.31-4h.7c.548 0 .992.445.992.993v16.014a1 1 0 0 1-.992.993H2.992A.993.993 0 0 1 2 20.007V3.993A1 1 0 0 1 2.992 3h3.006l-2.31 4h2.31l2.31-4h3.69l-2.31 4h2.31l2.31-4h3.69l-2.31 4h2.31z"/></svg>`
                     break
-                    case 'tv series': 
-                        icon = `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M2 3.993A1 1 0 0 1 2.992 3h18.016c.548 0 .992.445.992.993v16.014a1 1 0 0 1-.992.993H2.992A.993.993 0 0 1 2 20.007V3.993zm8.622 4.422a.4.4 0 0 0-.622.332v6.506a.4.4 0 0 0 .622.332l4.879-3.252a.4.4 0 0 0 0-.666l-4.88-3.252z"/></svg>`
+                case 'tv series':
+                    icon = `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M2 3.993A1 1 0 0 1 2.992 3h18.016c.548 0 .992.445.992.993v16.014a1 1 0 0 1-.992.993H2.992A.993.993 0 0 1 2 20.007V3.993zm8.622 4.422a.4.4 0 0 0-.622.332v6.506a.4.4 0 0 0 .622.332l4.879-3.252a.4.4 0 0 0 0-.666l-4.88-3.252z"/></svg>`
                     break
-                    case 'video': 
-                        icon = `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M16 4a1 1 0 0 1 1 1v4.2l5.213-3.65a.5.5 0 0 1 .787.41v12.08a.5.5 0 0 1-.787.41L17 14.8V19a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h14zM7.4 8.829a.4.4 0 0 0-.392.32L7 9.228v5.542a.4.4 0 0 0 .542.374l.073-.036 4.355-2.772a.4.4 0 0 0 .063-.624l-.063-.05L7.615 8.89A.4.4 0 0 0 7.4 8.83z"/></svg>`
+                case 'video':
+                    icon = `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M16 4a1 1 0 0 1 1 1v4.2l5.213-3.65a.5.5 0 0 1 .787.41v12.08a.5.5 0 0 1-.787.41L17 14.8V19a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h14zM7.4 8.829a.4.4 0 0 0-.392.32L7 9.228v5.542a.4.4 0 0 0 .542.374l.073-.036 4.355-2.772a.4.4 0 0 0 .063-.624l-.063-.05L7.615 8.89A.4.4 0 0 0 7.4 8.83z"/></svg>`
                     break
-                    case 'music': 
-                        icon = `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M20 3v14a4 4 0 1 1-2-3.465V6H9v11a4 4 0 1 1-2-3.465V3h13z"/></svg>`
+                case 'music':
+                    icon = `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M20 3v14a4 4 0 1 1-2-3.465V6H9v11a4 4 0 1 1-2-3.465V3h13z"/></svg>`
                     break
-                    case 'software': 
-                        icon = `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M3 3h18a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm17 7H4v9h16v-9zm-5-4v2h4V6h-4z"/></svg>`
+                case 'software':
+                    icon = `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M3 3h18a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm17 7H4v9h16v-9zm-5-4v2h4V6h-4z"/></svg>`
                     break
-                    case 'game': 
-                        icon = `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M17 4a6 6 0 0 1 6 6v4a6 6 0 0 1-6 6H7a6 6 0 0 1-6-6v-4a6 6 0 0 1 6-6h10zm-7 5H8v2H6v2h1.999L8 15h2l-.001-2H12v-2h-2V9zm8 4h-2v2h2v-2zm-2-4h-2v2h2V9z"/></svg>`
+                case 'game':
+                    icon = `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M17 4a6 6 0 0 1 6 6v4a6 6 0 0 1-6 6H7a6 6 0 0 1-6-6v-4a6 6 0 0 1 6-6h10zm-7 5H8v2H6v2h1.999L8 15h2l-.001-2H12v-2h-2V9zm8 4h-2v2h2v-2zm-2-4h-2v2h2V9z"/></svg>`
                     break
-                    case 'image': 
-                        icon = `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M5 11.1l2-2 5.5 5.5 3.5-3.5 3 3V5H5v6.1zM4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm11.5 7a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/></svg>`
+                case 'image':
+                    icon = `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M5 11.1l2-2 5.5 5.5 3.5-3.5 3 3V5H5v6.1zM4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm11.5 7a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/></svg>`
                     break
-                    case 'audio': 
-                        icon = `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M16 2l5 5v14.008a.993.993 0 0 1-.993.992H3.993A1 1 0 0 1 3 21.008V2.992C3 2.444 3.445 2 3.993 2H16zm-5 10.05a2.5 2.5 0 1 0 2 2.45V10h3V8h-5v4.05z"/></svg>`
+                case 'audio':
+                    icon = `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M16 2l5 5v14.008a.993.993 0 0 1-.993.992H3.993A1 1 0 0 1 3 21.008V2.992C3 2.444 3.445 2 3.993 2H16zm-5 10.05a2.5 2.5 0 1 0 2 2.45V10h3V8h-5v4.05z"/></svg>`
                     break
-                    default : 
-                        icon = `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M16 2l5 5v14.008a.993.993 0 0 1-.993.992H3.993A1 1 0 0 1 3 21.008V2.992C3 2.444 3.445 2 3.993 2H16zm-5 13v2h2v-2h-2zm2-1.645A3.502 3.502 0 0 0 12 6.5a3.501 3.501 0 0 0-3.433 2.813l1.962.393A1.5 1.5 0 1 1 12 11.5a1 1 0 0 0-1 1V14h2v-.645z"/></svg>`
+                default:
+                    icon = `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M16 2l5 5v14.008a.993.993 0 0 1-.993.992H3.993A1 1 0 0 1 3 21.008V2.992C3 2.444 3.445 2 3.993 2H16zm-5 13v2h2v-2h-2zm2-1.645A3.502 3.502 0 0 0 12 6.5a3.501 3.501 0 0 0-3.433 2.813l1.962.393A1.5 1.5 0 1 1 12 11.5a1 1 0 0 0-1 1V14h2v-.645z"/></svg>`
                     break
-                }
-                return icon
+            }
+            return icon
         }
-        function renderTorrents(torrents){
+        function renderTorrents(torrents) {
             const torrentsFrag = document.createDocumentFragment()
             torrents.forEach(torrent => {
                 torrentsFrag.append(render.torrentCard(torrent))
             })
             return torrentsFrag
         }
-        async function showLatestTorrents(){
+        async function showLatestTorrents() {
             let allTorrents = await getTorrents()
             allTorrents = allTorrents.reverse().slice(0, 8)
             getRef('torrent_container').innerHTML = ``
             getRef('torrent_container').append(renderTorrents(allTorrents))
         }
 
-        getRef('search_torrent').addEventListener('keyup', async e => {
-            if(e.target.value.trim() !== '' && e.key === 'Enter'){
-                const searchKey = getRef('search_torrent').value.trim()
-                renderSearchResult(searchKey)
+        getRef('search_torrent').addEventListener('keydown', async e => {
+            if (e.target.value.trim() !== '') {
+                switch (e.key) {
+                    case 'Enter':
+                        const searchKey = getRef('search_torrent').value.trim()
+                        renderSearchResult(searchKey)
+                        break;
+                    case 'ArrowDown':
+                        e.preventDefault()
+                        getRef('search_suggestions').firstElementChild.focus()
+                        break;
+                }
             }
         })
+        getRef('search_suggestions').addEventListener('keydown', async e => {
+            switch (e.key) {
+                case 'ArrowUp':
+                    e.preventDefault()
+                    if (e.target.previousElementSibling)
+                        e.target.previousElementSibling.focus()
+                    else
+                        getRef('search_torrent').focusIn()
+                    break;
+                case 'ArrowDown':
+                    e.preventDefault()
+                    if (e.target.nextElementSibling)
+                        e.target.nextElementSibling.focus()
+                    break;
+            }
+        })
+        getRef('search_torrent').addEventListener('input', async e => {
+            const searchKey = getRef('search_torrent').value.trim()
+            renderSearchSuggestions(searchKey)
+        })
         getRef('advance_torrent_search').addEventListener('keyup', async e => {
-            if(e.target.value.trim() !== '' && e.key === 'Enter'){
+            if (e.target.value.trim() !== '' && e.key === 'Enter') {
                 const searchKey = getRef('advance_torrent_search').value.trim()
                 renderSearchResult(searchKey)
             }
         })
 
-        function getSearchParams(){
+        function getSearchParams() {
             const urlSearchParams = new URLSearchParams(window.location.search);
             const params = Object.fromEntries(urlSearchParams.entries());
             return params
@@ -917,10 +967,10 @@
             category: ''
         }
         let lastQuery = ''
-        
-        async function renderSearchResult(searchKey, shouldFilter = false){
-            if(lastQuery !== searchKey || shouldFilter){
-                if(shouldFilter){
+
+        async function renderSearchResult(searchKey, shouldFilter = false) {
+            if (lastQuery !== searchKey || shouldFilter) {
+                if (shouldFilter) {
                     searchKey = getRef('advance_torrent_search').value.trim() !== '' ? getRef('advance_torrent_search').value.trim() : lastQuery
                 }
                 advancedSearch['query'] = searchKey
@@ -931,7 +981,7 @@
                     useExtendedSearch: advancedSearch.isActive,
                 }
                 let result
-                if(advancedSearch.isActive){
+                if (advancedSearch.isActive) {
                     options.keys = ['type']
                     let fuseSearch = new Fuse(torrents, options)
                     result = fuseSearch.search(`'${advancedSearch.category}`).map(elem => elem.item)
@@ -939,25 +989,25 @@
                     fuseSearch = new Fuse(result, options)
                     result = fuseSearch.search(searchKey).map(elem => elem.item)
                 }
-                else{
+                else {
                     const fuseSearch = new Fuse(torrents, options)
                     result = fuseSearch.search(searchKey).map(elem => elem.item)
                 }
-                if(result.length){
+                if (result.length) {
                     getRef('result_for').innerHTML = `Showing results for <strong>${searchKey}</strong>`
                 }
-                else{
+                else {
                     getRef('result_for').innerHTML = `No results for <strong>${searchKey}</strong>`
                 }
                 getRef('search_result').innerHTML = ``
                 getRef('search_result').append(renderTorrents(result))
                 let params = ''
                 for (let prop in advancedSearch) {
-                    if(prop !== 'isActive' && advancedSearch[prop] && advancedSearch[prop] !== ''){
+                    if (prop !== 'isActive' && advancedSearch[prop] && advancedSearch[prop] !== '') {
                         params += `${prop}=${advancedSearch[prop]}&`
                     }
                 }
-                if(params.slice(-1) === '&'){
+                if (params.slice(-1) === '&') {
                     params = params.slice(0, -1)
                 }
                 history.pushState(null, null, `?${params}#search`)
@@ -966,13 +1016,13 @@
             }
         }
 
-        function showPage(target){
+        async function showPage(target) {
             let params = getSearchParams()
             let page = target.includes('#') ? target.split('#')[1] : target
-            switch(page){
+            switch (page) {
                 case 'search':
-                    if(params.query){
-                        if(params.category){
+                    if (params.query) {
+                        if (params.category) {
                             advancedSearch = {
                                 isActive: true,
                                 ...params
@@ -980,11 +1030,20 @@
                         }
                         renderSearchResult(params.query)
                     }
-                break
+                    break;
+                case 'torrent':
+                    currentTorrent = await getDataFromIDB(parseInt(params.id))
+                    const { id, name, description, tags, type = 'misc', size, uploader, startTx, filename, chunks } = currentTorrent
+                    getRef('torrent_type_icon').innerHTML = getIcon(type)
+                    getRef('torrent_name').textContent = name
+                    getRef('torrent_description').textContent = description
+                    getRef('torrent_tags').textContent = tags.split('/').join('•')
+                    getRef('torrent_uploader').textContent = `Uploaded by ${uploader}`
+                    break;
                 case 'browse':
                     const category = getRef('browse_category_selector').value
                     showCategoryTorrents(category)
-                break
+                    break;
                 default:
                     page = 'homepage'
                     showLatestTorrents()
@@ -996,14 +1055,14 @@
             showPage(window.location.hash)
         })
         getRef('advance_search_switch').addEventListener('change', e => {
-            if(e.detail.value){
+            if (e.detail.value) {
                 advancedSearch = {
                     isActive: true,
                     category: getRef('category_selector').value
                 }
                 getRef('advance_search_panel').classList.remove('hide-completely')
             }
-            else{
+            else {
                 advancedSearch.isActive = false
                 advancedSearch.category = ''
                 getRef('advance_search_panel').classList.add('hide-completely')
@@ -1016,8 +1075,15 @@
         getRef('browse_category_selector').addEventListener('change', e => {
             showCategoryTorrents(e.detail.value)
         })
-        
-        async function showCategoryTorrents(category){
+
+        function alphaIncSort(arr, prop) {
+            return arr.sort((a, b) => a[prop].localeCompare(b[prop]))
+        }
+        function alphaDecSort(arr, prop) {
+            return arr.sort((a, b) => b[prop].localeCompare(a[prop]))
+        }
+
+        async function showCategoryTorrents(category) {
             const torrents = await getDataFromIDB()
             const options = {
                 keys: ['type'],
@@ -1025,23 +1091,30 @@
             }
             const fuseSearch = new Fuse(torrents, options)
             const result = fuseSearch.search(category).map(elem => elem.item)
+
             getRef('browser_category_torrents').innerHTML = ``
-            getRef('browser_category_torrents').append(renderTorrents(result.slice(0,  20)))
-            
-            const paginationFrag = document.createDocumentFragment()
-            const pages = Math.round(result.length / 20)
-            for(let i = 0; i < pages; i++){
-                const pageButton = create('strip-option', {
-                    textContent : (i + 1)
-                })
-                pageButton.setAttribute('value', i)
-                if(i === 0){
-                    pageButton.setAttribute('selected', '')
-                }
-                paginationFrag.append(pageButton)
-            }
             getRef('page_selector').innerHTML = ''
-            getRef('page_selector').append(paginationFrag)
+
+            if (result.length) {
+                getRef('browser_category_torrents').append(renderTorrents(result.slice(0, 20)))
+
+                const paginationFrag = document.createDocumentFragment()
+                const pages = Math.round(result.length / 20)
+                for (let i = 0; i < pages; i++) {
+                    const pageButton = create('strip-option', {
+                        textContent: (i + 1)
+                    })
+                    pageButton.setAttribute('value', i)
+                    if (i === 0) {
+                        pageButton.setAttribute('selected', '')
+                    }
+                    paginationFrag.append(pageButton)
+                }
+                getRef('page_selector').append(paginationFrag)
+            }
+            else {
+                getRef('browser_category_torrents').innerHTML = `<h4 class="justify-center text-center">No ${category} torrents 😔</h4>`
+            }
         }
 
         getRef('page_selector').addEventListener('change', async e => {
@@ -1053,14 +1126,41 @@
             const fuseSearch = new Fuse(torrents, options)
             const category = getRef('browse_category_selector').value
             const result = fuseSearch.search(category).map(elem => elem.item)
-            
+
             const startIndex = parseInt(e.detail.value) * 20
             const endIndex = (parseInt(e.detail.value) * 20) + 20
 
-            getRef('browser_category_torrents').innerHTML = ``
-            getRef('browser_category_torrents').append(renderTorrents(result.slice(startIndex,  endIndex)))
-            getRef('browser_category_torrents').scrollIntoView({behavior: 'smooth', block: 'start'})
+            setTimeout(() => {
+                getRef('browser_category_torrents').scrollIntoView({ behavior: 'smooth', block: 'start' })
+                getRef('browser_category_torrents').innerHTML = ``
+                getRef('browser_category_torrents').append(renderTorrents(result.slice(startIndex, endIndex)))
+            }, 200);
         })
+
+        async function renderSearchSuggestions(searchKey) {
+            const torrents = await getDataFromIDB()
+            const options = {
+                keys: ['name', 'filename'],
+                threshold: 0.2,
+            }
+            const fuseSearch = new Fuse(torrents, options)
+            const result = fuseSearch.search(searchKey, { limit: 6 }).map(elem => elem.item)
+
+            getRef('search_suggestions').innerHTML = ``
+            if (result.length) {
+                const suggestionsFrag = document.createDocumentFragment()
+                result.forEach(elem => {
+                    const regEx = new RegExp(`(${searchKey})`, 'gi')
+                    const suggestion = create('a', {
+                        className: 'search-suggestion',
+                        innerHTML: elem.name.replace(regEx, `<span>${searchKey}</span>`),
+                    })
+                    suggestion.href = `?id=${elem.id}#torrent`
+                    suggestionsFrag.append(suggestion)
+                })
+                getRef('search_suggestions').append(suggestionsFrag)
+            }
+        }
     </script>
 </body>
 
