@@ -141,7 +141,7 @@
                                 <sm-option value="misc">Misc</sm-option>
                             </sm-select>
                         </div>
-                        <button onclick="renderSearchResult('', true)" class="button button--primary">Fliter</button>
+                        <button onclick="renderSearchResult('', true); pushParams();" class="button button--primary">Fliter</button>
                     </section>
                 </div>
             </section>
@@ -844,6 +844,12 @@
         window.addEventListener('load', e => {
             showPage(window.location.hash)
         })
+        window.addEventListener('hashchange', e => {
+            showPage(window.location.hash)
+        })
+        window.addEventListener('popstate', e => {
+            showPage(window.location.hash)
+        })
 
         let currentTorrent
         document.addEventListener('click', async e => {
@@ -927,6 +933,7 @@
                     case 'Enter':
                         const searchKey = getRef('search_torrent').value.trim()
                         renderSearchResult(searchKey)
+                        pushParams()
                         break;
                     case 'ArrowDown':
                         e.preventDefault()
@@ -961,6 +968,7 @@
             if (e.target.value.trim() !== '' && e.key === 'Enter') {
                 const searchKey = getRef('advance_torrent_search').value.trim()
                 renderSearchResult(searchKey)
+                pushParams()
             }
         })
 
@@ -970,15 +978,29 @@
             return params
         }
 
+        function pushParams() {
+            let params = ''
+            for (let prop in advancedSearch) {
+                if (prop !== 'isActive' && advancedSearch[prop] && advancedSearch[prop] !== '') {
+                    params += `${prop}=${advancedSearch[prop]}&`
+                }
+            }
+            if (params.slice(-1) === '&') {
+                params = params.slice(0, -1)
+            }
+            history.pushState(null, null, `?${params}#search`)
+        }
+
         let advancedSearch = {
             active: false,
             query: '',
             category: ''
         }
         let lastQuery = ''
+        let lastCategory = ''
 
         async function renderSearchResult(searchKey, shouldFilter = false) {
-            if (lastQuery !== searchKey || shouldFilter) {
+            if (lastQuery !== searchKey || shouldFilter || advancedSearch.category !== lastCategory) {
                 if (shouldFilter) {
                     searchKey = getRef('advance_torrent_search').value.trim() !== '' ? getRef('advance_torrent_search').value.trim() : lastQuery
                 }
@@ -986,8 +1008,7 @@
                 const torrents = await getDataFromIDB()
                 const options = {
                     keys: ['name', 'filename'],
-                    threshold: 0.3,
-                    useExtendedSearch: advancedSearch.isActive,
+                    threshold: 0.3
                 }
                 let result
                 if (advancedSearch.isActive) {
@@ -1010,18 +1031,10 @@
                 }
                 getRef('search_result').innerHTML = ``
                 getRef('search_result').append(renderTorrents(result))
-                let params = ''
-                for (let prop in advancedSearch) {
-                    if (prop !== 'isActive' && advancedSearch[prop] && advancedSearch[prop] !== '') {
-                        params += `${prop}=${advancedSearch[prop]}&`
-                    }
-                }
-                if (params.slice(-1) === '&') {
-                    params = params.slice(0, -1)
-                }
-                history.pushState(null, null, `?${params}#search`)
-                showPage('search')
+
                 lastQuery = searchKey
+                lastCategory = advancedSearch.category
+                showPage('search')
             }
         }
 
@@ -1036,6 +1049,13 @@
                                 isActive: true,
                                 ...params
                             }
+                            getRef('advance_search_switch').checked = true
+                            getRef('advance_search_panel').classList.remove('hide-completely')
+                        }
+                        else{
+                            advancedSearch.category = 'movie'
+                            getRef('advance_search_switch').checked = false
+                            getRef('advance_search_panel').classList.add('hide-completely')
                         }
                         renderSearchResult(params.query)
                     }
@@ -1061,9 +1081,6 @@
             document.querySelector('.page:not(.hide-completely)')?.classList.add('hide-completely')
             getRef(page).classList.remove('hide-completely')
         }
-        window.addEventListener('hashchange', e => {
-            showPage(window.location.hash)
-        })
         getRef('advance_search_switch').addEventListener('change', e => {
             if (e.detail.value) {
                 advancedSearch = {
@@ -1138,7 +1155,7 @@
             const result = fuseSearch.search(category).map(elem => elem.item)
 
             const startIndex = parseInt(e.detail.value) * 20
-            const endIndex = (parseInt(e.detail.value) * 20) + 20
+            const endIndex = ((parseInt(e.detail.value) * 20) + 30) < result.length ? (parseInt(e.detail.value) * 20) + 20 : result.length
 
             setTimeout(() => {
                 getRef('browser_category_torrents').scrollIntoView({ behavior: 'smooth', block: 'start' })
