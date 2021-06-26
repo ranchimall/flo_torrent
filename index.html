@@ -942,7 +942,7 @@
                 advancedSearch['query'] = searchKey
                 const torrents = await getDataFromIDB()
                 const options = {
-                    keys: ['name', 'filename'],
+                    keys: ['name', 'filename', 'tags'],
                     threshold: 0.3
                 }
                 let result
@@ -950,7 +950,7 @@
                     options.keys = ['type']
                     let fuseSearch = new Fuse(torrents, options)
                     result = fuseSearch.search(`'${advancedSearch.category}`).map(elem => elem.item)
-                    options.keys = ['name', 'filename']
+                    options.keys = ['name', 'filename', 'tags']
                     fuseSearch = new Fuse(result, options)
                     result = fuseSearch.search(searchKey).map(elem => elem.item)
                 }
