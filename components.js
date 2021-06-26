@@ -1725,6 +1725,17 @@ customElements.define('strip-select', class extends HTMLElement{
             behavior: 'smooth'
         })
     }
+    fireEvent = () => {
+        this.dispatchEvent(
+            new CustomEvent("change", {
+                bubbles: true,
+                composed: true,
+                detail: {
+                    value: this._value
+                }
+            })
+        )
+    }
     connectedCallback() {
         const slot = this.shadowRoot.querySelector('slot')
         const coverLeft = this.shadowRoot.querySelector('.cover--left')
@@ -1749,12 +1760,13 @@ customElements.define('strip-select', class extends HTMLElement{
                 coverRight.classList.add('hide')
             }
         })
-        this.stripSelect.addEventListener('change', e => {
+        this.stripSelect.addEventListener('option-clicked', e => {
             if (this._value !== e.target.value) {
                 this._value = e.target.value
                 slot.assignedElements().forEach(elem => elem.removeAttribute('active'))
                 e.target.setAttribute('active', '')
-                e.target.scrollIntoView({behavior: "smooth", block: "nearest", inline: "center"})
+                e.target.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" })
+                this.fireEvent()
             }
         })
         const firstOptionObserver = new IntersectionObserver(entries => {
@@ -1818,11 +1830,13 @@ stripOption.innerHTML = `
         border-radius: var(--border-radius);
         padding: 0.5rem 0.8rem;
         -webkit-tap-highlight-color: transparent;
-
     }
     :host([active]) .strip-option{
         color: var(--active-option-color);
         background-color: var(--active-option-backgroud-color);
+    }
+    :host(:hover:not([active])) .strip-option{
+        background-color: rgba(var(--text-color), 0.06);
     }
 </style>
 <label class="strip-option" tabindex="0">
@@ -1845,7 +1859,7 @@ customElements.define('strip-option', class extends HTMLElement{
     }
     fireEvent = () => {
         this.dispatchEvent(
-            new CustomEvent("change", {
+            new CustomEvent("option-clicked", {
                 bubbles: true,
                 composed: true,
                 detail: {

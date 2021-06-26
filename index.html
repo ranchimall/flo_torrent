@@ -55,7 +55,8 @@
                 <path
                     d="M1.62,14.75H12.36A1.62,1.62,0,0,0,14,13.13V4.3a1.63,1.63,0,0,0-1.62-1.62H7.47a1.6,1.6,0,0,0-1.35.73L.27,12.24A1.62,1.62,0,0,0,1.62,14.75Z" />
             </svg>
-            <h4 class="app-name">FLO Torrent</h4>
+            <h4>FLO Torrent</h4>
+            <p>Getting torrents from FLO blockchain</p>
         </section>
         <section id="homepage" class="page hide-completely">
             <section id="search_section" class="page-layout">
@@ -166,14 +167,14 @@
                 <h1 class="page__title">Browse</h1>
                 <strip-select id="browse_category_selector">
                     <strip-option value="movie" selected>Movie</strip-option>
-                    <strip-option value="tv series">TV series</strip-option>
+<!--                     <strip-option value="tv series">TV series</strip-option>
                     <strip-option value="video">Video</strip-option>
                     <strip-option value="music">Music</strip-option>
                     <strip-option value="software">Software</strip-option>
                     <strip-option value="game">Game</strip-option>
                     <strip-option value="image">Image</strip-option>
                     <strip-option value="audio">Audio</strip-option>
-                    <strip-option value="misc">Misc</strip-option>
+                    <strip-option value="misc">Misc</strip-option> -->
                 </strip-select>
             </section>
             <section id="browser_category_torrents" class="torrent-container"></section>
@@ -947,7 +948,7 @@
                     result = await getFilteredTorrents(['name', 'filename', 'tags'], searchKey, {torrents: result})
                 }
                 else {
-                    result = getFilteredTorrents(['name', 'filename', 'tags'], searchKey)
+                    result = await getFilteredTorrents(['name', 'filename', 'tags'], searchKey)
                 }
                 if (result.length) {
                     getRef('result_for').innerHTML = `Showing results for <strong>${searchKey}</strong>`
@@ -955,8 +956,6 @@
                 else {
                     getRef('result_for').innerHTML = `No results for <strong>${searchKey}</strong>`
                 }
-
-                console.log(result.length, result.length/20)
 
                 getRef('search_result').innerHTML = ``
                 getRef('search_page_selector').innerHTML = ``
@@ -1014,7 +1013,7 @@
                     break;
                 default:
                     page = 'homepage'
-                    history.replaceState(null, null, '#homepage')
+                    history.replaceState(null, null, ' ')
                     let allTorrents = await getDataFromIDB()
                     allTorrents = allTorrents.reverse().slice(0, 8)
                     getRef('torrent_container').innerHTML = ``
@@ -1032,7 +1031,6 @@
         }
 
         async function getFilteredTorrents(keys, searchKey, options = {}){
-            console.log(options)
             let {limit, torrents} = options
             if(!torrents){
                 torrents = await getDataFromIDB()
