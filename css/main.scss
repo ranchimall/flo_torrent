@@ -592,7 +592,8 @@ sm-option{
     font-size: 0.9rem;
 }
 
-#page_selector{
+#page_selector,
+#search_page_selector{
     strip-option{
         --border-radius: 0.3rem;
         --active-option-color: white;

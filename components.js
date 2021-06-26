@@ -1712,17 +1712,6 @@ customElements.define('strip-select', class extends HTMLElement{
     get value() {
         return this._value
     }
-    fireEvent = () => {
-        this.dispatchEvent(
-            new CustomEvent("change", {
-                bubbles: true,
-                composed: true,
-                detail: {
-                    value: this.value
-                }
-            })
-        )
-    }
     scrollLeft = () => {
         this.stripSelect.scrollBy({
             left: -this.scrollDistance,
@@ -1766,7 +1755,6 @@ customElements.define('strip-select', class extends HTMLElement{
                 slot.assignedElements().forEach(elem => elem.removeAttribute('active'))
                 e.target.setAttribute('active', '')
                 e.target.scrollIntoView({behavior: "smooth", block: "nearest", inline: "center"})
-                this.fireEvent()
             }
         })
         const firstOptionObserver = new IntersectionObserver(entries => {

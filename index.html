@@ -159,6 +159,7 @@
             </section>
             <div id="result_for"></div>
             <section id="search_result" class="torrent-container"></section>
+            <strip-select id="search_page_selector"></strip-select>
         </section>
         <section id="browse" class="hide-completely page page-layout">
             <section class="flex direction-column">
@@ -940,23 +941,13 @@
                     searchKey = getRef('advance_torrent_search').value.trim() !== '' ? getRef('advance_torrent_search').value.trim() : lastQuery
                 }
                 advancedSearch['query'] = searchKey
-                const torrents = await getDataFromIDB()
-                const options = {
-                    keys: ['name', 'filename', 'tags'],
-                    threshold: 0.3
-                }
                 let result
                 if (advancedSearch.isActive) {
-                    options.keys = ['type']
-                    let fuseSearch = new Fuse(torrents, options)
-                    result = fuseSearch.search(`'${advancedSearch.category}`).map(elem => elem.item)
-                    options.keys = ['name', 'filename', 'tags']
-                    fuseSearch = new Fuse(result, options)
-                    result = fuseSearch.search(searchKey).map(elem => elem.item)
+                    result = await getFilteredTorrents(['type'], advancedSearch.category)
+                    result = await getFilteredTorrents(['name', 'filename', 'tags'], searchKey, {torrents: result})
                 }
                 else {
-                    const fuseSearch = new Fuse(torrents, options)
-                    result = fuseSearch.search(searchKey).map(elem => elem.item)
+                    result = getFilteredTorrents(['name', 'filename', 'tags'], searchKey)
                 }
                 if (result.length) {
                     getRef('result_for').innerHTML = `Showing results for <strong>${searchKey}</strong>`
@@ -964,8 +955,19 @@
                 else {
                     getRef('result_for').innerHTML = `No results for <strong>${searchKey}</strong>`
                 }
+
+                console.log(result.length, result.length/20)
+
                 getRef('search_result').innerHTML = ``
-                getRef('search_result').append(renderTorrents(result))
+                getRef('search_page_selector').innerHTML = ``
+                if(result.length > 20){
+                    const pages = Math.round(result.length / 20)
+                    getRef('search_page_selector').append(createPageButtons(pages))
+                    getRef('search_result').append(renderTorrents(result.slice(0, 20)))
+                }
+                else{
+                    getRef('search_result').append(renderTorrents(result))
+                }
 
                 lastQuery = searchKey
                 lastCategory = advancedSearch.category
@@ -1029,14 +1031,33 @@
             return arr.sort((a, b) => b[prop].localeCompare(a[prop]))
         }
 
-        async function getFilteredTorrents(keys, searchKey, limit = undefined){
-            const torrents = await getDataFromIDB()
-            const options = {
+        async function getFilteredTorrents(keys, searchKey, options = {}){
+            console.log(options)
+            let {limit, torrents} = options
+            if(!torrents){
+                torrents = await getDataFromIDB()
+            }
+            const config = {
                 keys,
                 threshold: 0.2,
             }
-            const fuseSearch = new Fuse(torrents, options)
+            const fuseSearch = new Fuse(torrents, config)
             return fuseSearch.search(searchKey, {limit}).map(elem => elem.item)
+        }
+
+        function createPageButtons(pages){
+            const paginationFrag = document.createDocumentFragment()
+            for (let i = 0; i < pages; i++) {
+                    const pageButton = create('strip-option', {
+                        textContent: (i + 1)
+                    })
+                    pageButton.setAttribute('value', i)
+                    if (i === 0) {
+                        pageButton.setAttribute('selected', '')
+                    }
+                    paginationFrag.append(pageButton)
+                }
+            return paginationFrag
         }
 
         async function showCategoryTorrents(category) {
@@ -1047,19 +1068,8 @@
             if (result.length) {
                 getRef('browser_category_torrents').append(renderTorrents(result.slice(0, 20)))
 
-                const paginationFrag = document.createDocumentFragment()
                 const pages = Math.round(result.length / 20)
-                for (let i = 0; i < pages; i++) {
-                    const pageButton = create('strip-option', {
-                        textContent: (i + 1)
-                    })
-                    pageButton.setAttribute('value', i)
-                    if (i === 0) {
-                        pageButton.setAttribute('selected', '')
-                    }
-                    paginationFrag.append(pageButton)
-                }
-                getRef('page_selector').append(paginationFrag)
+                getRef('page_selector').append(createPageButtons(pages))
             }
             else {
                 getRef('browser_category_torrents').innerHTML = `<h4 class="justify-center text-center">No ${category} torrents 😔</h4>`
@@ -1067,7 +1077,7 @@
         }
 
         async function renderSearchSuggestions(searchKey, advance = false) {
-            const result = await getFilteredTorrents(['name', 'filename'], searchKey, limit = 6)
+            const result = await getFilteredTorrents(['name', 'filename'], searchKey, {limit: 6})
             if(advance){
                 getRef('advance_search_suggestions').innerHTML = ``
             }
@@ -1218,6 +1228,18 @@
                 getRef('browser_category_torrents').scrollIntoView({ behavior: 'smooth', block: 'start' })
                 getRef('browser_category_torrents').innerHTML = ``
                 getRef('browser_category_torrents').append(renderTorrents(result.slice(startIndex, endIndex)))
+            }, 200);
+        })
+        getRef('search_page_selector').addEventListener('change', async e => {
+            const result = await getFilteredTorrents(['name', 'filename', 'tags'], lastQuery)
+            console.log(result.length , result.length/20)
+            const startIndex = parseInt(e.detail.value) * 20
+            const endIndex = ((parseInt(e.detail.value) * 20) + 30) < result.length ? (parseInt(e.detail.value) * 20) + 20 : result.length
+
+            setTimeout(() => {
+                getRef('search_result').scrollIntoView({ behavior: 'smooth', block: 'start' })
+                getRef('search_result').innerHTML = ``
+                getRef('search_result').append(renderTorrents(result.slice(startIndex, endIndex)))
             }, 200);
         })
     </script>
