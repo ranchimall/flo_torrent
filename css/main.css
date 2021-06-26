@@ -403,6 +403,24 @@ ul {
   width: 3rem;
 }
 
+.app-icon-loader {
+  fill: none;
+  stroke-width: 2;
+  justify-self: center;
+  stroke-dasharray: 202;
+  margin: 2rem 0;
+  stroke: rgba(var(--text-color), 1);
+  animation: stroke-anim 2s infinite alternate;
+}
+
+@keyframes stroke-anim {
+  0% {
+    stroke-dashoffset: 202;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
 .app-name {
   font-weight: 500;
   margin-bottom: 1rem;

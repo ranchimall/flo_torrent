@@ -1640,16 +1640,16 @@ stripSelect.innerHTML = `
     .cover{
         position: absolute;
         z-index: 1;
-        width: 4rem;
+        width: 5rem;
         height: 100%;
         pointer-events: none;
     }
     .cover--left{
-        background: linear-gradient(90deg, var(--background-color), transparent);
+        background: linear-gradient(90deg, var(--background-color) 60%, transparent);
     }
     .cover--right{
         right: 0;
-        background: linear-gradient(90deg, transparent, var(--background-color));
+        background: linear-gradient(90deg, transparent 0%, var(--background-color) 40%);
     }
     .nav-button--right::before{
         background-color: red;
