@@ -413,11 +413,6 @@ ul {
 .search-container {
   position: relative;
   margin-bottom: 1rem;
-  justify-self: center;
-  width: min(28rem, 100%);
-}
-
-#advance_torrent_search {
   width: min(28rem, 100%);
 }
 
@@ -430,7 +425,7 @@ ul {
   fill: rgba(var(--text-color), 0.7);
 }
 
-#search_suggestions {
+.search-suggestions-container {
   top: 100%;
   position: absolute;
   z-index: 1;
@@ -440,7 +435,7 @@ ul {
   box-shadow: 0 0.5rem 1rem -0.5rem rgba(0, 0, 0, 0.2);
   background-color: rgba(var(--foreground-color), 1);
 }
-#search_suggestions:not(:empty) {
+.search-suggestions-container:not(:empty) {
   padding: 0.5rem 0;
 }
 

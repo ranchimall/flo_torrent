@@ -355,10 +355,6 @@ ul{
 .search-container{
     position: relative;
     margin-bottom: 1rem;
-    justify-self: center;
-    width: min(28rem, 100%);
-}
-#advance_torrent_search{
     width: min(28rem, 100%);
 }
 .search-torrent{
@@ -369,7 +365,7 @@ ul{
         fill: rgba(var(--text-color), 0.7);
     }
 }
-#search_suggestions{
+.search-suggestions-container{
     top: 100%;
     position: absolute;
     z-index: 1;

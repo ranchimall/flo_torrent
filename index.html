@@ -58,7 +58,7 @@
                 </svg>
                 <h4 class="app-name">FLO Torrent</h4>
                 <section class="search-container">
-                    <sm-input id="search_torrent" class="search-torrent" placeholder="Search">
+                    <sm-input id="search_torrent" class="search-torrent" type="search" placeholder="Search">
                         <svg class="icon" slot="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
                             height="24">
                             <path fill="none" d="M0 0h24v24H0z" />
@@ -66,7 +66,7 @@
                                 d="M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z" />
                         </svg>
                     </sm-input>
-                    <section id="search_suggestions"></section>
+                    <section id="search_suggestions" class="search-suggestions-container"></section>
                 </section>
             </section>
             <section class="page-layout">
@@ -112,14 +112,17 @@
             <section id="advance_search_section" class="grid gap-1 auto-grid-2">
                 <div class="grid gap-1">
                     <h1 class="page__title">Search</h1>
-                    <sm-input id="advance_torrent_search" class="search-torrent">
-                        <svg class="icon" slot="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
-                            height="24">
-                            <path fill="none" d="M0 0h24v24H0z" />
-                            <path
-                                d="M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z" />
-                        </svg>
-                    </sm-input>
+                    <section class="search-container">
+                        <sm-input id="advance_torrent_search" class="search-torrent" type="search">
+                            <svg class="icon" slot="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+                                height="24">
+                                <path fill="none" d="M0 0h24v24H0z" />
+                                <path
+                                    d="M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z" />
+                            </svg>
+                        </sm-input>
+                        <section id="advance_search_suggestions" class="search-suggestions-container"></section>
+                    </section>
                 </div>
                 <div class="grid gap-1">
                     <sm-switch id="advance_search_switch">
@@ -1061,10 +1064,14 @@
             }
         }
 
-        async function renderSearchSuggestions(searchKey) {
+        async function renderSearchSuggestions(searchKey, advance = false) {
             const result = await getFilteredTorrents(['name', 'filename'], searchKey, limit = 6)
-
-            getRef('search_suggestions').innerHTML = ``
+            if(advance){
+                getRef('advance_search_suggestions').innerHTML = ``
+            }
+            else{
+                getRef('search_suggestions').innerHTML = ``
+            }
             if (result.length) {
                 const suggestionsFrag = document.createDocumentFragment()
                 result.forEach(elem => {
@@ -1079,7 +1086,12 @@
                     suggestion.href = `?id=${elem.id}#torrent`
                     suggestionsFrag.append(suggestion)
                 })
-                getRef('search_suggestions').append(suggestionsFrag)
+                if(advance){
+                    getRef('advance_search_suggestions').append(suggestionsFrag)
+                }
+                else{
+                    getRef('search_suggestions').append(suggestionsFrag)
+                }
             }
         }
 
@@ -1120,14 +1132,17 @@
                 }
             }
         })
-        getRef('search_suggestions').addEventListener('keydown', async e => {
+        getRef('search_suggestions').addEventListener('keydown', handleKeyboardNav)
+        getRef('advance_search_suggestions').addEventListener('keydown', handleKeyboardNav)
+
+        function handleKeyboardNav(e){
             switch (e.key) {
                 case 'ArrowUp':
                     e.preventDefault()
                     if (e.target.previousElementSibling)
                         e.target.previousElementSibling.focus()
                     else
-                        getRef('search_torrent').focusIn()
+                        e.target.parentNode.previousElementSibling.focusIn()
                     break;
                 case 'ArrowDown':
                     e.preventDefault()
@@ -1135,18 +1150,32 @@
                         e.target.nextElementSibling.focus()
                     break;
             }
-        })
+        }
         getRef('search_torrent').addEventListener('input', async e => {
             throttle(() => {
                 const searchKey = getRef('search_torrent').value.trim()
                 renderSearchSuggestions(searchKey)
             }, 100)
         })
-        getRef('advance_torrent_search').addEventListener('keyup', async e => {
-            if (e.target.value.trim() !== '' && e.key === 'Enter') {
+        getRef('advance_torrent_search').addEventListener('input', async e => {
+            throttle(() => {
                 const searchKey = getRef('advance_torrent_search').value.trim()
-                renderSearchResult(searchKey)
-                pushParams()
+                renderSearchSuggestions(searchKey, true)
+            }, 100)
+        })
+        getRef('advance_torrent_search').addEventListener('keyup', async e => {
+            if (e.target.value.trim() !== '') {
+                switch (e.key) {
+                    case 'Enter':
+                        const searchKey = getRef('search_torrent').value.trim()
+                        renderSearchResult(searchKey)
+                        pushParams()
+                        break;
+                    case 'ArrowDown':
+                        e.preventDefault()
+                        getRef('advance_search_suggestions').firstElementChild.focus()
+                        break;
+                }
             }
         })
         getRef('advance_search_switch').addEventListener('change', e => {
