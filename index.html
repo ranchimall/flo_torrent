@@ -1067,7 +1067,7 @@
         }
 
         async function renderSearchSuggestions(searchKey, advance = false) {
-            const result = await getFilteredTorrents(['name', 'filename', 'tags'], searchKey, limit = 6)
+            const result = await getFilteredTorrents(['name', 'filename'], searchKey, limit = 6)
             if(advance){
                 getRef('advance_search_suggestions').innerHTML = ``
             }
