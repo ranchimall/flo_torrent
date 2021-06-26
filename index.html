@@ -1171,11 +1171,11 @@
                 renderSearchSuggestions(searchKey, true)
             }, 100)
         })
-        getRef('advance_torrent_search').addEventListener('keyup', async e => {
+        getRef('advance_torrent_search').addEventListener('keydown', async e => {
             if (e.target.value.trim() !== '') {
                 switch (e.key) {
                     case 'Enter':
-                        const searchKey = getRef('search_torrent').value.trim()
+                        const searchKey = e.target.value.trim()
                         renderSearchResult(searchKey)
                         pushParams()
                         break;
