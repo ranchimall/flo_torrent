@@ -1,3 +1,4 @@
+/*jshint esversion: 6 */
 //Button
 const smButton = document.createElement('template')
 smButton.innerHTML = `
@@ -1707,7 +1708,7 @@ customElements.define('strip-select', class extends HTMLElement{
         this.stripSelect = this.shadowRoot.querySelector('.strip-select')
         this.slottedOptions
         this._value
-        this.scrollDistance = 300
+        this.scrollDistance
     }
     get value() {
         return this._value
@@ -1743,13 +1744,14 @@ customElements.define('strip-select', class extends HTMLElement{
         const navButtonLeft = this.shadowRoot.querySelector('.nav-button--left')
         const navButtonRight = this.shadowRoot.querySelector('.nav-button--right')
         slot.addEventListener('slotchange', e => {
-            slot.assignedElements().forEach(elem => {
+            const assignedElements = slot.assignedElements()
+            assignedElements.forEach(elem => {
                 if (elem.hasAttribute('selected')) {
                     elem.setAttribute('active', '')
                     this._value = elem.value
                 }
             })
-            if (slot.assignedElements().length) {
+            if (assignedElements.length > 0) {
                 firstOptionObserver.observe(slot.assignedElements()[0])
                 lastOptionObserver.observe(slot.assignedElements()[slot.assignedElements().length - 1])
             }
@@ -1758,8 +1760,23 @@ customElements.define('strip-select', class extends HTMLElement{
                 navButtonRight.classList.add('hide')
                 coverLeft.classList.add('hide')
                 coverRight.classList.add('hide')
+                firstOptionObserver.disconnect()
+                lastOptionObserver.disconnect()
             }
         })
+        const resObs = new ResizeObserver(entries => {
+            entries.forEach(entry => {
+                if(entry.contentBoxSize) {
+                    // Firefox implements `contentBoxSize` as a single content rect, rather than an array
+                    const contentBoxSize = Array.isArray(entry.contentBoxSize) ? entry.contentBoxSize[0] : entry.contentBoxSize;
+                    
+                    this.scrollDistance = contentBoxSize.inlineSize * 0.6
+                } else {
+                    this.scrollDistance = entry.contentRect.width * 0.6
+                  }
+            })
+        })
+        resObs.observe(this)
         this.stripSelect.addEventListener('option-clicked', e => {
             if (this._value !== e.target.value) {
                 this._value = e.target.value
@@ -1782,7 +1799,8 @@ customElements.define('strip-select', class extends HTMLElement{
             })
         },
         {
-            threshold: 0.9
+            threshold: 0.9,
+            root: this
         })
         const lastOptionObserver = new IntersectionObserver(entries => {
             entries.forEach(entry => {
@@ -1797,7 +1815,8 @@ customElements.define('strip-select', class extends HTMLElement{
             })
         },
         {
-            threshold: 0.9
+            threshold: 0.9,
+            root: this
         })
         navButtonLeft.addEventListener('click', this.scrollLeft)
         navButtonRight.addEventListener('click', this.scrollRight)
@@ -1827,8 +1846,9 @@ stripOption.innerHTML = `
         flex-shrink: 0;
         cursor: pointer;
         white-space: nowrap;
-        border-radius: var(--border-radius);
         padding: 0.5rem 0.8rem;
+        transition: background 0.3s;
+        border-radius: var(--border-radius);
         -webkit-tap-highlight-color: transparent;
     }
     :host([active]) .strip-option{
@@ -1868,16 +1888,19 @@ customElements.define('strip-option', class extends HTMLElement{
             })
         )
     }
+    handleKeyDown = (e) => {
+        if (e.key === 'Enter' || e.key === 'Space') {
+            this.fireEvent()
+        }
+    }
     connectedCallback() {
         this._value = this.getAttribute('value')
-        this.addEventListener('click', e => {
-            this.fireEvent()
-        })
-        this.addEventListener('keyup', e => {
-            if (e.key === 'Enter' || e.key === 'Space') {
-                this.fireEvent()
-            }
-        })
+        this.addEventListener('click', this.fireEvent)
+        this.addEventListener('keydown', this.handleKeyDown)
+    }
+    disconnectedCallback() {
+        this.removeEventListener('click', this.fireEvent)
+        this.removeEventListener('keydown', this.handleKeyDown)
     }
 })
 

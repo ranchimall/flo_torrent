@@ -8,7 +8,8 @@
     <title>FLO Torrent</title>
     <link rel="shortcut icon" href="flo-torrent.png" type="image/png">
     <link rel="stylesheet" href="css/main.min.css">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..900&display=swap" rel="stylesheet">
 </head>
 
@@ -25,13 +26,30 @@
             <sm-button variant="no-outline" class="submit-btn">OK</button>
         </div>
     </sm-popup>
+    <sm-popup id="filter_popup">
+        <header class="popup__header" slot="header">
+            <button class="popup__header__close" onclick="getRef('filter_popup').hide()">
+                <svg class="icon close-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z"/></svg>
+            </button>
+            <h3>Filter</h3>
+        </header>
+        <form id="filter_form" onsubmit="return false">
+            <h4>Category</h4>
+            <section id="category_selector" class="option-selector"></section>
+            <div class="flex gap-1">
+                <button class="justify-right" onclick="resetFilter()">Clear</button>
+                <button onclick="addFilter()" class="button button--primary">Fliter</button>
+            </div>
+        </form>
+    </section>
+    </sm-popup>
     <header id="main_header">
         <div class="flex align-center">
             <svg id="main_header__logo" class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path
                     d="M20.46,21.32C20,19.78,18.6,18.59,15.3,17a12.67,12.67,0,0,1-2.64-1.56,4.27,4.27,0,0,1-.79-1,2.6,2.6,0,0,1,0-1.41c.24-.68.49-1,2.43-2.85a7.18,7.18,0,0,0,2.09-2.92,4.25,4.25,0,0,0,0-1.77,6.52,6.52,0,0,0-2.85-3.11c-.56-.36-.81-.4-.81-.15a2.33,2.33,0,0,1-.18.45L12.4,3l-.53-.36c-.28-.21-.64-.41-.77-.49s-.46-.11-.46,0a6.21,6.21,0,0,1-.37.83s-.08,0-.17-.08c-1.15-.83-1.64-1-1.64-.73A7.33,7.33,0,0,1,7.7,3.65C6.48,5.68,5.24,6.7,4,6.7c-.56,0-.54,0-.37.64s.2.58.68.43a3.37,3.37,0,0,0,1.09-.54.86.86,0,0,1,.3-.17,1.34,1.34,0,0,1,.13.39.79.79,0,0,0,.17.4A3.5,3.5,0,0,0,7.37,7.3L7.8,7l.09.34c.12.45.19.51.62.39a4.25,4.25,0,0,0,2.17-1.54l.38-.45,0,.39A5.92,5.92,0,0,1,8.89,9.54L7.67,10.71c-2,1.93-1.89,3.51.37,5a27.41,27.41,0,0,0,2.89,1.51c.17.07.62.32,1,.54C14,19,15,20.23,15,21.48a2,2,0,0,0,0,.49h0c0,.05,0,.05.56-.1a1.89,1.89,0,0,0,.53-.21,2.41,2.41,0,0,0-.34-1.15,7.05,7.05,0,0,0-1.68-1.77,21.91,21.91,0,0,0-3.2-1.83A9.53,9.53,0,0,1,8.16,15.2a2.18,2.18,0,0,1-.74-1.55C7.42,12.79,7.86,12,9,11c1.77-1.64,2.45-2.45,2.92-3.55a2.28,2.28,0,0,0,.26-1.26A2,2,0,0,0,12,5.06l-.2-.45L12,4.3l.28-.49.09-.18L12.6,4a3.69,3.69,0,0,1,.61,1.76A3.47,3.47,0,0,1,12.94,7l-.09.25s-.21.37-.41.69A17.78,17.78,0,0,1,9.91,10.6c-1.07,1-1.43,1.62-1.47,2.47a2.05,2.05,0,0,0,.7,1.73,10.47,10.47,0,0,0,3.28,2.08c2.28,1.13,3.26,1.81,4,2.73a2.94,2.94,0,0,1,.74,1.75,1.26,1.26,0,0,0,.09.57.48.48,0,0,0,.26,0l.51-.13.29-.08,0-.28c-.13-1-1-2-2.47-3a25.52,25.52,0,0,0-3.26-1.77,8.59,8.59,0,0,1-2.23-1.43,2.09,2.09,0,0,1-.5-2.62c.26-.53.5-.83,2.35-2.6,1.51-1.45,2.15-2.58,2.15-3.79A3.67,3.67,0,0,0,13,3.48a3,3,0,0,1-.4-.42A1.85,1.85,0,0,1,13,2.33a6.74,6.74,0,0,1,1.83,1.73,2.62,2.62,0,0,1,.47,1.68,3,3,0,0,1-.55,1.84c-.45.78-.79,1.14-2.67,2.93a5.56,5.56,0,0,0-1.3,1.64,1.77,1.77,0,0,0-.21,1,1.76,1.76,0,0,0,.19.92,6.28,6.28,0,0,0,2.9,2.34,21.6,21.6,0,0,1,3.66,2c1.35,1,2,2,2,3a1.06,1.06,0,0,0,.05.47,2.83,2.83,0,0,0,1-.24C20.56,21.68,20.56,21.66,20.46,21.32ZM7.29,6.4h0a2.23,2.23,0,0,1-.9.28L6,6.72l.43-.53a15.22,15.22,0,0,0,1.89-3,3.52,3.52,0,0,1,.38-.67c.07-.08.49.2,1,.64l.39.35L9.66,4A6.7,6.7,0,0,1,7.29,6.4Zm3.58-1.11A5.8,5.8,0,0,1,9.25,6.51h0a3.3,3.3,0,0,1-.74.17l-.35,0,.39-.49a15.64,15.64,0,0,0,1.32-2,4.63,4.63,0,0,1,.28-.49c.06-.08.33.26.57.77l.28.57Zm1-1.4a1.63,1.63,0,0,1-.28.4A6.63,6.63,0,0,1,11,3.72l-.53-.56.12-.29c.2-.49.24-.51.64-.19a5.57,5.57,0,0,1,.85.78A2.78,2.78,0,0,1,11.87,3.89Z" />
             </svg>
-            <a href="" class="header__company-name">RanchiMall</a>
+            <a href="./index.html" class="header__company-name">RanchiMall</a>
         </div>
         <label class="theme-switcher" title="Change theme">
             <input id="theme_switcher" class="theme-switcher__checkbox" type="checkbox">
@@ -103,13 +121,17 @@
                     <h1 id="torrent_name"></h1>
                     <p id="torrent_description"></p>
                     <h5 id="torrent_uploader"></h5>
+                    <a id="torrent_index_tx" target="_blank" class="flex align-center">
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M10 6v2H5v11h11v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6zm11-3v8h-2V6.413l-7.793 7.794-1.414-1.414L17.585 5H13V3h8z"/></svg>
+                        See the index entry in blockchain
+                    </a>
                     <div id="download_container">
                         <button id="torrent_download_button"
                             onclick="downloadTorrent(currentTorrent.filename, currentTorrent.startTx, currentTorrent.chunks, currentTorrent.id, true)">
                             <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                                 <path fill="none" d="M0 0h24v24H0z" />
                                 <path
-                                    d="M16 2l5 5v14.008a.993.993 0 0 1-.993.992H3.993A1 1 0 0 1 3 21.008V2.992C3 2.444 3.445 2 3.993 2H16zm-3 10V8h-2v4H8l4 4 4-4h-3z" />
+                                d="M16 2l5 5v14.008a.993.993 0 0 1-.993.992H3.993A1 1 0 0 1 3 21.008V2.992C3 2.444 3.445 2 3.993 2H16zm-3 10V8h-2v4H8l4 4 4-4h-3z" />
                             </svg>
                             Get torrent
                         </button>
@@ -119,46 +141,27 @@
             </section>
         </section>
         <section id="search" class="page hide-completely page-layout">
-            <section id="advance_search_section" class="grid gap-1 auto-grid-2">
-                <div class="grid gap-1">
-                    <h1 class="page__title">Search</h1>
-                    <section class="search-container">
-                        <sm-input id="advance_torrent_search" class="search-torrent" type="search">
-                            <svg class="icon" slot="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
-                                height="24">
-                                <path fill="none" d="M0 0h24v24H0z" />
-                                <path
-                                    d="M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z" />
-                            </svg>
-                        </sm-input>
-                        <section id="advance_search_suggestions" class="search-suggestions-container"></section>
-                    </section>
-                </div>
-                <div class="grid gap-1">
-                    <sm-switch id="advance_search_switch">
-                        <h4 slot="right">Advanced search</h4>
-                    </sm-switch>
-                    <section id="advance_search_panel"
-                        class="grid flow-column align-center justify-start gap-1-5 hide-completely">
-                        <div class="grid flow-column align-center justify-start gap-0-5">
-                            <h5>Category</h5>
-                            <sm-select id="category_selector">
-                                <sm-option value="movie">Movie</sm-option>
-                                <sm-option value="tv series">TV series</sm-option>
-                                <sm-option value="video">Video</sm-option>
-                                <sm-option value="music">Music</sm-option>
-                                <sm-option value="software">Software</sm-option>
-                                <sm-option value="game">Game</sm-option>
-                                <sm-option value="image">Image</sm-option>
-                                <sm-option value="audio">Audio</sm-option>
-                                <sm-option value="misc">Misc</sm-option>
-                            </sm-select>
-                        </div>
-                        <button onclick="renderSearchResult('', true); pushParams();" class="button button--primary">Fliter</button>
-                    </section>
-                </div>
-            </section>
-            <div id="result_for"></div>
+            <div class="grid gap-1">
+                <h1 class="page__title">Search</h1>
+                <section class="search-container">
+                    <sm-input id="advance_torrent_search" class="search-torrent" type="search">
+                        <svg class="icon" slot="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+                            height="24">
+                            <path fill="none" d="M0 0h24v24H0z" />
+                            <path
+                                d="M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z" />
+                        </svg>
+                    </sm-input>
+                    <section id="advance_search_suggestions" class="search-suggestions-container"></section>
+                </section>
+            </div>
+            <div class="flex align-center space-between">
+                <p id="result_for"></p>
+                <button id="filter_button" onclick="getRef('filter_popup').show()">
+                    <svg class="icon button__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M6.17 18a3.001 3.001 0 0 1 5.66 0H22v2H11.83a3.001 3.001 0 0 1-5.66 0H2v-2h4.17zm6-7a3.001 3.001 0 0 1 5.66 0H22v2h-4.17a3.001 3.001 0 0 1-5.66 0H2v-2h10.17zm-6-7a3.001 3.001 0 0 1 5.66 0H22v2H11.83a3.001 3.001 0 0 1-5.66 0H2V4h4.17z"/></svg>
+                    Filter
+                </button>
+            </div>
             <section id="search_result" class="torrent-container"></section>
             <strip-select id="search_page_selector"></strip-select>
         </section>
@@ -224,7 +227,6 @@
             var DBDeleteRequest = window.indexedDB.deleteDatabase("FLO_Torrent");
             DBDeleteRequest.onsuccess = function (event) {
                 console.log("Database deleted successfully");
-                alert("Successfully Cleared Local Data!");
             };
         }
 
@@ -549,6 +551,7 @@
                 className: 'progress-indicator flex align-center',
                 innerHTML: `
                     <svg class="progress-loader" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="32"/></svg>
+                    <svg class="placeholder-loader" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="32"/></svg>
                     <span class="progress-percent">0% done</span>
                 `
             })
@@ -574,7 +577,6 @@
                     }
                 }, 300);
             }).catch(error => {
-                alert(error);
                 console.error(error);
             })
         }
@@ -865,6 +867,18 @@
                 card.querySelector('.torrent-card__uploader').textContent = `by ${uploader}`
                 card.querySelector('.torrent-card__icon').innerHTML = getIcon(type)
                 return card
+            },
+            filterOption(obj){
+                const {content, groupName, value} = obj
+                const option = create('label', {
+                    className: 'filter-option'
+                })
+
+                option.innerHTML = `
+                    <input type="radio" name="${groupName}" value="${value}">
+                    <div class="option-text">${content}</div>
+                `
+                return option
             }
         }
         function getIcon(type) {
@@ -917,9 +931,9 @@
 
         function pushParams() {
             let params = ''
-            for (let prop in advancedSearch) {
-                if (prop !== 'isActive' && advancedSearch[prop] && advancedSearch[prop] !== '') {
-                    params += `${prop}=${advancedSearch[prop]}&`
+            for (let prop in filteredSearch) {
+                if (prop !== 'isActive' && filteredSearch[prop] && filteredSearch[prop] !== '') {
+                    params += `${prop}=${filteredSearch[prop]}&`
                 }
             }
             if (params.slice(-1) === '&') {
@@ -928,7 +942,7 @@
             history.pushState(null, null, `?${params}#search`)
         }
 
-        let advancedSearch = {
+        let filteredSearch = {
             active: false,
             query: '',
             category: ''
@@ -937,14 +951,15 @@
         let lastCategory = ''
 
         async function renderSearchResult(searchKey, shouldFilter = false) {
-            if (lastQuery !== searchKey || shouldFilter || advancedSearch.category !== lastCategory) {
+            debugger
+            if (lastQuery !== searchKey || shouldFilter || filteredSearch.category !== lastCategory) {
                 if (shouldFilter) {
                     searchKey = getRef('advance_torrent_search').value.trim() !== '' ? getRef('advance_torrent_search').value.trim() : lastQuery
                 }
-                advancedSearch['query'] = searchKey
+                filteredSearch['query'] = searchKey
                 let result
-                if (advancedSearch.isActive) {
-                    result = await getFilteredTorrents(['type'], advancedSearch.category)
+                if (filteredSearch.isActive) {
+                    result = await getFilteredTorrents(['type'], filteredSearch.category)
                     result = await getFilteredTorrents(['name', 'filename', 'tags'], searchKey, {torrents: result})
                 }
                 else {
@@ -969,10 +984,27 @@
                 }
 
                 lastQuery = searchKey
-                lastCategory = advancedSearch.category
-                showPage('search')
+                lastCategory = filteredSearch.category
             }
         }
+
+        const categories = ['movie', 'tv series', 'video', 'music', 'software', 'game', 'image', 'audio', 'misc']
+
+        function renderOptions(list, options){
+            const {groupName} = options
+            const frag = document.createDocumentFragment()
+            list.forEach(item => {
+                const optionObj = {
+                    content: item,
+                    groupName,
+                    value: item
+                }
+                frag.append(render.filterOption(optionObj))
+            })
+            return frag
+        }
+
+        let currentpage = ''
 
         async function showPage(target) {
             let params = getSearchParams()
@@ -981,19 +1013,23 @@
                 case 'loading_page':
                 break;
                 case 'search':
+                    if(currentpage !== page){
+                        getRef('category_selector').innerHTML = ''
+                        getRef('category_selector').append(renderOptions(categories, {groupName: 'category-selector'}))
+                    }
                     if (params.query) {
                         if (params.category) {
-                            advancedSearch = {
+                            filteredSearch = {
                                 isActive: true,
                                 ...params
                             }
-                            getRef('advance_search_switch').checked = true
-                            getRef('advance_search_panel').classList.remove('hide-completely')
+                            const selectedCategory = getRef('category_selector').querySelector(`[value="${filteredSearch.category}"]`)
+                            if(selectedCategory){
+                                selectedCategory.checked = true
+                            }
                         }
                         else{
-                            advancedSearch.category = 'movie'
-                            getRef('advance_search_switch').checked = false
-                            getRef('advance_search_panel').classList.add('hide-completely')
+                            resetFilter()
                         }
                         renderSearchResult(params.query)
                     }
@@ -1006,6 +1042,7 @@
                     getRef('torrent_description').textContent = description
                     getRef('torrent_tags').textContent = tags.split('/').join('•')
                     getRef('torrent_uploader').textContent = `Uploaded by ${uploader}`
+                    getRef('torrent_index_tx').href = `https://livenet.flocha.in/tx/${startTx}`
                     break;
                 case 'browse':
                     const category = getRef('browse_category_selector').value
@@ -1019,8 +1056,11 @@
                     getRef('torrent_container').innerHTML = ``
                     getRef('torrent_container').append(renderTorrents(allTorrents))
             }
-            document.querySelector('.page:not(.hide-completely)')?.classList.add('hide-completely')
-            getRef(page).classList.remove('hide-completely')
+            if(currentpage !== page){
+                document.querySelector('.page:not(.hide-completely)')?.classList.add('hide-completely')
+                getRef(page).classList.remove('hide-completely')
+                currentpage = page
+            }
         }
 
         function alphaIncSort(arr, prop) {
@@ -1105,6 +1145,41 @@
             }
         }
 
+        function handleEnter(e){
+            if (e.target.value.trim() !== '') {
+                switch (e.key) {
+                    case 'Enter':
+                        const searchKey = e.target.value.trim()
+                        renderSearchResult(searchKey)
+                        pushParams()
+                        showPage('search')
+                        e.target.value = ''
+                        break;
+                    case 'ArrowDown':
+                        e.preventDefault()
+                        e.target.nextElementSibling.firstElementChild.focus()
+                        break;
+                }
+            }
+        }
+        
+        function handleKeyboardNav(e){
+            switch (e.key) {
+                case 'ArrowUp':
+                    e.preventDefault()
+                    if (e.target.previousElementSibling)
+                        e.target.previousElementSibling.focus()
+                    else
+                        e.target.parentNode.previousElementSibling.focusIn()
+                    break;
+                case 'ArrowDown':
+                    e.preventDefault()
+                    if (e.target.nextElementSibling)
+                        e.target.nextElementSibling.focus()
+                    break;
+            }
+        }
+
         // Event listeners 
 
         window.addEventListener('load', e => {
@@ -1133,40 +1208,11 @@
                 downloadTorrent(filename, startTx, chunks, cardId)
             }
         })
-        getRef('search_torrent').addEventListener('keydown', async e => {
-            if (e.target.value.trim() !== '') {
-                switch (e.key) {
-                    case 'Enter':
-                        const searchKey = getRef('search_torrent').value.trim()
-                        renderSearchResult(searchKey)
-                        pushParams()
-                        break;
-                    case 'ArrowDown':
-                        e.preventDefault()
-                        getRef('search_suggestions').firstElementChild.focus()
-                        break;
-                }
-            }
-        })
+        getRef('search_torrent').addEventListener('keydown', handleEnter)
+        getRef('advance_torrent_search').addEventListener('keydown', handleEnter)
         getRef('search_suggestions').addEventListener('keydown', handleKeyboardNav)
         getRef('advance_search_suggestions').addEventListener('keydown', handleKeyboardNav)
-
-        function handleKeyboardNav(e){
-            switch (e.key) {
-                case 'ArrowUp':
-                    e.preventDefault()
-                    if (e.target.previousElementSibling)
-                        e.target.previousElementSibling.focus()
-                    else
-                        e.target.parentNode.previousElementSibling.focusIn()
-                    break;
-                case 'ArrowDown':
-                    e.preventDefault()
-                    if (e.target.nextElementSibling)
-                        e.target.nextElementSibling.focus()
-                    break;
-            }
-        }
+    
         getRef('search_torrent').addEventListener('input', async e => {
             throttle(() => {
                 const searchKey = getRef('search_torrent').value.trim()
@@ -1179,38 +1225,8 @@
                 renderSearchSuggestions(searchKey, true)
             }, 100)
         })
-        getRef('advance_torrent_search').addEventListener('keydown', async e => {
-            if (e.target.value.trim() !== '') {
-                switch (e.key) {
-                    case 'Enter':
-                        const searchKey = e.target.value.trim()
-                        renderSearchResult(searchKey)
-                        pushParams()
-                        break;
-                    case 'ArrowDown':
-                        e.preventDefault()
-                        getRef('advance_search_suggestions').firstElementChild.focus()
-                        break;
-                }
-            }
-        })
-        getRef('advance_search_switch').addEventListener('change', e => {
-            if (e.detail.value) {
-                advancedSearch = {
-                    isActive: true,
-                    category: getRef('category_selector').value
-                }
-                getRef('advance_search_panel').classList.remove('hide-completely')
-            }
-            else {
-                advancedSearch.isActive = false
-                advancedSearch.category = ''
-                getRef('advance_search_panel').classList.add('hide-completely')
-            }
-            advancedSearch['query'] = getRef('advance_torrent_search').value.trim()
-        })
         getRef('category_selector').addEventListener('change', e => {
-            advancedSearch.category = e.detail.value
+            filteredSearch.category = e.target.value
         })
         getRef('browse_category_selector').addEventListener('change', e => {
             showCategoryTorrents(e.detail.value)
@@ -1240,6 +1256,18 @@
                 getRef('search_result').append(renderTorrents(result.slice(startIndex, endIndex)))
             }, 200);
         })
+        function addFilter(){
+            if(filteredSearch.category){
+                filteredSearch.isActive = true
+            }
+            renderSearchResult('', true);
+            pushParams();
+        }
+        function resetFilter(){
+            filteredSearch.isActive = false
+            filteredSearch.category = undefined
+            getRef('filter_form').reset()
+        }
     </script>
 </body>
 

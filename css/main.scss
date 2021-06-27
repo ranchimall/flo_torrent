@@ -244,10 +244,17 @@ ul{
 .observe-empty-state:not(:empty) ~ .empty-state{
     display: none;
 }
+
+
 .icon{
     width: 1.5rem;
     height: 1.5rem;
     fill: rgba(var(--text-color), 0.9);
+}
+.button__icon{
+    height: 1.2rem;
+    width: 1.2rem;
+    margin-right: 0.5rem;
 }
 
 .page-layout{
@@ -477,6 +484,7 @@ ul{
     }
 }
 .progress-indicator{
+    position: relative;
     justify-self: flex-end;
     height: 2.3rem;
     padding: 0 0.6rem;
@@ -485,23 +493,32 @@ ul{
     font-size: 0.9rem;
     font-weight: 500;
     color: rgba(var(--text-color), 0.8);
+    width: 9ch;
+    text-align: right;
 }
-.progress-loader{
+.progress-loader,
+.placeholder-loader{
     height: 1.2rem;
     width: 1.2rem;
     fill: none;
     padding: 0.1rem;
-    stroke-width: 16;
+    stroke-width: 12;
     overflow: visible;
-    margin-right: 0.5rem;
+}.progress-loader{
     stroke-dasharray: 201;
     stroke-dashoffset: 201;
     transform: rotate(-90deg);
     stroke: var(--accent-color);
     transition: stroke-dashoffset 0.3s;
+    z-index: 1;
+}
+.placeholder-loader{
+    position: absolute;
+    stroke: rgba(var(--text-color), 0.1);
 }
 .torrent-preview{
     display: grid;
+    justify-content: center;
 }
 .torrent-preview__info-section{
     display: flex;
@@ -539,20 +556,21 @@ ul{
     display: flex;
     width: 100%;
     font-size: 0.85rem;
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.5rem;
     color: rgba(var(--text-color), 0.8);
 }
 #torrent_name{
+    line-height: 1.1;
     font-size: 1.8rem;
     margin-bottom: 2rem;
 }
-#torrent__description{
-    font-size: 0.9rem;
+#torrent_description{
+    font-size: 1rem;
     color: rgba(var(--text-color), 0.8);
 }
 #torrent_uploader{
     font-weight: 500;
-    margin-top: 1rem;
+    margin: 1.5rem 0 1rem 0;
     width: auto;
     border-radius: 1.5rem;
     padding: 0.3rem 0.8rem;
@@ -577,6 +595,17 @@ ul{
         margin-right: 0.5rem;
     }
 }
+#torrent_index_tx{
+    padding: 0.4rem;
+    font-size: 0.9rem;
+    border-radius: 0.5rem;
+    align-self: flex-start;
+    border: solid var(--accent-color) thin;
+    .icon{
+        height: 1.2rem;
+        margin-right: 0.5rem;
+    }
+}
 #advance_search_section{
     align-items: flex-start;
     padding: 1rem 0;
@@ -590,6 +619,35 @@ ul{
 }
 sm-option{
     font-size: 0.9rem;
+}
+
+#filter_popup{
+    --width: min(32rem, 100%);
+}
+
+.option-selector{
+    padding: 1rem 0;
+}
+.filter-option{
+    display: inline-flex;
+    margin: 0 0.5rem 0.8rem 0;
+    input[type="radio"]{
+        display: none;
+    }
+    input[type="radio"]:checked ~ .option-text{
+        color: rgba(255, 255, 255, 0.9);
+        background-color: var(--accent-color);
+        border: solid var(--accent-color) thin;
+    }
+    .option-text{
+        font-weight: 500;
+        cursor: pointer;
+        user-select: none;
+        border-radius: 0.3rem;
+        padding: 0.5rem 0.8rem;
+        color: rgba(var(--text-color), 0.8);
+        border: solid rgba(var(--text-color), 0.2) thin;
+    }
 }
 
 #page_selector,
@@ -636,7 +694,7 @@ sm-option{
 }
 @media only screen and (min-width: 640px) {
     .popup__header{
-        padding: 1.5rem 1.5rem 0 1.5rem;
+        padding: 1.5rem 1.5rem 0 0.5rem;
     }
     .auto-grid-2{
         grid-template-columns: 1fr 1fr;
@@ -653,7 +711,7 @@ sm-option{
     .torrent-card{
         padding: 1.5rem;
     }
-    #torrent_popup{
+    #filter_popup{
         --min-height: 80vh;
     }
     .torrent-preview{
@@ -661,6 +719,7 @@ sm-option{
     }
     #torrent_name{
         font-size: 4rem;
+        max-width: 16ch;
     }
 }
 @media only screen and (min-width: 1280px) {
