@@ -36,6 +36,8 @@
         <form id="filter_form" onsubmit="return false">
             <h4>Category</h4>
             <section id="category_selector" class="option-selector"></section>
+            <h4>Tags</h4>
+            <section id="tags_selector" class="option-selector"></section>
             <div class="flex gap-1">
                 <button class="justify-right" onclick="resetFilter()">Clear</button>
                 <button onclick="addFilter()" class="button button--primary">Fliter</button>
@@ -157,11 +159,18 @@
             </div>
             <div class="flex align-center space-between">
                 <p id="result_for"></p>
-                <button id="filter_button" onclick="getRef('filter_popup').show()">
-                    <svg class="icon button__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M6.17 18a3.001 3.001 0 0 1 5.66 0H22v2H11.83a3.001 3.001 0 0 1-5.66 0H2v-2h4.17zm6-7a3.001 3.001 0 0 1 5.66 0H22v2h-4.17a3.001 3.001 0 0 1-5.66 0H2v-2h10.17zm-6-7a3.001 3.001 0 0 1 5.66 0H22v2H11.83a3.001 3.001 0 0 1-5.66 0H2V4h4.17z"/></svg>
+                <button id="filter_button" class="button" onclick="getRef('filter_popup').show()">
+                    <svg class="icon button__icon button__icon--left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0H24V24H0z"/><path d="M21 4L21 6 20 6 14 15 14 22 10 22 10 15 4 6 3 6 3 4z"/></svg>
                     Filter
                 </button>
             </div>
+            <section id="filters_bar" class="hide-completely">
+                <div id="selected_filters_container"></div>
+                <button class="button" onclick="resetFilter()">
+                    <svg class="icon button__icon button__icon--left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-11.414L9.172 7.757 7.757 9.172 10.586 12l-2.829 2.828 1.415 1.415L12 13.414l2.828 2.829 1.415-1.415L13.414 12l2.829-2.828-1.415-1.415L12 10.586z"/></svg>
+                    Clear all
+                </button>
+            </section>
             <section id="search_result" class="torrent-container"></section>
             <strip-select id="search_page_selector"></strip-select>
         </section>
@@ -871,12 +880,26 @@
             filterOption(obj){
                 const {content, groupName, value} = obj
                 const option = create('label', {
-                    className: 'filter-option'
+                    className: 'filter-option interact'
                 })
 
                 option.innerHTML = `
-                    <input type="radio" name="${groupName}" value="${value}">
+                    <input type="${groupName ? 'radio' : 'checkbox'}" name="${groupName ? groupName : ''}" value="${value}">
                     <div class="option-text">${content}</div>
+                `
+                return option
+            },
+            selectedFilter(obj){
+                const {content, type} = obj
+                const option = create('div', {
+                    className: 'selected-filter interact'
+                })
+                option.dataset.type = type
+                option.dataset.value = content
+
+                option.innerHTML = `
+                    <div class="option-text">${content}</div>
+                    <svg class="icon button__icon--right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-11.414L9.172 7.757 7.757 9.172 10.586 12l-2.829 2.828 1.415 1.415L12 13.414l2.828 2.829 1.415-1.415L13.414 12l2.829-2.828-1.415-1.415L12 10.586z"/></svg>
                 `
                 return option
             }
@@ -930,67 +953,64 @@
         }
 
         function pushParams() {
-            let params = ''
-            for (let prop in filteredSearch) {
-                if (prop !== 'isActive' && filteredSearch[prop] && filteredSearch[prop] !== '') {
-                    params += `${prop}=${filteredSearch[prop]}&`
-                }
-            }
-            if (params.slice(-1) === '&') {
-                params = params.slice(0, -1)
-            }
-            history.pushState(null, null, `?${params}#search`)
+            history.pushState(null, null, `?query=${filteredSearch.query}#search`)
         }
 
         let filteredSearch = {
             active: false,
             query: '',
-            category: ''
+            category: '',
+            tags: new Set()
         }
         let lastQuery = ''
-        let lastCategory = ''
 
         async function renderSearchResult(searchKey, shouldFilter = false) {
-            debugger
-            if (lastQuery !== searchKey || shouldFilter || filteredSearch.category !== lastCategory) {
-                if (shouldFilter) {
-                    searchKey = getRef('advance_torrent_search').value.trim() !== '' ? getRef('advance_torrent_search').value.trim() : lastQuery
-                }
-                filteredSearch['query'] = searchKey
-                let result
-                if (filteredSearch.isActive) {
-                    result = await getFilteredTorrents(['type'], filteredSearch.category)
-                    result = await getFilteredTorrents(['name', 'filename', 'tags'], searchKey, {torrents: result})
-                }
-                else {
-                    result = await getFilteredTorrents(['name', 'filename', 'tags'], searchKey)
-                }
-                if (result.length) {
-                    getRef('result_for').innerHTML = `Showing results for <strong>${searchKey}</strong>`
-                }
-                else {
-                    getRef('result_for').innerHTML = `No results for <strong>${searchKey}</strong>`
-                }
-
-                getRef('search_result').innerHTML = ``
-                getRef('search_page_selector').innerHTML = ``
-                if(result.length > 20){
-                    const pages = Math.round(result.length / 20)
-                    getRef('search_page_selector').append(createPageButtons(pages))
-                    getRef('search_result').append(renderTorrents(result.slice(0, 20)))
-                }
-                else{
-                    getRef('search_result').append(renderTorrents(result))
-                }
-
-                lastQuery = searchKey
-                lastCategory = filteredSearch.category
+            if (shouldFilter) {
+                searchKey = getRef('advance_torrent_search').value.trim() !== '' ? getRef('advance_torrent_search').value.trim() : lastQuery
             }
+            filteredSearch['query'] = searchKey
+            let result
+            if (filteredSearch.isActive) {
+                if(filteredSearch.category && filteredSearch.tags.size){
+                    result = await getFilteredTorrents(['type'], filteredSearch.category)
+                    result = await getFilteredTorrents(['tags'], [...filteredSearch.tags].join('/'), {torrents: result})
+                }
+                else if(filteredSearch.category){
+                    result = await getFilteredTorrents(['type'], filteredSearch.category)
+                }
+                else if(filteredSearch.tags.size){
+                    result = await getFilteredTorrents(['tags'], [...filteredSearch.tags].join('/'))
+                }
+                result = await getFilteredTorrents(['name', 'filename', 'tags'], searchKey, {torrents: result})
+            }
+            else {
+                result = await getFilteredTorrents(['name', 'filename', 'tags'], searchKey)
+            }
+            if (result.length) {
+                getRef('result_for').innerHTML = `Showing results for <strong>${searchKey}</strong>`
+            }
+            else {
+                getRef('result_for').innerHTML = `No results for <strong>${searchKey}</strong>`
+            }
+
+            getRef('search_result').innerHTML = ``
+            getRef('search_page_selector').innerHTML = ``
+            if(result.length > 20){
+                const pages = Math.round(result.length / 20)
+                getRef('search_page_selector').append(createPageButtons(pages))
+                getRef('search_result').append(renderTorrents(result.slice(0, 20)))
+            }
+            else{
+                getRef('search_result').append(renderTorrents(result))
+            }
+
+            lastQuery = searchKey
         }
 
         const categories = ['movie', 'tv series', 'video', 'music', 'software', 'game', 'image', 'audio', 'misc']
+        const allTags = ['action', 'adventure', 'comedy', 'crime', 'drama', 'fantacy', 'horror', 'mystery', 'romance', 'sci-fi', 'sport', 'thriller', 'western']
 
-        function renderOptions(list, options){
+        function renderOptions(list, options = {}){
             const {groupName} = options
             const frag = document.createDocumentFragment()
             list.forEach(item => {
@@ -1016,23 +1036,10 @@
                     if(currentpage !== page){
                         getRef('category_selector').innerHTML = ''
                         getRef('category_selector').append(renderOptions(categories, {groupName: 'category-selector'}))
+                        getRef('tags_selector').innerHTML = ''
+                        getRef('tags_selector').append(renderOptions(allTags))
                     }
-                    if (params.query) {
-                        if (params.category) {
-                            filteredSearch = {
-                                isActive: true,
-                                ...params
-                            }
-                            const selectedCategory = getRef('category_selector').querySelector(`[value="${filteredSearch.category}"]`)
-                            if(selectedCategory){
-                                selectedCategory.checked = true
-                            }
-                        }
-                        else{
-                            resetFilter()
-                        }
-                        renderSearchResult(params.query)
-                    }
+                    renderSearchResult(params.query)
                     break;
                 case 'torrent':
                     currentTorrent = await getDataFromIDB(parseInt(params.id))
@@ -1099,12 +1106,12 @@
         }
 
         async function showCategoryTorrents(category) {
-            const result = await getFilteredTorrents(['type'], category)
+            const result = await getFilteredTorrents(['type'], category, {limit: 20})
             getRef('browser_category_torrents').innerHTML = ``
             getRef('page_selector').innerHTML = ''
 
             if (result.length) {
-                getRef('browser_category_torrents').append(renderTorrents(result.slice(0, 20)))
+                getRef('browser_category_torrents').append(renderTorrents(result.reverse().slice(0, 20)))
 
                 const pages = Math.round(result.length / 20)
                 getRef('page_selector').append(createPageButtons(pages))
@@ -1152,7 +1159,9 @@
                         const searchKey = e.target.value.trim()
                         renderSearchResult(searchKey)
                         pushParams()
-                        showPage('search')
+                        if(e.target.id === 'search_torrent'){
+                            showPage('search')
+                        }
                         e.target.value = ''
                         break;
                     case 'ArrowDown':
@@ -1225,9 +1234,6 @@
                 renderSearchSuggestions(searchKey, true)
             }, 100)
         })
-        getRef('category_selector').addEventListener('change', e => {
-            filteredSearch.category = e.target.value
-        })
         getRef('browse_category_selector').addEventListener('change', e => {
             showCategoryTorrents(e.detail.value)
         })
@@ -1241,12 +1247,11 @@
             setTimeout(() => {
                 getRef('browser_category_torrents').scrollIntoView({ behavior: 'smooth', block: 'start' })
                 getRef('browser_category_torrents').innerHTML = ``
-                getRef('browser_category_torrents').append(renderTorrents(result.slice(startIndex, endIndex)))
+                getRef('browser_category_torrents').append(renderTorrents(result.reverse().slice(startIndex, endIndex)))
             }, 200);
         })
         getRef('search_page_selector').addEventListener('change', async e => {
-            const result = await getFilteredTorrents(['name', 'filename', 'tags'], lastQuery)
-            console.log(result.length , result.length/20)
+            const result = await getFilteredTorrents(['name', 'filename', 'tags'], lastQuery, {limit: 20})
             const startIndex = parseInt(e.detail.value) * 20
             const endIndex = ((parseInt(e.detail.value) * 20) + 30) < result.length ? (parseInt(e.detail.value) * 20) + 20 : result.length
 
@@ -1257,17 +1262,71 @@
             }, 200);
         })
         function addFilter(){
-            if(filteredSearch.category){
-                filteredSearch.isActive = true
+            const selectedCategory = getRef('category_selector').querySelector('input:checked')
+            if(selectedCategory){
+                filteredSearch.category = selectedCategory.value
             }
+            filteredSearch['tags'].clear()
+            getRef('tags_selector').querySelectorAll('input:checked').forEach(tag => {
+                filteredSearch['tags'].add(tag.value)
+            })
+            if(filteredSearch.category || filteredSearch.tags.size){
+                filteredSearch.isActive = true
+                getRef('filters_bar').classList.remove('hide-completely')
+            }
+            else{
+                getRef('filters_bar').classList.add('hide-completely')
+            }
+            renderSelectedFilters()
             renderSearchResult('', true);
-            pushParams();
+            getRef('filter_popup').hide()
         }
         function resetFilter(){
             filteredSearch.isActive = false
             filteredSearch.category = undefined
             getRef('filter_form').reset()
+            const selectedCategory = getRef('category_selector').querySelector('input:checked')
+            if(selectedCategory){
+                selectedCategory.checked = false
+            }
+            filteredSearch['tags'].clear()
+            getRef('tags_selector').querySelectorAll('input:checked').forEach(tag => {
+                tag.checked = false
+            })
+            getRef('selected_filters_container').innerHTML = ''
+            getRef('filters_bar').classList.add('hide-completely')
+            renderSearchResult('', true);
         }
+        function renderSelectedFilters(){
+            getRef('selected_filters_container').innerHTML = ''
+            const frag = document.createDocumentFragment()
+            if(filteredSearch.category){
+                frag.append(render.selectedFilter({content: filteredSearch.category, type: 'category'}))
+            }
+            filteredSearch.tags.forEach(tag => {
+                frag.append(render.selectedFilter({content: tag, type: 'tag'}))
+            })
+            getRef('selected_filters_container').append(frag)
+        }
+        getRef('selected_filters_container').addEventListener('click', e => {
+            if(e.target.closest('.selected-filter')){
+                const target = e.target.closest('.selected-filter')
+                if(target.dataset.type === 'category'){
+                    filteredSearch.category = undefined
+                    getRef('category_selector').querySelector('input:checked').checked = false
+                }
+                else{
+                    filteredSearch.tags.delete(target.dataset.value)
+                    getRef('tags_selector').querySelector(`input[value="${target.dataset.value}"]`).checked = false
+                }
+                target.remove()
+                if(!filteredSearch.category && !filteredSearch.tags.size){
+                    filteredSearch.isActive = false
+                    getRef('filters_bar').classList.add('hide-completely')
+                }
+            }
+            renderSearchResult('', true);
+        })
     </script>
 </body>
 
