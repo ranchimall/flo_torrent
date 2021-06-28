@@ -1106,7 +1106,7 @@
         }
 
         async function showCategoryTorrents(category) {
-            const result = await getFilteredTorrents(['type'], category, {limit: 20})
+            const result = await getFilteredTorrents(['type'], category)
             getRef('browser_category_torrents').innerHTML = ``
             getRef('page_selector').innerHTML = ''
 
@@ -1251,7 +1251,7 @@
             }, 200);
         })
         getRef('search_page_selector').addEventListener('change', async e => {
-            const result = await getFilteredTorrents(['name', 'filename', 'tags'], lastQuery, {limit: 20})
+            const result = await getFilteredTorrents(['name', 'filename', 'tags'], lastQuery)
             const startIndex = parseInt(e.detail.value) * 20
             const endIndex = ((parseInt(e.detail.value) * 20) + 30) < result.length ? (parseInt(e.detail.value) * 20) + 20 : result.length
 
