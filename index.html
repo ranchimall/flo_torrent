@@ -53,6 +53,7 @@
             </svg>
             <a href="./index.html" class="header__company-name">RanchiMall</a>
         </div>
+        <a href="#how_it_works" class="button justify-right">How it works?</a>
         <label class="theme-switcher" title="Change theme">
             <input id="theme_switcher" class="theme-switcher__checkbox" type="checkbox">
             <svg class="icon moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
@@ -192,7 +193,49 @@
             <section id="browser_category_torrents" class="torrent-container"></section>
             <strip-select id="page_selector"></strip-select>
         </section>
+        <section id="how_it_works" class="page hide-completely page-layout">
+            <h1 class="page__title">How it works?</h1>
+            <p>FLO Torrent stores torrent files direclty on FLO blockchain making it completely decentralised. But this approch came with some challenges.</p>
+            <section class="info-section">
+                <object class="info__image" data="torrent-vs-flo-tx.svg" type="image/svg+xml"></object>
+                <div class="textual-info">
+                    <h2 class="info__title">The problem</h2>
+                    <p>
+                        Maximum number of free characters that can be stored in a FLO blockchain transaction is 1040.
+                        But torrents are typically 20000 characters each.
+                    </p>
+                    <p>
+                        So, we need to first design a way to split the torrent into smaller segments, and find a way to link them inside the blockchain.
 
+                    </p>
+                </div>
+            </section>
+            <section class="info-section">
+                <object class="info__image" data="split-torrent.svg" type="image/svg+xml"></object>
+                <div class="textual-info">
+                    <h2 class="info__title">The solution</h2>
+                    <p>
+                        Splitting can easily be achieved by reading only 900 characters from the torrent file one at a time, and using the remaining characters for linking purposes.
+                    </p>
+                </div>
+            </section>
+            <section class="info-section">
+                <object class="info__image" data="put-in-blockchain.svg" type="image/svg+xml"></object>
+                <div class="textual-info">
+                    <h2 class="info__title">Next step</h2>
+                    <p>
+                        We put the first segment in the FLO Blockchain, and get it's unique transaction ID.
+                        Then we put the second segment in the blockchain, and link it with previous transaction ID.
+                    </p>
+                    <p>
+                        This process continues untill all segments are put on the blockchain.
+                    </p>
+                    <p>
+                        The transaction ID of the last segment is the entry point to the full data stream, and is published as a torrent ID.
+                    </p>
+                </div>
+            </section>    
+        </section>
     </main>
     <footer id="main_footer" class="page-layout">
         <p>Powered by FLO blockchain</p>
@@ -1008,7 +1051,7 @@
         }
 
         const categories = ['movie', 'tv series', 'video', 'music', 'software', 'game', 'image', 'audio', 'misc']
-        const allTags = ['action', 'adventure', 'comedy', 'crime', 'drama', 'fantacy', 'horror', 'mystery', 'romance', 'sci-fi', 'sport', 'thriller', 'western']
+        const allTags = ['action', 'adventure', 'comedy', 'crime', 'drama', 'family', 'fantacy', 'horror', 'mystery', 'romance', 'sci-fi', 'sport', 'thriller', 'western']
 
         function renderOptions(list, options = {}){
             const {groupName} = options
@@ -1055,6 +1098,8 @@
                     const category = getRef('browse_category_selector').value
                     showCategoryTorrents(category)
                     break;
+                case 'how_it_works':
+                    break
                 default:
                     page = 'homepage'
                     history.replaceState(null, null, ' ')
