@@ -791,12 +791,7 @@ sm-option {
 }
 
 .info__title {
-  font-size: 2rem;
   margin-bottom: 1rem;
-}
-
-object text {
-  color: rgba(var(--text-color), 1);
 }
 
 #main_footer {

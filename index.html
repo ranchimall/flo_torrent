@@ -197,9 +197,9 @@
             <h1 class="page__title">How it works?</h1>
             <p>FLO Torrent stores torrent files direclty on FLO blockchain making it completely decentralised. But this approch came with some challenges.</p>
             <section class="info-section">
-                <object class="info__image" data="torrent-vs-flo-tx.svg" type="image/svg+xml"></object>
+                <object class="info__image" data="assets/torrent-vs-flo-tx.svg" type="image/svg+xml"></object>
                 <div class="textual-info">
-                    <h2 class="info__title">The problem</h2>
+                    <h2 class="info__title h2">The problem</h2>
                     <p>
                         Maximum number of free characters that can be stored in a FLO blockchain transaction is 1040.
                         But torrents are typically 20000 characters each.
@@ -211,27 +211,66 @@
                 </div>
             </section>
             <section class="info-section">
-                <object class="info__image" data="split-torrent.svg" type="image/svg+xml"></object>
+                <object class="info__image" data="assets/split-torrent.svg" type="image/svg+xml"></object>
                 <div class="textual-info">
-                    <h2 class="info__title">The solution</h2>
+                    <h2 class="info__title h2">The solution</h2>
                     <p>
                         Splitting can easily be achieved by reading only 900 characters from the torrent file one at a time, and using the remaining characters for linking purposes.
                     </p>
                 </div>
             </section>
             <section class="info-section">
-                <object class="info__image" data="put-in-blockchain.svg" type="image/svg+xml"></object>
+                <object class="info__image" data="assets/put-in-blockchain.svg" type="image/svg+xml"></object>
                 <div class="textual-info">
-                    <h2 class="info__title">Next step</h2>
+                    <h2 class="info__title h2">Next step</h2>
                     <p>
                         We put the first segment in the FLO Blockchain, and get it's unique transaction ID.
                         Then we put the second segment in the blockchain, and link it with previous transaction ID.
                     </p>
                     <p>
-                        This process continues untill all segments are put on the blockchain.
+                        This process continues until all segments are put on the blockchain.
                     </p>
                     <p>
                         The transaction ID of the last segment is the entry point to the full data stream, and is published as a torrent ID.
+                    </p>
+                </div>
+            </section>    
+            <section class="info-section">
+                <object class="info__image" data="assets/global.svg" type="image/svg+xml"></object>
+                <div class="textual-info">
+                    <h2 class="info__title h2">Discoverability</h2>
+                    <p>
+                        Transactions from a global FLO Address will list all Torrent IDs, and other details like name of torrent, description etc.
+                    </p>
+                    <p>
+                        This global FLO Address will be a trusted address, and will list only trusted and good quality torrents.
+                    </p>
+                </div>
+            </section>    
+            <section class="info-section">
+                <object class="info__image" data="assets/client-side.svg" type="image/svg+xml"></object>
+                <div class="textual-info">
+                    <h2 class="info__title h2">The FLO torrent client</h2>
+                    <p>
+                        FLO torrent will first read the global FLO Address, find all the torrent details and list it.
+                    </p>
+                    <p>
+                        When you select a torrent to download. It's entry transaction ID is retrieved, and the last segment of torrent file is downloaded. The previous transaction ID is also retrieved, and data in that ID is downloaded.
+                    </p>
+                    <p>
+                        Finally, all segments are downloaded until we reach the first segment which has no further linkages.
+                    </p>
+                </div>
+            </section>    
+            <section class="info-section">
+                <object class="info__image" data="assets/client-side.svg" type="image/svg+xml"></object>
+                <div class="textual-info">
+                    <h2 class="info__title h2">Putting everything back</h2>
+                    <p>
+                        Thus, all segments of the torrent can be downloaded from the blockchain. 
+                    </p>
+                    <p>
+                        Now, all the browser has to do is to reassemble them in the correct order, and we have our torrent file.
                     </p>
                 </div>
             </section>    
