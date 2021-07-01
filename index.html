@@ -195,7 +195,7 @@
         </section>
         <section id="how_it_works" class="page hide-completely page-layout">
             <h1 class="page__title">How it works?</h1>
-            <p>FLO Torrent stores torrent files direclty on FLO blockchain making it completely decentralised. But this approch came with some challenges.</p>
+            <p>FLO Torrent stores torrent files directly on FLO blockchain making it completely decentralised. But this approch came with some challenges.</p>
             <section class="info-section">
                 <object class="info__image" data="assets/torrent-vs-flo-tx.svg" type="image/svg+xml"></object>
                 <div class="textual-info">
@@ -230,6 +230,12 @@
                     <p>
                         This process continues until all segments are put on the blockchain.
                     </p>
+                </div>
+            </section>    
+            <section class="info-section">
+                <object class="info__image" data="assets/chunk-linking.svg" type="image/svg+xml"></object>
+                <div class="textual-info">
+                    <h2 class="info__title h2">Linking the chunks</h2>
                     <p>
                         The transaction ID of the last segment is the entry point to the full data stream, and is published as a torrent ID.
                     </p>
@@ -263,7 +269,7 @@
                 </div>
             </section>    
             <section class="info-section">
-                <object class="info__image" data="assets/client-side.svg" type="image/svg+xml"></object>
+                <object class="info__image" data="assets/torrent-assembly.svg" type="image/svg+xml"></object>
                 <div class="textual-info">
                     <h2 class="info__title h2">Putting everything back</h2>
                     <p>
@@ -1090,7 +1096,7 @@
         }
 
         const categories = ['movie', 'tv series', 'video', 'music', 'software', 'game', 'image', 'audio', 'misc']
-        const allTags = ['action', 'adventure', 'comedy', 'crime', 'drama', 'family', 'fantacy', 'horror', 'mystery', 'romance', 'sci-fi', 'sport', 'thriller', 'western']
+        const allTags = ['action', 'adventure', ,'anime', 'comedy', 'crime', 'drama', 'family', 'fantacy', 'horror', 'korean', 'mystery', 'romance', 'sci-fi', 'sport', 'thriller', 'western']
 
         function renderOptions(list, options = {}){
             const {groupName} = options
