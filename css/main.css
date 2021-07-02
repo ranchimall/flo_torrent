@@ -332,7 +332,7 @@ ul {
   display: grid;
   gap: 0.5rem;
   width: 100%;
-  padding: 1rem 1.5rem;
+  padding: 0 1.5rem 0 0.5rem;
   align-items: center;
   grid-template-columns: auto 1fr;
 }
@@ -800,10 +800,6 @@ sm-option {
 }
 
 @media only screen and (max-width: 640px) {
-  .popup__header {
-    padding: 0 1.5rem 0 0.5rem;
-  }
-
   .torrent-card {
     grid-template-columns: 1fr;
   }
