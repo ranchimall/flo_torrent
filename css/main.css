@@ -550,7 +550,6 @@ ul {
 }
 .torrent-card__download-button {
   justify-self: flex-end;
-  align-self: flex-start;
   background-color: rgba(var(--text-color), 0.1);
 }
 .torrent-card__download-button .icon {
