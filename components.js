@@ -76,6 +76,7 @@ smButton.innerHTML = `
     overflow: hidden;
     border: none;
     color: inherit;
+    align-items: center;
 }
 :host(:not([disabled])) .button:focus-visible{
     -webkit-box-shadow: 0 0 0 0.1rem var(--accent-color);
@@ -370,24 +371,32 @@ input{
 `;
 customElements.define('sm-input',
     class extends HTMLElement {
-        
+
         constructor() {
             super()
             this.attachShadow({
                 mode: 'open'
             }).append(smInput.content.cloneNode(true))
+
+            this.inputParent = this.shadowRoot.querySelector('.input')
+            this.input = this.shadowRoot.querySelector('input')
+            this.clearBtn = this.shadowRoot.querySelector('.clear')
+            this.label = this.shadowRoot.querySelector('.label')
+            this.feedbackText = this.shadowRoot.querySelector('.feedback-text')
+            this.validationFunction
+            this.observeList = ['type', 'required', 'disabled', 'readonly', 'min', 'max', 'pattern', 'minlength', 'maxlength', 'step']
         }
 
         static get observedAttributes() {
-            return ['placeholder']
+            return ['placeholder', 'type', 'required', 'disabled', 'readonly', 'min', 'max', 'pattern', 'minlength', 'maxlength', 'step']
         }
 
         get value() {
-            return this.shadowRoot.querySelector('input').value
+            return this.input.value
         }
 
         set value(val) {
-            this.shadowRoot.querySelector('input').value = val;
+            this.input.value = val;
             this.checkInput()
             this.fireEvent()
         }
@@ -404,28 +413,41 @@ customElements.define('sm-input',
             return this.getAttribute('type')
         }
 
+        set type(val) {
+            this.setAttribute('type', val)
+        }
+
         get isValid() {
-            return this.shadowRoot.querySelector('input').checkValidity()
+            if (this.hasAttribute('data-flo-id') || this.hasAttribute('data-private-key')) {
+                return this.validationFunction(this.input.value)
+            }
+            else {
+                return this.input.checkValidity()
+            }
         }
 
         get validity() {
-            return this.shadowRoot.querySelector('input').validity
+            return this.input.validity
         }
 
         set disabled(value) {
             if (value)
-                this.shadowRoot.querySelector('.input').classList.add('disabled')
+                this.inputParent.classList.add('disabled')
             else
-                this.shadowRoot.querySelector('.input').classList.remove('disabled')
+                this.inputParent.classList.remove('disabled')
         }
         set readOnly(value) {
             if (value) {
-                this.shadowRoot.querySelector('input').setAttribute('readonly', '')
-                this.shadowRoot.querySelector('.input').classList.add('readonly')
+                this.setAttribute('readonly', '')
             } else {
-                this.shadowRoot.querySelector('input').removeAttribute('readonly')
-                this.shadowRoot.querySelector('.input').classList.remove('readonly')
+                this.removeAttribute('readonly')
             }
+        }
+        set customValidation(val) {
+            this.validationFunction = val
+        }
+        reset = () => {
+            this.value = ''
         }
 
         setValidity = (message) => {
@@ -435,7 +457,7 @@ customElements.define('sm-input',
         showValidity = () => {
             this.feedbackText.classList.remove('hide-completely')
         }
-        
+
         hideValidity = () => {
             this.feedbackText.classList.add('hide-completely')
         }
@@ -458,7 +480,7 @@ customElements.define('sm-input',
         }
 
         checkInput = (e) => {
-            if (!this.readonly) {                
+            if (!this.hasAttribute('readonly')) {
                 if (this.input.value !== '') {
                     this.clearBtn.classList.remove('hide')
                 } else {
@@ -481,82 +503,57 @@ customElements.define('sm-input',
 
 
         connectedCallback() {
-            this.inputParent = this.shadowRoot.querySelector('.input')
-            this.clearBtn = this.shadowRoot.querySelector('.clear')
-            this.label = this.shadowRoot.querySelector('.label')
-            this.feedbackText = this.shadowRoot.querySelector('.feedback-text')
-            this.valueChanged = false;
-            this.readonly = false
-            this.isNumeric = false
-            this.min
-            this.max
             this.animate = this.hasAttribute('animate')
-            this.input = this.shadowRoot.querySelector('input')
-            this.shadowRoot.querySelector('.label').textContent = this.getAttribute('placeholder')
             if (this.hasAttribute('value')) {
                 this.input.value = this.getAttribute('value')
                 this.checkInput()
             }
-            if (this.hasAttribute('required')) {
-                this.input.setAttribute('required', '')
-            }
-            if (this.hasAttribute('min')) {
-                let minValue = this.getAttribute('min')
-                this.input.setAttribute('min', minValue)
-                this.min = parseInt(minValue)
-            }
-            if (this.hasAttribute('max')) {
-                let maxValue = this.getAttribute('max')
-                this.input.setAttribute('max', maxValue)
-                this.max = parseInt(maxValue)
-            }
-            if (this.hasAttribute('minlength')) {
-                const minValue = this.getAttribute('minlength')
-                this.input.setAttribute('minlength', minValue)
-            }
-            if (this.hasAttribute('maxlength')) {
-                const maxValue = this.getAttribute('maxlength')
-                this.input.setAttribute('maxlength', maxValue)
-            }
-            if (this.hasAttribute('step')) {
-                const steps = this.getAttribute('step')
-                this.input.setAttribute('step', steps)
-            }
-            if (this.hasAttribute('pattern')) {
-                this.input.setAttribute('pattern', this.getAttribute('pattern'))
-            }
-            if (this.hasAttribute('readonly')) {
-                this.input.setAttribute('readonly', '')
-                this.readonly = true
-            }
-            if (this.hasAttribute('disabled')) {
-                this.inputParent.classList.add('disabled')
-            }
             if (this.hasAttribute('error-text')) {
                 this.feedbackText.textContent = this.getAttribute('error-text')
             }
-            if (this.hasAttribute('type')) {
-                if (this.getAttribute('type') === 'number') {
-                    this.input.setAttribute('inputmode', 'numeric')
-                    this.input.setAttribute('type', 'number')
-                    this.isNumeric = true
-                } else
-                    this.input.setAttribute('type', this.getAttribute('type'))
-            } else
-                this.input.setAttribute('type', 'text')
+            if (!this.hasAttribute('type')) {
+                this.setAttribute('type', 'text')
+            }
+
             this.input.addEventListener('input', e => {
                 this.checkInput(e)
             })
-            this.clearBtn.addEventListener('click', e => {
-                this.value = ''
-            })
+            this.clearBtn.addEventListener('click', this.reset)
         }
 
         attributeChangedCallback(name, oldValue, newValue) {
             if (oldValue !== newValue) {
+                if (this.observeList.includes(name)) {
+                    if (this.hasAttribute(name)) {
+                        this.input.setAttribute(name, this.getAttribute(name) ? this.getAttribute(name) : '')
+                    }
+                    else {
+                        this.input.removeAttribute(name)
+                    }
+                }
                 if (name === 'placeholder') {
-                    this.shadowRoot.querySelector('.label').textContent = newValue;
+                    this.label.textContent = newValue;
                     this.setAttribute('aria-label', newValue);
+                }
+                else if (name === 'type') {
+                    if (this.hasAttribute('type') && this.getAttribute('type') === 'number') {
+                        this.input.setAttribute('inputmode', 'numeric')
+                    }
+                }
+                else if (name === 'readonly') {
+                    if (this.hasAttribute('readonly')) {
+                        this.inputParent.classList.add('readonly')
+                    } else {
+                        this.inputParent.classList.remove('readonly')
+                    }
+                }
+                else if (name === 'disabled') {
+                    if (this.hasAttribute('disabled')) {
+                        this.inputParent.classList.add('disabled')
+                    }
+                    else {
+                        this.inputParent.classList.remove('disabled')
+                    }
                 }
             }
         }
@@ -582,7 +579,7 @@ smTextarea.innerHTML = `
 }
 :host{
     display: grid;
-    --border-radius: 0.3s;
+    --border-radius: 0.3rem;
     --background: rgba(var(--text-color), 0.06);
     --padding-right: initial;
     --padding-left: initial;
@@ -652,6 +649,20 @@ textarea{
     pointer-events: none;
     user-select: none;
 }
+@media (any-hover: hover){
+    ::-webkit-scrollbar{
+        width: 0.5rem;
+        height: 0.5rem;
+    }
+    
+    ::-webkit-scrollbar-thumb{
+        background: rgba(var(--text-color), 0.3);
+        border-radius: 1rem;
+        &:hover{
+            background: rgba(var(--text-color), 0.5);
+        }
+    }
+}
 </style>
 <label class="textarea" part="textarea">
     <span class="placeholder"></span>
@@ -665,21 +676,32 @@ customElements.define('sm-textarea',
             this.attachShadow({
                 mode: 'open'
             }).append(smTextarea.content.cloneNode(true))
+
             this.textarea = this.shadowRoot.querySelector('textarea')
+            this.textareaBox = this.shadowRoot.querySelector('.textarea')
+            this.placeholder = this.shadowRoot.querySelector('.placeholder')
+            this.observeList = ['required', 'readonly', 'rows', 'minlength', 'maxlength']
+        }
+        static get observedAttributes() {
+            return ['value', 'placeholder', 'required', 'readonly', 'rows', 'minlength', 'maxlength']
         }
         get value() {
             return this.textarea.value
         }
         set value(val) {
-            this.textarea.value = val;
-            this.textareaBox.dataset.value = val
-            this.checkInput()
+            this.setAttribute('value', val)
             this.fireEvent()
+        }
+        get isValid() {
+            return this.textarea.checkValidity()
+        }
+        reset = () => {
+            this.setAttribute('value', '')
         }
         focusIn = () => {
             this.textarea.focus()
         }
-        fireEvent() {
+        fireEvent = () => {
             let event = new Event('input', {
                 bubbles: true,
                 cancelable: true,
@@ -697,29 +719,28 @@ customElements.define('sm-textarea',
             }
         }
         connectedCallback() {
-            this.textareaBox = this.shadowRoot.querySelector('.textarea')
-            this.placeholder = this.shadowRoot.querySelector('.placeholder')
-
-            if(this.hasAttribute('placeholder'))
-                this.placeholder.textContent = this.getAttribute('placeholder')
-
-            if (this.hasAttribute('value')) {
-                this.textarea.value = this.getAttribute('value')
-                this.checkInput()
-            }
-            if (this.hasAttribute('required')) {
-                this.textarea.setAttribute('required', '')
-            }
-            if (this.hasAttribute('readonly')) {
-                this.textarea.setAttribute('readonly', '')
-            }
-            if (this.hasAttribute('rows')) {
-                this.textarea.setAttribute('rows', this.getAttribute('rows'))
-            }
             this.textarea.addEventListener('input', e => {
                 this.textareaBox.dataset.value = this.textarea.value
                 this.checkInput()
             })
+        }
+        attributeChangedCallback(name, oldValue, newValue) {
+            if (this.observeList.includes(name)) {
+                if (this.hasAttribute(name)) {
+                    this.textarea.setAttribute(name, this.getAttribute(name) ? this.getAttribute(name) : '')
+                }
+                else {
+                    this.input.removeAttribute(name)
+                }
+            }
+            else if (name === 'placeholder') {
+                this.placeholder.textContent = this.getAttribute('placeholder')
+            }
+            else if (name === 'value') {
+                this.textarea.value = newValue;
+                this.textareaBox.dataset.value = newValue
+                this.checkInput()
+            }
         }
     })
 
@@ -1246,6 +1267,7 @@ smSelect.innerHTML = `
     display: -ms-inline-flexbox;
     display: inline-flex;
     --max-height: auto;
+    --min-width: 100%;
 }
 .hide{
     display: none !important;
@@ -1311,7 +1333,7 @@ smSelect.innerHTML = `
     -webkit-box-direction: normal;
         -ms-flex-direction: column;
             flex-direction: column;
-    min-width: 100%;
+    min-width: var(--min-width);
     max-height: var(--max-height);
     background: rgba(var(--foreground-color), 1);
     border: solid 1px rgba(var(--text-color), 0.2);
@@ -1324,6 +1346,20 @@ smSelect.innerHTML = `
     -webkit-transform: rotate(180deg);
         -ms-transform: rotate(180deg);
             transform: rotate(180deg)
+}
+@media (any-hover: hover){
+    ::-webkit-scrollbar{
+        width: 0.5rem;
+        height: 0.5rem;
+    }
+    
+    ::-webkit-scrollbar-thumb{
+        background: rgba(var(--text-color), 0.3);
+        border-radius: 1rem;
+        &:hover{
+            background: rgba(var(--text-color), 0.5);
+        }
+    }
 }
 </style>
 <div class="select" >
@@ -1352,6 +1388,10 @@ customElements.define('sm-select', class extends HTMLElement {
     }
     set value(val) {
         this.setAttribute('value', val)
+    }
+
+    reset = () => {
+
     }
 
     collapse() {
@@ -3287,4 +3327,449 @@ customElements.define('sm-menu-option', class extends HTMLElement {
             }
         })
     }
+})
+
+
+// tags input
+const tagsInput = document.createElement('template')
+tagsInput.innerHTML = `
+  <style>
+  *{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+  :host{
+    --border-radius: 0.3rem;
+    }
+.hide{
+    display: none !important;
+}
+.tags-wrapper{
+    position: relative;
+    display: flex;
+    cursor: text;
+    flex-wrap: wrap;
+    justify-items: flex-start;
+    align-items: center;
+    padding: 0.5rem 0.5rem 0 0.5rem;
+    border-radius: var(--border-radius);
+    background-color: rgba(var(--text-color), 0.06);
+  }
+  .tags-wrapper:focus-within{
+    box-shadow: 0 0 0 0.1rem var(--accent-color) inset !important;
+  }
+  
+  .tag {
+    cursor: pointer;
+    user-select: none;
+    align-items: center;
+    display: inline-flex;
+    border-radius: 0.3rem;
+    padding: 0.3rem 0.5rem;
+    margin: 0 0.5rem 0.5rem 0;
+    background-color: rgba(var(--text-color), 0.06);
+  }
+  
+  .icon {
+    height: 1.2rem;
+    width: 1.2rem;
+    margin-left: 0.3rem;
+    fill: rgba(var(--text-color), 0.8);
+  }
+  
+  input,
+  input:focus {
+    outline: none;
+    border: none;
+  }
+  
+  input {
+    display: inline-flex;
+    width: auto;
+    color: inherit;
+    max-width: inherit;
+    font-size: inherit;
+    font-family: inherit;
+    padding: 0.4rem 0.5rem;
+    margin: 0 0.5rem 0.5rem 0;
+    background-color: transparent;
+  }
+  .placeholder{
+      position: absolute;
+      padding: 0 0.5rem;
+      top: 50%;
+      font-weight: 500;
+      transform: translateY(-50%);
+      color: rgba(var(--text-color), 0.6);
+  }
+  </style>
+  <div class="tags-wrapper">
+    <input type="text" size="3"/>
+    <p class="placeholder"></p>
+  </div>
+`
+
+customElements.define('tags-input', class extends HTMLElement {
+	constructor() {
+		super()
+		this.attachShadow({
+			mode: 'open'
+		}).append(tagsInput.content.cloneNode(true))
+		this.input = this.shadowRoot.querySelector('input')
+		this.tagsWrapper = this.shadowRoot.querySelector('.tags-wrapper')
+		this.placeholder = this.shadowRoot.querySelector('.placeholder')
+        this.observeList = ['placeholder', 'limit']
+        this.limit = undefined
+        this.tags = new Set()
+    }
+    static get observedAttributes() {
+        return ['placeholder', 'limit']
+    }
+	get value() {
+		return [...this.tags].join()
+    }
+    reset = () => {
+        this.input.value = ''
+        this.tags.clear()
+        while (this.input.previousElementSibling) {
+            this.input.previousElementSibling.remove()
+        }
+    }
+    handleInput = e => {
+        const inputValueLength = e.target.value.trim().length
+        e.target.setAttribute('size', inputValueLength ? inputValueLength : '3')
+        if (inputValueLength) {
+            this.placeholder.classList.add('hide')
+        }
+        else if (!inputValueLength && !this.tags.size) {
+            this.placeholder.classList.remove('hide')
+        }
+	}
+    handleKeydown = e => {
+		if (e.key === ',' || e.key === '/') {
+			e.preventDefault()
+		}
+		if (e.target.value.trim() !== '') {
+            if (e.key === 'Enter' || e.key === ',' || e.key === '/' || e.code === 'Space') {
+				const tagValue = e.target.value.trim()
+				if (this.tags.has(tagValue)) {
+					this.tagsWrapper.querySelector(`[data-value="${tagValue}"]`).animate([
+						{
+							backgroundColor: 'initial'
+						},
+						{
+							backgroundColor: 'var(--accent-color)'
+						},
+						{
+							backgroundColor: 'initial'
+						},
+					], {
+						duration: 300
+					})
+				}
+				else {
+					const tag = document.createElement('span')
+					tag.dataset.value = tagValue
+					tag.className = 'tag'
+					tag.innerHTML = `
+                        <span class="tag-text">${tagValue}</span>
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z"/></svg>
+                        `
+					this.input.before(tag)
+					this.tags.add(tagValue)
+				}
+                e.target.value = ''
+                e.target.setAttribute('size', '3')
+                if (this.limit && this.limit < this.tags.size + 1) {
+                    this.input.readOnly = true
+                    return
+                }
+			}
+		}
+		else {
+            if (e.key === 'Backspace' && this.input.previousElementSibling) {
+                this.removeTag(this.input.previousElementSibling)
+			}
+            if (this.limit && this.limit > this.tags.size){
+                this.input.readOnly = false
+            }
+		}
+	}
+	handleClick = e => {
+		if (e.target.closest('.tag')) {
+			this.removeTag(e.target.closest('.tag'))
+		}
+		else {
+			this.input.focus()
+		}
+	}
+	removeTag = (tag) => {
+		this.tags.delete(tag.dataset.value)
+        tag.remove()
+        if (!this.tags.size) {
+            this.placeholder.classList.remove('hide')
+        }
+	}
+    connectedCallback() {
+		this.input.addEventListener('input', this.handleInput)
+		this.input.addEventListener('keydown', this.handleKeydown)
+		this.tagsWrapper.addEventListener('click', this.handleClick)
+    }
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (name === 'placeholder') {
+            this.placeholder.textContent = newValue
+        }
+        if (name === 'limit') {
+            this.limit = parseInt(newValue)
+        }
+    }
+	disconnectedCallback() {
+		this.input.removeEventListener('input', this.handleInput)
+		this.input.removeEventListener('keydown', this.handleKeydown)
+		this.tagsWrapper.removeEventListener('click', this.handleClick)
+	}
+})
+
+// file input
+const fileInput = document.createElement('template')
+fileInput.innerHTML = `
+  	<style>
+		*{
+			padding: 0;
+			margin: 0;
+			box-sizing: border-box;
+		}
+		:host{
+			--border-radius: 0.3rem;
+			--button-color: inherit;
+			--button-font-weight: 500;
+			--button-background-color: var(--accent-color);
+		}
+		.file-input {
+			display: flex;
+		}
+		
+		.file-picker {
+            display: flex;
+			cursor: pointer;
+			user-select: none;
+            align-items: center;
+			padding: 0.5rem 0.8rem;
+			color: var(--button-color);
+			border-radius: var(--border-radius);
+			font-weight: var(--button-font-weigh);
+			background-color: var(--button-background-color);
+		}
+		.files-preview-wrapper{
+			display: grid;
+			gap: 0.5rem;
+			list-style: none;
+		}
+		.files-preview-wrapper:not(:empty){
+            margin-bottom: 1rem;
+		}
+		.file-preview{
+			display: grid;
+            gap: 0.5rem;
+            align-items: center;
+			padding: 0.5rem 0.8rem;
+			border-radius: var(--border-radius);
+			background-color: rgba(var(--text-color), 0.06)
+		}
+		.file-name{
+		}
+        .file-size{
+            font-size: 0.8rem;
+            font-weight: 400;
+            color: rgba(var(--text-color), 0.8);
+        }
+		input[type=file] {
+			display: none;
+		}
+  	</style>
+	<ul class="files-preview-wrapper"></ul>
+  	<label tabindex="0" class="file-input">
+		<div class="file-picker"><slot>Choose file</slot></div>
+		<input type="file">
+	</label>
+`
+
+customElements.define('file-input', class extends HTMLElement {
+	constructor() {
+		super()
+		this.attachShadow({
+			mode: 'open'
+		}).append(fileInput.content.cloneNode(true))
+		this.input = this.shadowRoot.querySelector('input')
+		this.fileInput = this.shadowRoot.querySelector('.file-input')
+		this.filesPreviewWraper = this.shadowRoot.querySelector('.files-preview-wrapper')
+		this.observeList = ['accept', 'multiple', 'capture']
+	}
+	static get observedAttributes() {
+		return ['accept', 'multiple', 'capture']
+	}
+	get files() {
+		return this.input.files
+	}
+	set accept(val) {
+		this.setAttribute('accept', val)
+	}
+	set multiple(val) {
+		if (val) {
+			this.setAttribute('mutiple', '')
+		}
+		else {
+			this.removeAttribute('mutiple')
+		}
+	}
+	set capture(val) {
+		this.setAttribute('capture', val)
+	}
+	set value(val) {
+		this.input.value = val
+    }
+    get isValid() {
+        return this.input.value !== ''
+    }
+    reset = () => {
+        this.input.value = ''
+        this.filesPreviewWraper.innerHTML = ''
+    }
+    formatBytes = (a,b=2) => {if(0===a)return"0 Bytes";const c=0>b?0:b,d=Math.floor(Math.log(a)/Math.log(1024));return parseFloat((a/Math.pow(1024,d)).toFixed(c))+" "+["Bytes","KB","MB","GB","TB","PB","EB","ZB","YB"][d]}
+	createFilePreview = (file) => {
+        const filePreview = document.createElement('li')
+        const {name, size} = file
+		filePreview.className = 'file-preview'
+		filePreview.innerHTML = `
+			<div class="file-name">${name}</div>
+            <h5 class="file-size">${this.formatBytes(size)}</h5>
+		`
+		return filePreview
+	}
+	handleChange = (e) => {
+		this.filesPreviewWraper.innerHTML = ''
+		const frag = document.createDocumentFragment()
+		Array.from(e.target.files).forEach(file => {
+			frag.append(
+				this.createFilePreview(file)
+			)
+		});
+		this.filesPreviewWraper.append(frag)
+    }
+    handleKeyDown = e => {
+        if (e.key === 'Enter' || e.code === 'Space') {
+            e.preventDefault()
+            this.input.click()
+        }
+    }
+    connectedCallback() {
+        this.setAttribute('role', 'button')
+        this.setAttribute('aria-label', 'File upload')
+        this.input.addEventListener('change', this.handleChange)
+        this.fileInput.addEventListener('keydown', this.handleKeyDown)
+	}
+	attributeChangedCallback(name) {
+		if (this.observeList.includes(name)){
+            if (this.hasAttribute(name)) {
+                this.input.setAttribute(name, this.getAttribute(name) ? this.getAttribute(name) : '')
+			}
+			else {
+                this.input.removeAttribute(name)
+			}
+		}
+	}
+	disconnectedCallback() {
+        this.input.removeEventListener('change', this.handleChange)
+        this.fileInput.removeEventListener('keydown', this.handleKeyDown)
+	}
+})
+
+// sm-form
+const smForm = document.createElement('template')
+smForm.innerHTML = `
+    <style>
+    *{
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+    }
+    :host{
+        --gap: 1rem;
+        width: 100%;
+    }
+    form{
+        display: grid;
+        gap: var(--gap);
+        width: 100%;
+    }
+    </style>
+	<form onsubmit="return false">
+		<slot></slot>
+	</form>
+`
+
+customElements.define('sm-form', class extends HTMLElement {
+	constructor() {
+		super()
+		this.attachShadow({
+			mode: 'open'
+		}).append(smForm.content.cloneNode(true))
+
+		this.form = this.shadowRoot.querySelector('form')
+		this.formElements
+		this.requiredElements
+		this.submitButton
+		this.resetButton
+		this.allRequiredValid = false
+	}
+	debounce = (callback, wait) => {
+		let timeoutId = null;
+		return (...args) => {
+			window.clearTimeout(timeoutId);
+			timeoutId = window.setTimeout(() => {
+				callback.apply(null, args);
+			}, wait);
+		};
+	}
+	handleInput = this.debounce((e) => {
+		this.allRequiredValid = this.requiredElements.every(elem => elem.isValid)
+		if (!this.submitButton) return;
+		if (this.allRequiredValid) {
+			this.submitButton.disabled = false;
+		}
+		else {
+			this.submitButton.disabled = true;
+		}
+	}, 100)
+	handleKeydown = this.debounce((e) => {
+		if (e.key === 'Enter') {
+			if (this.allRequiredValid) {
+				this.submitButton.click()
+			}
+			else {
+				// implement show validity logic 
+			}
+		}
+	}, 100)
+	reset = () => {
+		this.formElements.forEach(elem => elem.reset())
+	}
+	connectedCallback() {
+		const slot = this.shadowRoot.querySelector('slot')
+		slot.addEventListener('slotchange', e => {
+			this.formElements = [...this.querySelectorAll('sm-input, sm-textarea, sm-checkbox, tags-input, file-input, sm-switch, sm-checkbox')]
+			this.requiredElements = this.formElements.filter(elem => elem.hasAttribute('required'))
+			this.submitButton = e.target.assignedElements().find(elem => elem.getAttribute('variant') === 'primary' || elem.getAttribute('type') === 'submit');
+			this.resetButton = e.target.assignedElements().find(elem => elem.getAttribute('type') === 'reset');
+            if (this.resetButton) {
+				this.resetButton.addEventListener('click', this.reset)
+			}
+		})
+		this.addEventListener('input', this.handleInput)
+		this.addEventListener('keydown', this.handleKeydown)
+	}
+	disconnectedCallback() {
+		this.removeEventListener('input', this.handleInput)
+	}
 })
