@@ -445,6 +445,12 @@ file-input{
         fill: var(--background-color);
     }
 }
+summary{
+    user-select: none;
+    cursor: pointer;
+    justify-self: center;
+    margin-bottom: 1.5rem;
+}
 .page-footer{
     display: grid;
     gap: 1.5rem;
