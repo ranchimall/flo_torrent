@@ -683,8 +683,6 @@
     }
     async function refreshUTXOs() {
         console.log("refreshUTXOs");
-        showPopup("show_progress_popup");
-        getRef("overlay_content").innerHTML = "";
         var floID = getRef('floID').value;
         var wif = await getPromptInput("Enter FLO private key", '', false);
         console.log(wif)
@@ -693,15 +691,14 @@
             hidePopup()
             return;
         }
-        var loader = document.createElement("div");
-        loader.setAttribute("class", "loader");
-        getRef("overlay_content").appendChild(loader);
+        getRef("overlay_content").innerHTML = "";
         var overlaytext = document.createElement("div");
         overlaytext.innerHTML = `
         <svg viewBox="0 0 64 64" class="loader"><circle cx="32" cy="32" r="32" /></svg>
         <span>Refreshing UTXOs</span>
         `;
         getRef("overlay_content").appendChild(overlaytext);
+        showPopup("show_progress_popup");
 
         var trx = bitjs.transaction();
         var utxoAmt = 0.0;
