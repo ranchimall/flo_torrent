@@ -380,9 +380,9 @@ ul {
 #main_header {
   position: relative;
   display: grid;
-  gap: 1rem;
   padding: 1rem;
   align-items: center;
+  margin-bottom: 1rem;
   grid-template-columns: 1fr auto auto;
 }
 #main_header a.button {
