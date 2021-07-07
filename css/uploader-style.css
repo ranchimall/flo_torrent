@@ -536,6 +536,12 @@ summary {
   margin-left: -0.4rem;
   margin-right: 0.1rem;
 }
+.page-footer h5 {
+  font-weight: 400;
+}
+.page-footer h4 {
+  font-weight: 600;
+}
 
 @media screen and (min-width: 640px) {
   #main_header {
