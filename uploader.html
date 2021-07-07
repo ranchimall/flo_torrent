@@ -696,7 +696,10 @@
         loader.setAttribute("class", "loader");
         getRef("overlay_content").appendChild(loader);
         var overlaytext = document.createElement("div");
-        overlaytext.innerHTML = 'Refreshing UTXOs';
+        overlaytext.innerHTML = `
+        <svg viewBox="0 0 64 64" class="loader"><circle cx="32" cy="32" r="32" /></svg>
+        <span>Refreshing UTXOs</span>
+        `;
         getRef("overlay_content").appendChild(overlaytext);
 
         var trx = bitjs.transaction();
@@ -720,7 +723,7 @@
         if (!txid)
             notify(`Refresh Unsuccessful! Rise the refresh fee and Try again!`, 'error');
         else
-            notify(`Refresh UTXO successful\ntxid:${txid}`, 'error');
+            notify(`Refresh UTXO successful\ntxid:${txid}`, 'success');
         hidePopup()
     }
 
