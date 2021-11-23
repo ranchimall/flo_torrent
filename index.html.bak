@@ -324,7 +324,7 @@
     <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6"></script>
     <script>
         const cryptocoin = "FLO";
-        const mainnet = `https://flosight.duckdns.org/`;
+        const mainnet = `https://livenet.flocha.in`;
         const testnet = `https://testnet-flosight.duckdns.org`;
         const adminID = "FDG64XNjdsA4rAgfm4ABEs2RcTgqn8Jecv";
         const kudosID = "FKAEdnPfjXLHSYwrXQu377ugN4tXU7VGdf";
@@ -1155,7 +1155,7 @@
                     getRef('torrent_description').textContent = description
                     getRef('torrent_tags').textContent = tags.split('/').join('•')
                     getRef('torrent_uploader').textContent = `Uploaded by ${uploader}`
-                    getRef('torrent_index_tx').href = `https://flosight.duckdns.org/tx/${startTx}`
+                    getRef('torrent_index_tx').href = `https://livenet.flocha.in/tx/${startTx}`
                     break;
                 case 'browse':
                     const category = getRef('browse_category_selector').value
