@@ -15,21 +15,23 @@
 
 <body data-theme="">
     <sm-notifications id="notification_drawer"></sm-notifications>
-    <audio id="notification_sound">
-        <source src="https://rmservices.duckdns.org/files/notification-sound.mp3" type="audio/mpeg">
-        <source src="https://rmservices.duckdns.org/files/notification-sound.ogg" type="audio/ogg">
-    </audio>
-    <sm-popup id="confirmation">
+    <sm-popup id="confirmation_popup">
+        <h4 id="confirm_title"></h4>
         <p id="confirm_message"></p>
-        <div class="flex align-center">
-            <sm-button variant="no-outline" class="cancel-btn">Cancel</sm-button>
-            <sm-button variant="no-outline" class="submit-btn">OK</button>
+        <div class="flex align-center gap-0-5 margin-left-auto">
+            <button class="button cancel-button">Cancel</button>
+            <button class="button button--primary confirm-button">OK</button>
         </div>
     </sm-popup>
     <sm-popup id="filter_popup">
         <header class="popup__header" slot="header">
             <button class="popup__header__close" onclick="getRef('filter_popup').hide()">
-                <svg class="icon close-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z"/></svg>
+                <svg class="icon close-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+                    height="24">
+                    <path fill="none" d="M0 0h24v24H0z" />
+                    <path
+                        d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" />
+                </svg>
             </button>
             <h3>Filter</h3>
         </header>
@@ -43,7 +45,7 @@
                 <button onclick="addFilter()" class="button button--primary">Fliter</button>
             </div>
         </form>
-    </section>
+        </section>
     </sm-popup>
     <header id="main_header">
         <div class="flex align-center">
@@ -51,22 +53,10 @@
                 <path
                     d="M20.46,21.32C20,19.78,18.6,18.59,15.3,17a12.67,12.67,0,0,1-2.64-1.56,4.27,4.27,0,0,1-.79-1,2.6,2.6,0,0,1,0-1.41c.24-.68.49-1,2.43-2.85a7.18,7.18,0,0,0,2.09-2.92,4.25,4.25,0,0,0,0-1.77,6.52,6.52,0,0,0-2.85-3.11c-.56-.36-.81-.4-.81-.15a2.33,2.33,0,0,1-.18.45L12.4,3l-.53-.36c-.28-.21-.64-.41-.77-.49s-.46-.11-.46,0a6.21,6.21,0,0,1-.37.83s-.08,0-.17-.08c-1.15-.83-1.64-1-1.64-.73A7.33,7.33,0,0,1,7.7,3.65C6.48,5.68,5.24,6.7,4,6.7c-.56,0-.54,0-.37.64s.2.58.68.43a3.37,3.37,0,0,0,1.09-.54.86.86,0,0,1,.3-.17,1.34,1.34,0,0,1,.13.39.79.79,0,0,0,.17.4A3.5,3.5,0,0,0,7.37,7.3L7.8,7l.09.34c.12.45.19.51.62.39a4.25,4.25,0,0,0,2.17-1.54l.38-.45,0,.39A5.92,5.92,0,0,1,8.89,9.54L7.67,10.71c-2,1.93-1.89,3.51.37,5a27.41,27.41,0,0,0,2.89,1.51c.17.07.62.32,1,.54C14,19,15,20.23,15,21.48a2,2,0,0,0,0,.49h0c0,.05,0,.05.56-.1a1.89,1.89,0,0,0,.53-.21,2.41,2.41,0,0,0-.34-1.15,7.05,7.05,0,0,0-1.68-1.77,21.91,21.91,0,0,0-3.2-1.83A9.53,9.53,0,0,1,8.16,15.2a2.18,2.18,0,0,1-.74-1.55C7.42,12.79,7.86,12,9,11c1.77-1.64,2.45-2.45,2.92-3.55a2.28,2.28,0,0,0,.26-1.26A2,2,0,0,0,12,5.06l-.2-.45L12,4.3l.28-.49.09-.18L12.6,4a3.69,3.69,0,0,1,.61,1.76A3.47,3.47,0,0,1,12.94,7l-.09.25s-.21.37-.41.69A17.78,17.78,0,0,1,9.91,10.6c-1.07,1-1.43,1.62-1.47,2.47a2.05,2.05,0,0,0,.7,1.73,10.47,10.47,0,0,0,3.28,2.08c2.28,1.13,3.26,1.81,4,2.73a2.94,2.94,0,0,1,.74,1.75,1.26,1.26,0,0,0,.09.57.48.48,0,0,0,.26,0l.51-.13.29-.08,0-.28c-.13-1-1-2-2.47-3a25.52,25.52,0,0,0-3.26-1.77,8.59,8.59,0,0,1-2.23-1.43,2.09,2.09,0,0,1-.5-2.62c.26-.53.5-.83,2.35-2.6,1.51-1.45,2.15-2.58,2.15-3.79A3.67,3.67,0,0,0,13,3.48a3,3,0,0,1-.4-.42A1.85,1.85,0,0,1,13,2.33a6.74,6.74,0,0,1,1.83,1.73,2.62,2.62,0,0,1,.47,1.68,3,3,0,0,1-.55,1.84c-.45.78-.79,1.14-2.67,2.93a5.56,5.56,0,0,0-1.3,1.64,1.77,1.77,0,0,0-.21,1,1.76,1.76,0,0,0,.19.92,6.28,6.28,0,0,0,2.9,2.34,21.6,21.6,0,0,1,3.66,2c1.35,1,2,2,2,3a1.06,1.06,0,0,0,.05.47,2.83,2.83,0,0,0,1-.24C20.56,21.68,20.56,21.66,20.46,21.32ZM7.29,6.4h0a2.23,2.23,0,0,1-.9.28L6,6.72l.43-.53a15.22,15.22,0,0,0,1.89-3,3.52,3.52,0,0,1,.38-.67c.07-.08.49.2,1,.64l.39.35L9.66,4A6.7,6.7,0,0,1,7.29,6.4Zm3.58-1.11A5.8,5.8,0,0,1,9.25,6.51h0a3.3,3.3,0,0,1-.74.17l-.35,0,.39-.49a15.64,15.64,0,0,0,1.32-2,4.63,4.63,0,0,1,.28-.49c.06-.08.33.26.57.77l.28.57Zm1-1.4a1.63,1.63,0,0,1-.28.4A6.63,6.63,0,0,1,11,3.72l-.53-.56.12-.29c.2-.49.24-.51.64-.19a5.57,5.57,0,0,1,.85.78A2.78,2.78,0,0,1,11.87,3.89Z" />
             </svg>
-            <a href="./index.html" class="header__company-name">RanchiMall</a>
+            <a href="#/home" class="header__company-name">RanchiMall</a>
         </div>
-        <a href="#how_it_works" class="button justify-right">How it works?</a>
-        <label class="theme-switcher" title="Change theme">
-            <input id="theme_switcher" class="theme-switcher__checkbox" type="checkbox">
-            <svg class="icon moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                <path fill="none" d="M0 0h24v24H0z" />
-                <path
-                    d="M10 6a8 8 0 0 0 11.955 6.956C21.474 18.03 17.2 22 12 22 6.477 22 2 17.523 2 12c0-5.2 3.97-9.474 9.044-9.955A7.963 7.963 0 0 0 10 6zm-6 6a8 8 0 0 0 8 8 8.006 8.006 0 0 0 6.957-4.045c-.316.03-.636.045-.957.045-5.523 0-10-4.477-10-10 0-.321.015-.64.045-.957A8.006 8.006 0 0 0 4 12zm14.164-9.709L19 2.5v1l-.836.209a2 2 0 0 0-1.455 1.455L16.5 6h-1l-.209-.836a2 2 0 0 0-1.455-1.455L13 3.5v-1l.836-.209A2 2 0 0 0 15.29.836L15.5 0h1l.209.836a2 2 0 0 0 1.455 1.455zm5 5L24 7.5v1l-.836.209a2 2 0 0 0-1.455 1.455L21.5 11h-1l-.209-.836a2 2 0 0 0-1.455-1.455L18 8.5v-1l.836-.209a2 2 0 0 0 1.455-1.455L20.5 5h1l.209.836a2 2 0 0 0 1.455 1.455z" />
-            </svg>
-            <svg class="icon sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                <path fill="none" d="M0 0h24v24H0z" />
-                <path
-                    d="M12 18a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm0-2a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM11 1h2v3h-2V1zm0 19h2v3h-2v-3zM3.515 4.929l1.414-1.414L7.05 5.636 5.636 7.05 3.515 4.93zM16.95 18.364l1.414-1.414 2.121 2.121-1.414 1.414-2.121-2.121zm2.121-14.85l1.414 1.415-2.121 2.121-1.414-1.414 2.121-2.121zM5.636 16.95l1.414 1.414-2.121 2.121-1.414-1.414 2.121-2.121zM23 11v2h-3v-2h3zM4 11v2H1v-2h3z" />
-            </svg>
-        </label>
+        <a href="#/how_it_works" class="button justify-right">How it works?</a>
+        <theme-toggle></theme-toggle>
     </header>
     <main>
         <section id="loading_page" class="page">
@@ -79,7 +69,7 @@
             <h4>FLO Torrent</h4>
             <p>Getting torrents from FLO blockchain</p>
         </section>
-        <section id="homepage" class="page hide-completely">
+        <section id="home" class="page hidden">
             <section id="search_section" class="page-layout">
                 <svg class="app-icon icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
                     <path
@@ -103,7 +93,7 @@
             <section class="page-layout">
                 <div class="flex align-center space-between">
                     <h4>Recent</h4>
-                    <a class="button" href="#browse">
+                    <a class="button" href="#/browse">
                         <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24"
                             width="24px">
                             <path d="M0 0h24v24H0z" fill="none" />
@@ -116,7 +106,7 @@
                 <section id="torrent_container" class="torrent-container"></section>
             </section>
         </section>
-        <section id="torrent" class="page hide-completely page-layout">
+        <section id="torrent" class="page hidden page-layout">
             <section class="torrent-preview">
                 <div id="torrent_type_icon" class="torrent-type-icon"></div>
                 <div class="torrent-preview__info-section">
@@ -125,16 +115,21 @@
                     <p id="torrent_description"></p>
                     <h5 id="torrent_uploader"></h5>
                     <a id="torrent_index_tx" target="_blank" class="flex align-center">
-                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M10 6v2H5v11h11v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6zm11-3v8h-2V6.413l-7.793 7.794-1.414-1.414L17.585 5H13V3h8z"/></svg>
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                            <path fill="none" d="M0 0h24v24H0z" />
+                            <path
+                                d="M10 6v2H5v11h11v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6zm11-3v8h-2V6.413l-7.793 7.794-1.414-1.414L17.585 5H13V3h8z" />
+                        </svg>
                         See the index entry in blockchain
                     </a>
                     <div id="download_container">
-                        <button id="torrent_download_button"
+                        <button id="torrent_download_button" class="button button--primary"
                             onclick="downloadTorrent(currentTorrent.filename, currentTorrent.startTx, currentTorrent.chunks, currentTorrent.id, true)">
-                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+                                height="24">
                                 <path fill="none" d="M0 0h24v24H0z" />
                                 <path
-                                d="M16 2l5 5v14.008a.993.993 0 0 1-.993.992H3.993A1 1 0 0 1 3 21.008V2.992C3 2.444 3.445 2 3.993 2H16zm-3 10V8h-2v4H8l4 4 4-4h-3z" />
+                                    d="M16 2l5 5v14.008a.993.993 0 0 1-.993.992H3.993A1 1 0 0 1 3 21.008V2.992C3 2.444 3.445 2 3.993 2H16zm-3 10V8h-2v4H8l4 4 4-4h-3z" />
                             </svg>
                             Get torrent
                         </button>
@@ -143,7 +138,7 @@
                 </div>
             </section>
         </section>
-        <section id="search" class="page hide-completely page-layout">
+        <section id="search" class="page hidden page-layout">
             <div class="grid gap-1">
                 <h1 class="page__title">Search</h1>
                 <section class="search-container">
@@ -161,51 +156,55 @@
             <div class="flex align-center space-between">
                 <p id="result_for"></p>
                 <button id="filter_button" class="button" onclick="getRef('filter_popup').show()">
-                    <svg class="icon button__icon button__icon--left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0H24V24H0z"/><path d="M21 4L21 6 20 6 14 15 14 22 10 22 10 15 4 6 3 6 3 4z"/></svg>
+                    <svg class="icon button__icon button__icon--left" xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24" width="24" height="24">
+                        <path fill="none" d="M0 0H24V24H0z" />
+                        <path d="M21 4L21 6 20 6 14 15 14 22 10 22 10 15 4 6 3 6 3 4z" />
+                    </svg>
                     Filter
                 </button>
             </div>
-            <section id="filters_bar" class="hide-completely">
+            <section id="filters_bar" class="hidden">
                 <div id="selected_filters_container"></div>
                 <button class="button" onclick="resetFilter()">
-                    <svg class="icon button__icon button__icon--left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-11.414L9.172 7.757 7.757 9.172 10.586 12l-2.829 2.828 1.415 1.415L12 13.414l2.828 2.829 1.415-1.415L13.414 12l2.829-2.828-1.415-1.415L12 10.586z"/></svg>
+                    <svg class="icon button__icon button__icon--left" xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24" width="24" height="24">
+                        <path fill="none" d="M0 0h24v24H0z" />
+                        <path
+                            d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-11.414L9.172 7.757 7.757 9.172 10.586 12l-2.829 2.828 1.415 1.415L12 13.414l2.828 2.829 1.415-1.415L13.414 12l2.829-2.828-1.415-1.415L12 10.586z" />
+                    </svg>
                     Clear all
                 </button>
             </section>
             <section id="search_result" class="torrent-container"></section>
-            <strip-select id="search_page_selector"></strip-select>
+            <sm-chips id="search_page_selector"></sm-chips>
         </section>
-        <section id="browse" class="hide-completely page page-layout">
+        <section id="browse" class="hidden page page-layout">
             <section class="flex direction-column">
                 <h1 class="page__title">Browse</h1>
-                <strip-select id="browse_category_selector">
-                    <strip-option value="movie" selected>Movie</strip-option>
-<!--                     <strip-option value="tv series">TV series</strip-option>
-                    <strip-option value="video">Video</strip-option>
-                    <strip-option value="music">Music</strip-option>
-                    <strip-option value="software">Software</strip-option>
-                    <strip-option value="game">Game</strip-option>
-                    <strip-option value="image">Image</strip-option>
-                    <strip-option value="audio">Audio</strip-option>
-                    <strip-option value="misc">Misc</strip-option> -->
-                </strip-select>
+                <sm-chips id="browse_category_selector">
+                    <sm-chip value="movie" selected>Movie</sm-chip>
+                </sm-chips>
             </section>
             <section id="browser_category_torrents" class="torrent-container"></section>
-            <strip-select id="page_selector"></strip-select>
+            <sm-chips id="page_selector"></sm-chips>
         </section>
-        <section id="how_it_works" class="page hide-completely page-layout">
+        <section id="how_it_works" class="page hidden page-layout">
             <h1 class="page__title">How it works?</h1>
-            <p>FLO Torrent stores torrent files directly on the FLO blockchain making it completely decentralized. But this approach came with some challenges.</p>
+            <p>FLO Torrent stores torrent files directly on the FLO blockchain making it completely decentralized. But
+                this approach came with some challenges.</p>
             <section class="info-section">
                 <object class="info__image" data="assets/torrent-vs-flo-tx.svg" type="image/svg+xml"></object>
                 <div class="textual-info">
                     <h2 class="info__title h2">The problem</h2>
                     <p>
-                        The maximum number of free characters that can be stored in a FLO blockchain transaction is 1040.
+                        The maximum number of free characters that can be stored in a FLO blockchain transaction is
+                        1040.
                         But torrents are typically 20,000 characters each.
                     </p>
                     <p>
-                        So, we need to first design a way to split the torrent into smaller segments and find a way to link them inside the blockchain.
+                        So, we need to first design a way to split the torrent into smaller segments and find a way to
+                        link them inside the blockchain.
 
                     </p>
                 </div>
@@ -215,7 +214,8 @@
                 <div class="textual-info">
                     <h2 class="info__title h2">The solution</h2>
                     <p>
-                        Splitting can easily be achieved by reading only 900 characters from the torrent file one at a time and using the remaining characters for linking purposes.
+                        Splitting can easily be achieved by reading only 900 characters from the torrent file one at a
+                        time and using the remaining characters for linking purposes.
                     </p>
                 </div>
             </section>
@@ -231,28 +231,31 @@
                         This process continues until all segments are put on the blockchain.
                     </p>
                 </div>
-            </section>    
+            </section>
             <section class="info-section">
                 <object class="info__image" data="assets/chunk-linking.svg" type="image/svg+xml"></object>
                 <div class="textual-info">
                     <h2 class="info__title h2">Linking the chunks</h2>
                     <p>
-                        The transaction ID of the last segment is the entry point to the full data stream and is published as a torrent ID.
+                        The transaction ID of the last segment is the entry point to the full data stream and is
+                        published as a torrent ID.
                     </p>
                 </div>
-            </section>    
+            </section>
             <section class="info-section">
                 <object class="info__image" data="assets/global.svg" type="image/svg+xml"></object>
                 <div class="textual-info">
                     <h2 class="info__title h2">Discoverability</h2>
                     <p>
-                        Transactions from a global FLO Address will list all Torrent IDs, and other details like the name of the torrent, description, etc.
+                        Transactions from a global FLO Address will list all Torrent IDs, and other details like the
+                        name of the torrent, description, etc.
                     </p>
                     <p>
-                        This global FLO Address will be a trusted address and will list only trusted and good quality torrents.
+                        This global FLO Address will be a trusted address and will list only trusted and good quality
+                        torrents.
                     </p>
                 </div>
-            </section>    
+            </section>
             <section class="info-section">
                 <object class="info__image" data="assets/client-side.svg" type="image/svg+xml"></object>
                 <div class="textual-info">
@@ -261,43 +264,50 @@
                         FLO torrent will first read the global FLO Address, find all the torrent details and, list it.
                     </p>
                     <p>
-                        When you select a torrent to download. Its entry transaction ID is retrieved, and the last segment of the torrent file is downloaded. The previous transaction ID is also retrieved, and data in that ID is downloaded.
+                        When you select a torrent to download. Its entry transaction ID is retrieved, and the last
+                        segment of the torrent file is downloaded. The previous transaction ID is also retrieved, and
+                        data in that ID is downloaded.
                     </p>
                     <p>
-                        Finally, all segments are downloaded until we reach the first segment which has no further linkages.
+                        Finally, all segments are downloaded until we reach the first segment which has no further
+                        linkages.
                     </p>
                 </div>
-            </section>    
+            </section>
             <section class="info-section">
                 <object class="info__image" data="assets/torrent-assembly.svg" type="image/svg+xml"></object>
                 <div class="textual-info">
                     <h2 class="info__title h2">Putting everything back</h2>
                     <p>
-                        Thus, all segments of the torrent can be downloaded from the blockchain. 
+                        Thus, all segments of the torrent can be downloaded from the blockchain.
                     </p>
                     <p>
-                        Now, all the browser has to do is reassemble them in the correct order, and we have our torrent file.
+                        Now, all the browser has to do is reassemble them in the correct order, and we have our torrent
+                        file.
                     </p>
                 </div>
-            </section>    
+            </section>
             <section class="info-section">
                 <object class="info__image" data="assets/missing-piece.svg" type="image/svg+xml"></object>
                 <div class="textual-info">
                     <h2 class="info__title h2">But why?</h2>
                     <p>
-                        This solution decentralizes the storage of Torrent files which was the last missing piece in the decentralization of the torrent ecosystem. After this the entire chain of the torrent ecosystem is decentralized.
+                        This solution decentralizes the storage of Torrent files which was the last missing piece in the
+                        decentralization of the torrent ecosystem. After this the entire chain of the torrent ecosystem
+                        is decentralized.
                     </p>
                 </div>
-            </section>    
+            </section>
             <section class="info-section">
                 <object class="info__image" data="assets/context-menu.svg" type="image/svg+xml"></object>
                 <div class="textual-info">
                     <h2 class="info__title h2">What if we get blocked?</h2>
                     <p>
-                        No worries, this app is completely contained within a single HTML file so even if the site URL is blocked if you saved this webpage as an HTML file it will work seamlessly.
+                        No worries, this app is completely contained within a single HTML file so even if the site URL
+                        is blocked if you saved this webpage as an HTML file it will work seamlessly.
                     </p>
                 </div>
-            </section>    
+            </section>
         </section>
     </main>
     <footer id="main_footer" class="page-layout">
@@ -671,11 +681,11 @@
                 `
             })
             if (fromTorrentPage) {
-                getRef('torrent_download_button').classList.add('hide-completely')
+                getRef('torrent_download_button').classList.add('hidden')
                 getRef('loader_container').append(progressIndicator)
             }
             else {
-                getRef(torrentId).querySelector('.torrent-card__download-button').classList.add('hide-completely')
+                getRef(torrentId).querySelector('.torrent-card__download-button').classList.add('hidden')
                 getRef(torrentId).append(progressIndicator)
             }
             getTorrentMetafromAPI(txid, 1, totalChunks, torrentId, fromTorrentPage).then(chunks => {
@@ -685,10 +695,10 @@
                 setTimeout(() => {
                     progressIndicator.remove()
                     if (fromTorrentPage) {
-                        getRef('torrent_download_button').classList.remove('hide-completely')
+                        getRef('torrent_download_button').classList.remove('hidden')
                     }
                     else {
-                        getRef(torrentId).querySelector('.torrent-card__download-button').classList.remove('hide-completely')
+                        getRef(torrentId).querySelector('.torrent-card__download-button').classList.remove('hidden')
                     }
                 }, 300);
             }).catch(error => {
@@ -726,6 +736,21 @@
     </script>
     <script id="default_ui_library">
         const domRefs = {};
+        const uiGlobals = {
+            connectionErrorNotifications: []
+        }
+
+        //Checks for internet connection status
+        if (!navigator.onLine)
+            uiGlobals.connectionErrorNotifications.push(notify('There seems to be a problem connecting to the internet, Please check you internet connection.', 'error'))
+        window.addEventListener('offline', () => {
+            uiGlobals.connectionErrorNotifications.push(notify('There seems to be a problem connecting to the internet, Please check you internet connection.', 'error'))
+        })
+        window.addEventListener('online', () => {
+            uiGlobals.connectionErrorNotifications.forEach(notificationId => getRef('notification_drawer').remove(notificationId))
+            uiGlobals.connectionErrorNotifications = []
+            notify('We are back online.', 'success')
+        })
 
         function getRef(elementId) {
             if (!domRefs.hasOwnProperty(elementId)) {
@@ -755,69 +780,6 @@
             if (innerHTML)
                 elem.innerHTML = innerHTML
             return elem
-        }
-
-        //Checks for internet connection status
-        if (!navigator.onLine)
-            notify(
-                "There seems to be a problem connecting to the internet, Please check you internet connection.",
-                "error",
-                "",
-                true
-            );
-        window.addEventListener("offline", () => {
-            notify(
-                "There seems to be a problem connecting to the internet, Please check you internet connection.",
-                "error",
-                true,
-                true
-            );
-        });
-        window.addEventListener("online", () => {
-            getRef("notification_drawer").clearAll();
-            notify("We are back online.", "success");
-        });
-
-        if (getRef("theme_switcher")) {
-            if (localStorage.theme === "dark") {
-                nightlight();
-                getRef("theme_switcher").checked = true;
-            } else if (localStorage.theme === "light") {
-                daylight();
-                getRef("theme_switcher").checked = false;
-            }
-            else {
-                if (window.matchMedia(`(prefers-color-scheme: dark)`).matches) {
-                    nightlight();
-                    getRef("theme_switcher").checked = true;
-                } else {
-                    daylight();
-                    getRef("theme_switcher").checked = false;
-                }
-            }
-
-            function daylight() {
-                document.body.setAttribute("data-theme", "light");
-            }
-
-            function nightlight() {
-                document.body.setAttribute("data-theme", "dark");
-            }
-            getRef("theme_switcher").addEventListener("change", function (e) {
-                if (this.checked) {
-                    nightlight();
-                    localStorage.setItem("theme", "dark");
-                } else {
-                    daylight();
-                    localStorage.setItem("theme", "light");
-                }
-            });
-        }
-
-        function setAttributes(el, attrs) {
-            for (key in attrs) {
-                el.setAttribute(key, attrs[key]);
-            }
         }
 
         function randomHsl(saturation = 80, lightness = 80) {
@@ -851,13 +813,20 @@
         }
 
         //Function for displaying toast notifications. pass in error for mode param if you want to show an error.
-        function notify(message, mode, pinned, sound) {
-            if (mode === "error") console.error(message);
-            else console.log(message);
-            getRef("notification_drawer").push(message, mode, pinned);
-            if (navigator.onLine && sound) {
-                getRef("notification_sound").currentTime = 0;
-                getRef("notification_sound").play();
+        function notify(message, mode, options = {}) {
+            let icon
+            switch (mode) {
+                case 'success':
+                    icon = `<svg class="icon icon--success" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z"/></svg>`
+                    break;
+                case 'error':
+                    icon = `<svg class="icon icon--error" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-1-7v2h2v-2h-2zm0-8v6h2V7h-2z"/></svg>`
+                    options.pinned = true
+                    break;
+            }
+            getRef("notification_drawer").push(message, { icon, ...options });
+            if (mode === 'error') {
+                console.error(message)
             }
         }
 
@@ -894,18 +863,10 @@
 
         window.addEventListener("load", () => {
             document.addEventListener("keyup", (e) => {
-                /*                 if (e.code === "Escape") {
-                                    if (isSiteMapOpen) {
-                                        hideSiteMap();
-                                    }
-                                    else if (isRoomOpen) {
-                                        hideRoom()
-                                    }
-                                } */
             });
             document.addEventListener("pointerdown", (e) => {
-                if (e.target.closest("button, sm-button:not([disable]), .interact")) {
-                    createRipple(e, e.target.closest("button, sm-button, .interact"));
+                if (e.target.closest("button, .interact")) {
+                    createRipple(e, e.target.closest("button, .interact"));
                 }
             });
         });
@@ -937,37 +898,15 @@
             };
         }
 
-        function debounce(func, wait, immediate) {
-            let timeout;
-            return function () {
-                let context = this,
-                    args = arguments;
-                let later = function () {
-                    timeout = null;
-                    if (!immediate) func.apply(context, args);
-                };
-                let callNow = immediate && !timeout;
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-                if (callNow) func.apply(context, args);
+        // Use when a function needs to be executed after user finishes changes
+        const debounce = (callback, wait) => {
+            let timeoutId = null;
+            return (...args) => {
+                window.clearTimeout(timeoutId);
+                timeoutId = window.setTimeout(() => {
+                    callback.apply(null, args);
+                }, wait);
             };
-        }
-
-        let timerId;
-        function throttle(func, delay) {
-            // If setTimeout is already scheduled, no need to do anything
-            if (timerId) {
-                return;
-            }
-
-            // Schedule a setTimeout after delay seconds
-            timerId = setTimeout(function () {
-                func();
-
-                // Once setTimeout function execution is finished, timerId = undefined so that in
-                // the next scroll event function execution can be scheduled by the setTimeout
-                timerId = undefined;
-            }, delay);
         }
 
     </script>
@@ -977,14 +916,14 @@
                 const { id, name, description, tags, type = 'misc', size, uploader, startTx, filename, chunks } = obj
                 const card = getRef('torrent_card_template').content.cloneNode(true).firstElementChild
                 card.id = id
-                card.querySelector('.torrent-info').href = `?id=${id}#torrent`
+                card.querySelector('.torrent-info').href = `#/torrent/${id}`
                 card.querySelector('.torrent-card__title').textContent = name
                 card.querySelector('.torrent-card__uploader').textContent = `by ${uploader}`
                 card.querySelector('.torrent-card__icon').innerHTML = getIcon(type)
                 return card
             },
-            filterOption(obj){
-                const {content, groupName, value} = obj
+            filterOption(obj) {
+                const { content, groupName, value } = obj
                 const option = create('label', {
                     className: 'filter-option interact'
                 })
@@ -995,8 +934,8 @@
                 `
                 return option
             },
-            selectedFilter(obj){
-                const {content, type} = obj
+            selectedFilter(obj) {
+                const { content, type } = obj
                 const option = create('div', {
                     className: 'selected-filter interact'
                 })
@@ -1051,17 +990,6 @@
             })
             return torrentsFrag
         }
-
-        function getSearchParams() {
-            const urlSearchParams = new URLSearchParams(window.location.search);
-            const params = Object.fromEntries(urlSearchParams.entries());
-            return params
-        }
-
-        function pushParams() {
-            history.pushState(null, null, `?query=${filteredSearch.query}#search`)
-        }
-
         let filteredSearch = {
             active: false,
             query: '',
@@ -1077,17 +1005,17 @@
             filteredSearch['query'] = searchKey
             let result
             if (filteredSearch.isActive) {
-                if(filteredSearch.category && filteredSearch.tags.size){
+                if (filteredSearch.category && filteredSearch.tags.size) {
                     result = await getFilteredTorrents(['type'], filteredSearch.category)
-                    result = await getFilteredTorrents(['tags'], [...filteredSearch.tags].join('/'), {torrents: result})
+                    result = await getFilteredTorrents(['tags'], [...filteredSearch.tags].join('/'), { torrents: result })
                 }
-                else if(filteredSearch.category){
+                else if (filteredSearch.category) {
                     result = await getFilteredTorrents(['type'], filteredSearch.category)
                 }
-                else if(filteredSearch.tags.size){
+                else if (filteredSearch.tags.size) {
                     result = await getFilteredTorrents(['tags'], [...filteredSearch.tags].join('/'))
                 }
-                result = await getFilteredTorrents(['name', 'filename', 'tags'], searchKey, {torrents: result})
+                result = await getFilteredTorrents(['name', 'filename', 'tags'], searchKey, { torrents: result })
             }
             else {
                 result = await getFilteredTorrents(['name', 'filename', 'tags'], searchKey)
@@ -1101,12 +1029,12 @@
 
             getRef('search_result').innerHTML = ``
             getRef('search_page_selector').innerHTML = ``
-            if(result.length > 20){
+            if (result.length > 20) {
                 const pages = Math.round(result.length / 20)
                 getRef('search_page_selector').append(createPageButtons(pages))
                 getRef('search_result').append(renderTorrents(result.slice(0, 20)))
             }
-            else{
+            else {
                 getRef('search_result').append(renderTorrents(result))
             }
 
@@ -1114,10 +1042,10 @@
         }
 
         const categories = ['movie', 'tv series', 'video', 'music', 'software', 'game', 'image', 'audio', 'misc']
-        const allTags = ['action', 'adventure', ,'anime', 'comedy', 'crime', 'drama', 'family', 'fantacy', 'horror', 'korean', 'mystery', 'romance', 'sci-fi', 'sport', 'thriller', 'western']
+        const allTags = ['action', 'adventure', , 'anime', 'comedy', 'crime', 'drama', 'family', 'fantacy', 'horror', 'korean', 'mystery', 'romance', 'sci-fi', 'sport', 'thriller', 'western']
 
-        function renderOptions(list, options = {}){
-            const {groupName} = options
+        function renderOptions(list, options = {}) {
+            const { groupName } = options
             const frag = document.createDocumentFragment()
             list.forEach(item => {
                 const optionObj = {
@@ -1130,25 +1058,61 @@
             return frag
         }
 
-        let currentpage = ''
+        const appState = {
+            params: {},
+            openedPages: new Set(),
+        }
+        const generalPages = ['sign_up', 'sign_in', 'loading', 'landing']
+        async function routeTo(targetPage, options = {}) {
+            const { firstLoad, hashChange } = options
+            let pageId
+            let params = {}
+            let searchParams
+            if (targetPage === '') {
+                pageId = 'home'
+            } else {
+                if (targetPage.includes('/')) {
+                    if (targetPage.includes('?')) {
+                        const splitAddress = targetPage.split('?')
+                        searchParams = splitAddress.pop()
+                        const pages = splitAddress.pop().split('/')
+                        pageId = pages[1]
+                        subPageId = pages[2]
+                    } else {
+                        const pages = targetPage.split('/')
+                        pageId = pages[1]
+                        subPageId = pages[2]
+                    }
+                } else {
+                    pageId = targetPage
+                }
+            }
+            appState.currentPage = pageId
 
-        async function showPage(target) {
-            let params = getSearchParams()
-            let page = target.includes('#') ? target.split('#')[1] : target
-            switch (page) {
-                case 'loading_page':
-                break;
+            if (searchParams) {
+                const urlSearchParams = new URLSearchParams('?' + searchParams);
+                params = Object.fromEntries(urlSearchParams.entries());
+            }
+            switch (pageId) {
+                case 'home':
+                    history.replaceState(null, null, '#/home')
+                    let allTorrents = await getDataFromIDB()
+                    allTorrents = allTorrents.reverse().slice(0, 8)
+                    getRef('torrent_container').innerHTML = ``
+                    getRef('torrent_container').append(renderTorrents(allTorrents))
+                    break;
                 case 'search':
-                    if(currentpage !== page){
+                    if (appState.lastPage !== pageId) {
                         getRef('category_selector').innerHTML = ''
-                        getRef('category_selector').append(renderOptions(categories, {groupName: 'category-selector'}))
+                        getRef('category_selector').append(renderOptions(categories, { groupName: 'category-selector' }))
                         getRef('tags_selector').innerHTML = ''
                         getRef('tags_selector').append(renderOptions(allTags))
                     }
-                    renderSearchResult(params.query)
+                    if (subPageId)
+                        renderSearchResult(subPageId)
                     break;
                 case 'torrent':
-                    currentTorrent = await getDataFromIDB(parseInt(params.id))
+                    currentTorrent = await getDataFromIDB(parseInt(subPageId))
                     const { id, name, description, tags, type = 'misc', size, uploader, startTx, filename, chunks } = currentTorrent
                     getRef('torrent_type_icon').innerHTML = getIcon(type)
                     getRef('torrent_name').textContent = name
@@ -1161,21 +1125,38 @@
                     const category = getRef('browse_category_selector').value
                     showCategoryTorrents(category)
                     break;
-                case 'how_it_works':
-                    break
-                default:
-                    page = 'homepage'
-                    history.replaceState(null, null, ' ')
-                    let allTorrents = await getDataFromIDB()
-                    allTorrents = allTorrents.reverse().slice(0, 8)
-                    getRef('torrent_container').innerHTML = ``
-                    getRef('torrent_container').append(renderTorrents(allTorrents))
             }
-            if(currentpage !== page){
-                document.querySelector('.page:not(.hide-completely)')?.classList.add('hide-completely')
-                getRef(page).classList.remove('hide-completely')
-                currentpage = page
+            if (appState.lastPage !== pageId) {
+                const animOptions = {
+                    duration: 100,
+                    fill: 'forwards',
+                    easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                }
+                document.querySelectorAll('.page').forEach(page => page.classList.add('hidden'))
+                getRef(pageId).closest('.page').classList.remove('hidden')
+                // getRef('main_card').style.overflowY = "hidden";
+                getRef(pageId).animate([
+                    {
+                        opacity: 0,
+                        transform: 'translateY(1rem)'
+                    },
+                    {
+                        opacity: 1,
+                        transform: 'translateY(0)'
+                    },
+                ],
+                    {
+                        duration: 300,
+                        easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                    }).onfinish = () => {
+                        // getRef('main_card').style.overflowY = "";
+                    }
+                appState.lastPage = pageId
             }
+            if (params)
+                appState.params = params
+            appState.openedPages.add(pageId)
+
         }
 
         function alphaIncSort(arr, prop) {
@@ -1185,9 +1166,9 @@
             return arr.sort((a, b) => b[prop].localeCompare(a[prop]))
         }
 
-        async function getFilteredTorrents(keys, searchKey, options = {}){
-            let {limit, torrents} = options
-            if(!torrents){
+        async function getFilteredTorrents(keys, searchKey, options = {}) {
+            let { limit, torrents } = options
+            if (!torrents) {
                 torrents = await getDataFromIDB()
             }
             const config = {
@@ -1195,21 +1176,21 @@
                 threshold: 0.2,
             }
             const fuseSearch = new Fuse(torrents, config)
-            return fuseSearch.search(searchKey, {limit}).map(elem => elem.item)
+            return fuseSearch.search(searchKey, { limit }).map(elem => elem.item)
         }
 
-        function createPageButtons(pages){
+        function createPageButtons(pages) {
             const paginationFrag = document.createDocumentFragment()
             for (let i = 0; i < pages; i++) {
-                    const pageButton = create('strip-option', {
-                        textContent: (i + 1)
-                    })
-                    pageButton.setAttribute('value', i)
-                    if (i === 0) {
-                        pageButton.setAttribute('selected', '')
-                    }
-                    paginationFrag.append(pageButton)
+                const pageButton = create('sm-chip', {
+                    textContent: (i + 1)
+                })
+                pageButton.setAttribute('value', i)
+                if (i === 0) {
+                    pageButton.setAttribute('selected', '')
                 }
+                paginationFrag.append(pageButton)
+            }
             return paginationFrag
         }
 
@@ -1230,11 +1211,11 @@
         }
 
         async function renderSearchSuggestions(searchKey, advance = false) {
-            const result = await getFilteredTorrents(['name', 'filename'], searchKey, {limit: 6})
-            if(advance){
+            const result = await getFilteredTorrents(['name', 'filename'], searchKey, { limit: 6 })
+            if (advance) {
                 getRef('advance_search_suggestions').innerHTML = ``
             }
-            else{
+            else {
                 getRef('search_suggestions').innerHTML = ``
             }
             if (result.length) {
@@ -1248,28 +1229,25 @@
                         innerHTML: elem.name.replace(regEx, `<span>$&</span>`),
                     })
                     suggestion.append(pre)
-                    suggestion.href = `?id=${elem.id}#torrent`
+                    suggestion.href = `#/torrent/${elem.id}`
                     suggestionsFrag.append(suggestion)
                 })
-                if(advance){
+                if (advance) {
                     getRef('advance_search_suggestions').append(suggestionsFrag)
                 }
-                else{
+                else {
                     getRef('search_suggestions').append(suggestionsFrag)
                 }
             }
         }
 
-        function handleEnter(e){
+        function handleEnter(e) {
             if (e.target.value.trim() !== '') {
                 switch (e.key) {
                     case 'Enter':
                         const searchKey = e.target.value.trim()
                         renderSearchResult(searchKey)
-                        pushParams()
-                        if(e.target.id === 'search_torrent'){
-                            showPage('search')
-                        }
+                        location.hash = `#/search/${filteredSearch.query}`;
                         e.target.value = ''
                         break;
                     case 'ArrowDown':
@@ -1279,8 +1257,8 @@
                 }
             }
         }
-        
-        function handleKeyboardNav(e){
+
+        function handleKeyboardNav(e) {
             switch (e.key) {
                 case 'ArrowUp':
                     e.preventDefault()
@@ -1300,19 +1278,16 @@
         // Event listeners 
 
         window.addEventListener('load', e => {
-            showPage('loading_page')
+            routeTo('loading_page')
             getTorrents().then(allTorrents => {
-                showPage(window.location.hash)                
+                routeTo(window.location.hash)
             })
-            .catch(err => {
-                console.log(err)
-            })
+                .catch(err => {
+                    console.log(err)
+                })
         })
         window.addEventListener('hashchange', e => {
-            showPage(window.location.hash)
-        })
-        window.addEventListener('popstate', e => {
-            showPage(window.location.hash)
+            routeTo(window.location.hash)
         })
 
         let currentTorrent
@@ -1329,19 +1304,15 @@
         getRef('advance_torrent_search').addEventListener('keydown', handleEnter)
         getRef('search_suggestions').addEventListener('keydown', handleKeyboardNav)
         getRef('advance_search_suggestions').addEventListener('keydown', handleKeyboardNav)
-    
-        getRef('search_torrent').addEventListener('input', async e => {
-            throttle(() => {
-                const searchKey = getRef('search_torrent').value.trim()
-                renderSearchSuggestions(searchKey)
-            }, 100)
-        })
-        getRef('advance_torrent_search').addEventListener('input', async e => {
-            throttle(() => {
-                const searchKey = getRef('advance_torrent_search').value.trim()
-                renderSearchSuggestions(searchKey, true)
-            }, 100)
-        })
+
+        getRef('search_torrent').addEventListener('input', debounce((e) => {
+            const searchKey = e.target.value.trim()
+            renderSearchSuggestions(searchKey)
+        }, 100))
+        getRef('advance_torrent_search').addEventListener('input', debounce((e) => {
+            const searchKey = getRef('advance_torrent_search').value.trim()
+            renderSearchSuggestions(searchKey, true)
+        }, 100))
         getRef('browse_category_selector').addEventListener('change', e => {
             showCategoryTorrents(e.detail.value)
         })
@@ -1369,32 +1340,32 @@
                 getRef('search_result').append(renderTorrents(result.slice(startIndex, endIndex)))
             }, 200);
         })
-        function addFilter(){
+        function addFilter() {
             const selectedCategory = getRef('category_selector').querySelector('input:checked')
-            if(selectedCategory){
+            if (selectedCategory) {
                 filteredSearch.category = selectedCategory.value
             }
             filteredSearch['tags'].clear()
             getRef('tags_selector').querySelectorAll('input:checked').forEach(tag => {
                 filteredSearch['tags'].add(tag.value)
             })
-            if(filteredSearch.category || filteredSearch.tags.size){
+            if (filteredSearch.category || filteredSearch.tags.size) {
                 filteredSearch.isActive = true
-                getRef('filters_bar').classList.remove('hide-completely')
+                getRef('filters_bar').classList.remove('hidden')
             }
-            else{
-                getRef('filters_bar').classList.add('hide-completely')
+            else {
+                getRef('filters_bar').classList.add('hidden')
             }
             renderSelectedFilters()
             renderSearchResult('', true);
             getRef('filter_popup').hide()
         }
-        function resetFilter(){
+        function resetFilter() {
             filteredSearch.isActive = false
             filteredSearch.category = undefined
             getRef('filter_form').reset()
             const selectedCategory = getRef('category_selector').querySelector('input:checked')
-            if(selectedCategory){
+            if (selectedCategory) {
                 selectedCategory.checked = false
             }
             filteredSearch['tags'].clear()
@@ -1402,35 +1373,35 @@
                 tag.checked = false
             })
             getRef('selected_filters_container').innerHTML = ''
-            getRef('filters_bar').classList.add('hide-completely')
+            getRef('filters_bar').classList.add('hidden')
             renderSearchResult('', true);
         }
-        function renderSelectedFilters(){
+        function renderSelectedFilters() {
             getRef('selected_filters_container').innerHTML = ''
             const frag = document.createDocumentFragment()
-            if(filteredSearch.category){
-                frag.append(render.selectedFilter({content: filteredSearch.category, type: 'category'}))
+            if (filteredSearch.category) {
+                frag.append(render.selectedFilter({ content: filteredSearch.category, type: 'category' }))
             }
             filteredSearch.tags.forEach(tag => {
-                frag.append(render.selectedFilter({content: tag, type: 'tag'}))
+                frag.append(render.selectedFilter({ content: tag, type: 'tag' }))
             })
             getRef('selected_filters_container').append(frag)
         }
         getRef('selected_filters_container').addEventListener('click', e => {
-            if(e.target.closest('.selected-filter')){
+            if (e.target.closest('.selected-filter')) {
                 const target = e.target.closest('.selected-filter')
-                if(target.dataset.type === 'category'){
+                if (target.dataset.type === 'category') {
                     filteredSearch.category = undefined
                     getRef('category_selector').querySelector('input:checked').checked = false
                 }
-                else{
+                else {
                     filteredSearch.tags.delete(target.dataset.value)
                     getRef('tags_selector').querySelector(`input[value="${target.dataset.value}"]`).checked = false
                 }
                 target.remove()
-                if(!filteredSearch.category && !filteredSearch.tags.size){
+                if (!filteredSearch.category && !filteredSearch.tags.size) {
                     filteredSearch.isActive = false
-                    getRef('filters_bar').classList.add('hide-completely')
+                    getRef('filters_bar').classList.add('hidden')
                 }
             }
             renderSearchResult('', true);

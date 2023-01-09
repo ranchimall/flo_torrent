@@ -15,48 +15,39 @@
 
 <body>
     <sm-notifications id="notification_drawer"></sm-notifications>
-    <audio id="notification_sound">
-        <source src="https://rmservices.duckdns.org/files/notification-sound.mp3" type="audio/mpeg">
-        <source src="https://rmservices.duckdns.org/files/notification-sound.ogg" type="audio/ogg">
-    </audio>
     <sm-popup id="confirmation_popup">
         <h4 id="confirm_title"></h4>
         <p id="confirm_message"></p>
-        <div class="flex align-center">
-            <sm-button variant="no-outline" class="cancel-btn">Cancel</sm-button>
-            <sm-button variant="no-outline" class="submit-btn">OK</button>
+        <div class="flex align-center gap-0-5 margin-left-auto">
+            <button class="button cancel-button">Cancel</button>
+            <button class="button button--primary confirm-button">OK</button>
         </div>
     </sm-popup>
     <sm-popup id="prompt_popup">
         <h4 id="prompt_title"></h4>
         <p id="prompt_message"></p>
-        <sm-input id="prompt_input"></sm-input>
-        <div class="flex align-center">
-            <sm-button variant="no-outline" class="cancel-btn">Cancel</sm-button>
-            <sm-button variant="no-outline" class="submit-btn" type="submit">OK</button>
-        </div>
+        <sm-form>
+            <sm-input id="prompt_input"></sm-input>
+            <div class="flex align-center gap-0-5 margin-left-auto">
+                <button class="button cancel-button">Cancel</button>
+                <button class="button confirm-button button--primary" type="submit">OK</button>
+            </div>
+        </sm-form>
     </sm-popup>
     <sm-popup id="show_progress_popup">
         <div id="overlay_content"></div>
     </sm-popup>
     <header id="main_header">
         <a href="./index.html" class="flex align-center" title="FLO Torrent">
-            <svg id="main_header__logo" class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M54.69,14.28l8.83-8.83a1.62,1.62,0,0,0-1.14-2.77H21.15A1.63,1.63,0,0,0,19.53,4.3V59.7a1.62,1.62,0,0,0,2.78,1.13l8.83-9a1.62,1.62,0,0,0,.46-1.14V38.06a1.58,1.58,0,0,1,.48-1.14l8.81-8.83a1.62,1.62,0,0,0-1.15-2.77H33.22A1.62,1.62,0,0,1,31.6,23.7V16.37a1.63,1.63,0,0,1,1.62-1.62H53.55A1.63,1.63,0,0,0,54.69,14.28Z"/><path d="M1.62,14.75H12.36A1.62,1.62,0,0,0,14,13.13V4.3a1.63,1.63,0,0,0-1.62-1.62H7.47a1.6,1.6,0,0,0-1.35.73L.27,12.24A1.62,1.62,0,0,0,1.62,14.75Z"/></svg>
+            <svg id="main_header__logo" class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+                <path
+                    d="M54.69,14.28l8.83-8.83a1.62,1.62,0,0,0-1.14-2.77H21.15A1.63,1.63,0,0,0,19.53,4.3V59.7a1.62,1.62,0,0,0,2.78,1.13l8.83-9a1.62,1.62,0,0,0,.46-1.14V38.06a1.58,1.58,0,0,1,.48-1.14l8.81-8.83a1.62,1.62,0,0,0-1.15-2.77H33.22A1.62,1.62,0,0,1,31.6,23.7V16.37a1.63,1.63,0,0,1,1.62-1.62H53.55A1.63,1.63,0,0,0,54.69,14.28Z" />
+                <path
+                    d="M1.62,14.75H12.36A1.62,1.62,0,0,0,14,13.13V4.3a1.63,1.63,0,0,0-1.62-1.62H7.47a1.6,1.6,0,0,0-1.35.73L.27,12.24A1.62,1.62,0,0,0,1.62,14.75Z" />
+            </svg>
             <!-- <a href="./index.html" class="header__company-name">FLO torrent uploader</a> -->
         </a>
-        <label class="theme-switcher" title="Change theme">
-            <input id="theme_switcher" class="theme-switcher__checkbox" type="checkbox">
-            <svg class="icon moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                <path fill="none" d="M0 0h24v24H0z" />
-                <path
-                    d="M10 6a8 8 0 0 0 11.955 6.956C21.474 18.03 17.2 22 12 22 6.477 22 2 17.523 2 12c0-5.2 3.97-9.474 9.044-9.955A7.963 7.963 0 0 0 10 6zm-6 6a8 8 0 0 0 8 8 8.006 8.006 0 0 0 6.957-4.045c-.316.03-.636.045-.957.045-5.523 0-10-4.477-10-10 0-.321.015-.64.045-.957A8.006 8.006 0 0 0 4 12zm14.164-9.709L19 2.5v1l-.836.209a2 2 0 0 0-1.455 1.455L16.5 6h-1l-.209-.836a2 2 0 0 0-1.455-1.455L13 3.5v-1l.836-.209A2 2 0 0 0 15.29.836L15.5 0h1l.209.836a2 2 0 0 0 1.455 1.455zm5 5L24 7.5v1l-.836.209a2 2 0 0 0-1.455 1.455L21.5 11h-1l-.209-.836a2 2 0 0 0-1.455-1.455L18 8.5v-1l.836-.209a2 2 0 0 0 1.455-1.455L20.5 5h1l.209.836a2 2 0 0 0 1.455 1.455z" />
-            </svg>
-            <svg class="icon sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                <path fill="none" d="M0 0h24v24H0z" />
-                <path
-                    d="M12 18a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm0-2a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM11 1h2v3h-2V1zm0 19h2v3h-2v-3zM3.515 4.929l1.414-1.414L7.05 5.636 5.636 7.05 3.515 4.93zM16.95 18.364l1.414-1.414 2.121 2.121-1.414 1.414-2.121-2.121zm2.121-14.85l1.414 1.415-2.121 2.121-1.414-1.414 2.121-2.121zM5.636 16.95l1.414 1.414-2.121 2.121-1.414-1.414 2.121-2.121zM23 11v2h-3v-2h3zM4 11v2H1v-2h3z" />
-            </svg>
-        </label>
+        <theme-toggle></theme-toggle>
     </header>
     <section class="torrent-upload-section">
         <sm-form id="torrent_form">
@@ -66,7 +57,12 @@
                 <sm-input id="floID" placeholder="FLO ID" data-flo-id required></sm-input>
                 <sm-input id="name" placeholder="Torrent Name" required></sm-input>
                 <file-input id="torrentFile" required>
-                    <svg class="icon button__icon--left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M9 2.003V2h10.998C20.55 2 21 2.455 21 2.992v18.016a.993.993 0 0 1-.993.992H3.993A1 1 0 0 1 3 20.993V8l6-5.997zM5.83 8H9V4.83L5.83 8zM11 4v5a1 1 0 0 1-1 1H5v10h14V4h-8z"/></svg>
+                    <svg class="icon button__icon--left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                        width="24" height="24">
+                        <path fill="none" d="M0 0h24v24H0z" />
+                        <path
+                            d="M9 2.003V2h10.998C20.55 2 21 2.455 21 2.992v18.016a.993.993 0 0 1-.993.992H3.993A1 1 0 0 1 3 20.993V8l6-5.997zM5.83 8H9V4.83L5.83 8zM11 4v5a1 1 0 0 1-1 1H5v10h14V4h-8z" />
+                    </svg>
                     Select torrent
                 </file-input>
             </section>
@@ -89,22 +85,33 @@
                 </div>
                 <tags-input id="tags" placeholder="Tags" limit="10"></tags-input>
             </section>
-            <sm-button id="upload_torrent_button" variant="primary" disabled>
-                <svg class="icon button__icon--left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M15 4H5v16h14V8h-4V4zM3 2.992C3 2.444 3.447 2 3.999 2H16l5 5v13.993A1 1 0 0 1 20.007 22H3.993A1 1 0 0 1 3 21.008V2.992zM13 12v4h-2v-4H8l4-4 4 4h-3z"/></svg>
+            <button id="upload_torrent_button" class="button button--primary" type="submit" disabled>
+                <svg class="icon button__icon--left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+                    height="24">
+                    <path fill="none" d="M0 0h24v24H0z" />
+                    <path
+                        d="M15 4H5v16h14V8h-4V4zM3 2.992C3 2.444 3.447 2 3.999 2H16l5 5v13.993A1 1 0 0 1 20.007 22H3.993A1 1 0 0 1 3 21.008V2.992zM13 12v4h-2v-4H8l4-4 4 4h-3z" />
+                </svg>
                 Upload
-            </sm-button>
+            </button>
         </sm-form>
-        <section class="grid gap-1">
+        <section class="grid gap-1 hidden">
             <details>
                 <summary>More options</summary>
-                <sm-button onclick="refreshUTXOs()">Refresh UTXOs</sm-button>
+                <button class="button" onclick="refreshUTXOs()">Refresh UTXOs</button>
                 <div class="flex align-center">
                     <button onclick="decRefreshFee()" id="-">
-                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M5 11h14v2H5z"/></svg>
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                            <path fill="none" d="M0 0h24v24H0z" />
+                            <path d="M5 11h14v2H5z" />
+                        </svg>
                     </button>
                     <span id="refreshFee"></span>
                     <button onclick="incRefreshFee()" id="+">
-                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2z"/></svg>
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                            <path fill="none" d="M0 0h24v24H0z" />
+                            <path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2z" />
+                        </svg>
                     </button>
                 </div>
             </details>
@@ -132,6 +139,21 @@
 <script src="components.js"></script>
 <script id="default_ui_library">
     const domRefs = {};
+    const uiGlobals = {
+        connectionErrorNotifications: [],
+    }
+
+    //Checks for internet connection status
+    if (!navigator.onLine)
+        uiGlobals.connectionErrorNotifications.push(notify('There seems to be a problem connecting to the internet, Please check you internet connection.', 'error'))
+    window.addEventListener('offline', () => {
+        uiGlobals.connectionErrorNotifications.push(notify('There seems to be a problem connecting to the internet, Please check you internet connection.', 'error'))
+    })
+    window.addEventListener('online', () => {
+        uiGlobals.connectionErrorNotifications.forEach(notificationId => getRef('notification_drawer').remove(notificationId))
+        uiGlobals.connectionErrorNotifications = []
+        notify('We are back online.', 'success')
+    })
 
     function getRef(elementId) {
         if (!domRefs.hasOwnProperty(elementId)) {
@@ -151,179 +173,87 @@
             }
         }
     }
-
-    function create(tagName, obj) {
-        const { className, textContent, innerHTML } = obj
-        const elem = document.createElement(tagName)
-        if (className)
-            elem.className = className
-        elem.textContent = textContent
-        if (innerHTML)
-            elem.innerHTML = innerHTML
-        return elem
-    }
+    // Use when a function needs to be executed after user finishes changes
     const debounce = (callback, wait) => {
-		let timeoutId = null;
-		return (...args) => {
-			window.clearTimeout(timeoutId);
-			timeoutId = window.setTimeout(() => {
-				callback.apply(null, args);
-			}, wait);
-		};
-	}
-
-    let timerId;
-    function throttle(func, delay) {
-        // If setTimeout is already scheduled, no need to do anything
-        if (timerId) {
-            return;
-        }
-
-        // Schedule a setTimeout after delay seconds
-        timerId = setTimeout(function () {
-            func();
-
-            // Once setTimeout function execution is finished, timerId = undefined so that in
-            // the next scroll event function execution can be scheduled by the setTimeout
-            timerId = undefined;
-        }, delay);
+        let timeoutId = null;
+        return (...args) => {
+            window.clearTimeout(timeoutId);
+            timeoutId = window.setTimeout(() => {
+                callback.apply(null, args);
+            }, wait);
+        };
     }
-
-    //Checks for internet connection status
-    if (!navigator.onLine)
-        notify(
-            "There seems to be a problem connecting to the internet, Please check you internet connection.",
-            "error",
-            "",
-            true
-        );
-    window.addEventListener("offline", () => {
-        notify(
-            "There seems to be a problem connecting to the internet, Please check you internet connection.",
-            "error",
-            true,
-            true
-        );
-    });
-    window.addEventListener("online", () => {
-        getRef("notification_drawer").clearAll();
-        notify("We are back online.", "success");
-    });
-
-    if (getRef("theme_switcher")) {
-        if (localStorage.theme === "dark") {
-            nightlight();
-            getRef("theme_switcher").checked = true;
-        } else if (localStorage.theme === "light") {
-            daylight();
-            getRef("theme_switcher").checked = false;
-        }
-        else {
-            if (window.matchMedia(`(prefers-color-scheme: dark)`).matches) {
-                nightlight();
-                getRef("theme_switcher").checked = true;
-            } else {
-                daylight();
-                getRef("theme_switcher").checked = false;
-            }
-        }
-
-        function daylight() {
-            document.body.setAttribute("data-theme", "light");
-        }
-
-        function nightlight() {
-            document.body.setAttribute("data-theme", "dark");
-        }
-        getRef("theme_switcher").addEventListener("change", function (e) {
-            if (this.checked) {
-                nightlight();
-                localStorage.setItem("theme", "dark");
-            } else {
-                daylight();
-                localStorage.setItem("theme", "light");
-            }
-        });
-    }
-
+    let zIndex = 50
     // function required for popups or modals to appear
-    class Stack {
-        constructor() {
-            this.items = [];
-        }
-        push(element) {
-            this.items.push(element);
-        }
-        pop() {
-            if (this.items.length == 0)
-                return "Underflow";
-            return this.items.pop();
-        }
-        peek() {
-            return this.items[this.items.length - 1];
-        }
-    }
-    let popupStack = new Stack(),
-        zIndex = 10;
-
-    async function showPopup(popup, pinned) {
+    function openPopup(popupId, pinned) {
         zIndex++
-        getRef(popup).setAttribute('style', `z-index: ${zIndex}`)
-        popupStack = getRef(popup).show(pinned, popupStack)
-        return getRef(popup);
+        getRef(popupId).setAttribute('style', `z-index: ${zIndex}`)
+        return getRef(popupId).show({ pinned })
     }
 
-    // hides the popup or modal 
-    function hidePopup() {
+    // hides the popup or modal
+    function closePopup(options = {}) {
         if (popupStack.peek() === undefined)
             return;
-        popupStack.peek().popup.hide()
+        popupStack.peek().popup.hide(options)
     }
 
     // displays a popup for asking permission. Use this instead of JS confirm
-    let confirmation = (title, message, cancelText = 'Cancel', confirmText = 'OK') => {
+    const getConfirmation = (title, options = {}) => {
         return new Promise(resolve => {
-            showPopup('confirmation_popup', true)
-            getRef('confirm_title').textContent = title;
-            getRef('confirm_message').textContent = message;
-            let cancelButton = getRef('confirmation_popup').children[2].children[0],
-                submitButton = getRef('confirmation_popup').children[2].children[1]
-            submitButton.textContent = confirmText
+            const { message = '', cancelText = 'Cancel', confirmText = 'OK', danger = false } = options
+            getRef('confirm_title').innerText = title;
+            getRef('confirm_message').innerText = message;
+            const cancelButton = getRef('confirmation_popup').querySelector('.cancel-button');
+            const confirmButton = getRef('confirmation_popup').querySelector('.confirm-button')
+            confirmButton.textContent = confirmText
             cancelButton.textContent = cancelText
-            submitButton.onclick = () => {
-                hidePopup()
-                resolve(true);
+            if (danger)
+                confirmButton.classList.add('button--danger')
+            else
+                confirmButton.classList.remove('button--danger')
+            const { opened, closed } = openPopup('confirmation_popup')
+            confirmButton.onclick = () => {
+                closePopup({ payload: true })
             }
             cancelButton.onclick = () => {
-                hidePopup()
-                resolve(false);
+                closePopup()
             }
+            closed.then((payload) => {
+                confirmButton.onclick = null
+                cancelButton.onclick = null
+                if (payload)
+                    resolve(true)
+                else
+                    resolve(false)
+            })
         })
     }
     // displays a popup for asking user input. Use this instead of JS prompt
-    async function getPromptInput(title, message = '', showText = true, trueBtn = "Ok", falseBtn = "Cancel") {
-        showPopup('prompt_popup', true)
-        getRef('prompt_title').textContent = title;
-        let input = getRef('prompt_input');
-        input.setAttribute("placeholder", message)
-        let buttons = getRef('prompt_popup').querySelectorAll("sm-button");
-        if (showText)
-            input.setAttribute("type", "text")
-        else
-            input.setAttribute("type", "password")
-        input.focusIn()
-        buttons[0].textContent = falseBtn;
-        buttons[1].textContent = trueBtn;
+    function getPromptInput(title, message = '', options = {}) {
+        let { placeholder = '', isPassword = false, cancelText = 'Cancel', confirmText = 'OK' } = options
+        getRef('prompt_title').innerText = title;
+        getRef('prompt_message').innerText = message;
+        const cancelButton = getRef('prompt_popup').querySelector('.cancel-button');
+        const confirmButton = getRef('prompt_popup').querySelector('.confirm-button')
+        if (isPassword) {
+            placeholder = 'Password'
+            getRef('prompt_input').setAttribute("type", "password")
+        }
+        getRef('prompt_input').setAttribute("placeholder", placeholder)
+        getRef('prompt_input').focusIn()
+        cancelButton.textContent = cancelText;
+        confirmButton.textContent = confirmText;
+        openPopup('prompt_popup', true)
         return new Promise((resolve, reject) => {
-            buttons[0].onclick = () => {
-                hidePopup()
-                return;
-            }
-            buttons[1].onclick = () => {
-                let value = input.value;
-                hidePopup()
-                resolve(value)
-            }
+            cancelButton.addEventListener('click', () => {
+                closePopup()
+                return null
+            }, { once: true })
+            confirmButton.addEventListener('click', () => {
+                closePopup()
+                resolve(getRef('prompt_input').value)
+            }, { once: true })
         })
     }
 
@@ -369,31 +299,16 @@
         }
     }
 
-    const inputValidation = debounce((e) => {
-        if (e.target.closest('sm-input')) {
-            const input = e.target.closest('sm-input')
-            if (input.value === '')
-                input.setValidity('')
-            if (input.hasAttribute('data-flo-id')) {
-                if (validateAddr(input.value.trim()) || input.value.trim() === '')
-                    input.setValidity('')
-                else
-                    input.setValidity('Invalid FLO address.')
-            }
-        }
-    }, 100)
-
     window.addEventListener("load", () => {
         document.querySelectorAll('sm-input[data-flo-id]').forEach(input => input.customValidation = validateAddr)
-        document.addEventListener('input', inputValidation)
         document.addEventListener('keyup', (e) => {
             if (e.code === 'Escape') {
-                hidePopup()
+                closePopup()
             }
         })
         document.addEventListener("pointerdown", (e) => {
-            if (e.target.closest("button, sm-button:not([disabled]), .interact")) {
-                createRipple(e, e.target.closest("button, sm-button, .interact"));
+            if (e.target.closest("button, .interact")) {
+                createRipple(e, e.target.closest("button, .interact"));
             }
         });
     });
@@ -455,31 +370,31 @@
     }
 </script>
 <script>
-    function ajax(method, uri){
-		var request = new XMLHttpRequest();
-		var url = `${server}/${uri}`
-		console.log(url)
-		var result;
-		request.open(method,url , false);
-		request.onload = function () {
-			if (request.readyState == 4 && request.status == 200)
-				result = this.response;
-			else {
-				console.log('error');
-				result = false;
-			}
-		};
-		request.send();
-		console.log(result);
-		return result;
-	}
+    function ajax(method, uri) {
+        var request = new XMLHttpRequest();
+        var url = `${server}/${uri}`
+        console.log(url)
+        var result;
+        request.open(method, url, false);
+        request.onload = function () {
+            if (request.readyState == 4 && request.status == 200)
+                result = this.response;
+            else {
+                console.log('error');
+                result = false;
+            }
+        };
+        request.send();
+        console.log(result);
+        return result;
+    }
     async function getJsonResult(uri) {
-        try{
+        try {
             const url = `${server}/${uri}`
             const response = await fetch(url)
             return await response.json()
         }
-        catch(err){
+        catch (err) {
             console.error(err)
         }
     }
@@ -534,19 +449,17 @@
             notify("Selected File is not a torrent file!", 'error');
             return;
         }
-        showPopup('show_progress_popup', true)
+        openPopup('show_progress_popup', true)
         getRef("overlay_content").innerHTML = "";
         const overlaytext = document.createElement("div");
         getRef("overlay_content").appendChild(overlaytext);
-        overlaytext.innerHTML = `
-        <svg viewBox="0 0 64 64" class="loader"><circle cx="32" cy="32" r="32" /></svg
-        <div>Checking Balance</div>`;
+        overlaytext.innerHTML = ` <svg viewBox="0 0 64 64" class="loader"><circle cx="32" cy="32" r="32" /></svg <div>Checking Balance</div>`;
         const balance = await getJsonResult(`api/addr/${floID}/balance`); //get balance from API
-        if(balance){
+        if (balance) {
             console.log(`Balance : ${balance}`);
         }
-        else{
-            hidePopup()
+        else {
+            closePopup()
             return
         }
         overlaytext.innerHTML = "Loading File...";
@@ -563,7 +476,7 @@
             var totalFee = splitfee + (chunks.length * fee) + (sendAmt + fee) // splitUTXOs => 1 fee, each chunk to self => (chunk.lenght*fee), one header to admin ID => (sendAmt+fee)
             if (totalFee > balance) {
                 notify(`Your net balance is : ${balance}\nTotal fee for upload : ${totalFee}\nBalance is Insufficient to upload`, 'error');
-                hidePopup()
+                closePopup()
                 return;
             }
             var header = JSON.stringify({ FLO_Torrent: { name, filename: file.name, type, size: file.size, description, tags, chunks: chunks.length } });
@@ -579,11 +492,11 @@
                 }).catch(function (error) {
                     notify(error, 'error');
                 }).finally(function () {
-                    hidePopup()
+                    closePopup()
                 });
             }
             else
-                hidePopup()
+                closePopup()
         };
         reader.readAsBinaryString(file);
     }
@@ -647,31 +560,31 @@
 </script>
 <script>
 
-    function splitUTXOs(sender,num,wif){
+    function splitUTXOs(sender, num, wif) {
         var trx = bitjs.transaction();
         var utxoAmt = 0.0;
-        var response = ajax("GET",`api/addr/${sender}/utxo`);
+        var response = ajax("GET", `api/addr/${sender}/utxo`);
         var utxos = JSON.parse(response);
         var splitAmt = sendAmt + fee;
-        var TotalAmt = splitAmt*(num+1);
-        for(var x = utxos.length-1; (x >= 0) && (utxoAmt < TotalAmt+splitfee); x--){
-            if(utxos[x].confirmations){
+        var TotalAmt = splitAmt * (num + 1);
+        for (var x = utxos.length - 1; (x >= 0) && (utxoAmt < TotalAmt + splitfee); x--) {
+            if (utxos[x].confirmations) {
                 trx.addinput(utxos[x].txid, utxos[x].vout, utxos[x].scriptPubKey)
                 utxoAmt += utxos[x].amount;
             }
         }
-        if(utxoAmt < TotalAmt+splitfee){
+        if (utxoAmt < TotalAmt + splitfee) {
             notify("Insufficient balance!", 'error');
             return false;
         }
-        for(var i=0;i<=num;i++)
+        for (var i = 0; i <= num; i++)
             trx.addoutput(sender, splitAmt);
-        var change = utxoAmt-TotalAmt-splitfee;
-        if(change>0)
+        var change = utxoAmt - TotalAmt - splitfee;
+        if (change > 0)
             trx.addoutput(sender, change);
         //trx.addflodata(data);
         var signedTxHash = trx.sign(wif, 1);
-        return {scriptPubKey:utxos[0].scriptPubKey ,txid:broadcastTx(signedTxHash)};
+        return { scriptPubKey: utxos[0].scriptPubKey, txid: broadcastTx(signedTxHash) };
     }
     function sendTransaction(sender, receiver, utxo, vout, data, wif) {
         var trx = bitjs.transaction();
@@ -688,7 +601,7 @@
         console.log(wif)
         if (!verifyWIF(wif, floID)) {
             notify("Invalid Private Key!", 'error');
-            hidePopup()
+            closePopup()
             return;
         }
         getRef("overlay_content").innerHTML = "";
@@ -698,7 +611,7 @@
         <span>Refreshing UTXOs</span>
         `;
         getRef("overlay_content").appendChild(overlaytext);
-        showPopup("show_progress_popup");
+        openPopup("show_progress_popup");
 
         var trx = bitjs.transaction();
         var utxoAmt = 0.0;
@@ -711,7 +624,7 @@
         }
         if (utxoAmt <= refreshfee) {
             notify("Insufficient Balance!", 'error');
-            hidePopup()
+            closePopup()
             return;
         }
         var refreshAmt = utxoAmt - refreshfee;
@@ -722,7 +635,7 @@
             notify(`Refresh Unsuccessful! Rise the refresh fee and Try again!`, 'error');
         else
             notify(`Refresh UTXO successful\ntxid:${txid}`, 'success');
-        hidePopup()
+        closePopup()
     }
 
     function broadcastTx(signedTxHash) {
