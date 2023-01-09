@@ -122,19 +122,10 @@
                         </svg>
                         See the index entry in blockchain
                     </a>
-                    <div id="download_container">
-                        <button id="torrent_download_button" class="button button--primary"
-                            onclick="downloadTorrent(currentTorrent.filename, currentTorrent.startTx, currentTorrent.chunks, currentTorrent.id, true)">
-                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
-                                height="24">
-                                <path fill="none" d="M0 0h24v24H0z" />
-                                <path
-                                    d="M16 2l5 5v14.008a.993.993 0 0 1-.993.992H3.993A1 1 0 0 1 3 21.008V2.992C3 2.444 3.445 2 3.993 2H16zm-3 10V8h-2v4H8l4 4 4-4h-3z" />
-                            </svg>
-                            Get torrent
-                        </button>
-                        <div id="loader_container" class="flex"></div>
-                    </div>
+                    <button id="torrent_download_button" class="button button--primary"
+                        onclick="downloadTorrent(currentTorrent.filename, currentTorrent.startTx, currentTorrent.chunks, currentTorrent.id, true)">
+                        Get torrent
+                    </button>
                 </div>
             </section>
         </section>
@@ -321,11 +312,6 @@
                 <span class="torrent-card__uploader"></span>
             </a>
             <button class="torrent-card__download-button">
-                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                    <path fill="none" d="M0 0h24v24H0z" />
-                    <path
-                        d="M16 2l5 5v14.008a.993.993 0 0 1-.993.992H3.993A1 1 0 0 1 3 21.008V2.992C3 2.444 3.445 2 3.993 2H16zm-3 10V8h-2v4H8l4 4 4-4h-3z" />
-                </svg>
                 Get torrent
             </button>
         </li>
@@ -406,47 +392,52 @@
                             if (lasttx === undefined) {
                                 lasttx = 0;
                             }
-                            var response = await getResponce(`api/addrs/${addr}/txs`);
-                            var nRequired = response.totalItems - lasttx;
-                            console.log(nRequired);
-                            while (true && nRequired) {
-                                var response = await getResponce(`api/addrs/${addr}/txs?from=0&to=${nRequired}`);
-                                if (nRequired + lasttx != response.totalItems) {
-                                    nRequired = response.totalItems - lasttx;
-                                    continue;
-                                }
-                                var errorTxCount = 0; //Count of txs that didnot go into any blocks
-                                response.items.reverse().forEach(function (tx) {
-                                    try {
-                                        if (!tx.blockhash) { //ignore error txs that did not go into any blocks
-                                            errorTxCount += 1;
-                                            return;
-                                        }
-                                        if (addr != tx.vin[0].addr) //ignore if the tx is not from kudos ID
-                                            return
-                                        var kudosData = JSON.parse(tx.floData).FLO_Kudos;
-                                        if (kudosData === undefined)
-                                            return;
-                                        storeTrustedIDs(kudosData).then(function (response) {
-                                        }).catch(function (error) {
-                                        });
-                                    } catch (e) {
-                                        //console.log(e)
+                            try {
+                                var response = await getResponce(`api/addrs/${addr}/txs`);
+                                var nRequired = response.totalItems - lasttx;
+                                console.log(nRequired);
+                                while (true && nRequired) {
+                                    var response = await getResponce(`api/addrs/${addr}/txs?from=0&to=${nRequired}`);
+                                    if (nRequired + lasttx != response.totalItems) {
+                                        nRequired = response.totalItems - lasttx;
+                                        continue;
                                     }
-                                });
-                                var idb2 = indexedDB.open("FLO_Kudos");
-                                idb2.onerror = function (event) {
-                                    console.log("Error in opening IndexedDB!");
-                                };
-                                idb2.onsuccess = function (event) {
-                                    var dbt = event.target.result;
-                                    var obs = dbt.transaction('lastTx', "readwrite").objectStore('lastTx');
-                                    obs.put(response.totalItems - errorTxCount, addr);
-                                    dbt.close();
-                                };
-                                break;
+                                    var errorTxCount = 0; //Count of txs that didnot go into any blocks
+                                    response.items.reverse().forEach(function (tx) {
+                                        try {
+                                            if (!tx.blockhash) { //ignore error txs that did not go into any blocks
+                                                errorTxCount += 1;
+                                                return;
+                                            }
+                                            if (addr != tx.vin[0].addr) //ignore if the tx is not from kudos ID
+                                                return
+                                            var kudosData = JSON.parse(tx.floData).FLO_Kudos;
+                                            if (kudosData === undefined)
+                                                return;
+                                            storeTrustedIDs(kudosData).then(function (response) {
+                                            }).catch(function (error) {
+                                            });
+                                        } catch (e) {
+                                            //console.log(e)
+                                        }
+                                    });
+                                    var idb2 = indexedDB.open("FLO_Kudos");
+                                    idb2.onerror = function (event) {
+                                        console.log("Error in opening IndexedDB!");
+                                    };
+                                    idb2.onsuccess = function (event) {
+                                        var dbt = event.target.result;
+                                        var obs = dbt.transaction('lastTx', "readwrite").objectStore('lastTx');
+                                        obs.put(response.totalItems - errorTxCount, addr);
+                                        dbt.close();
+                                    };
+                                    break;
+                                }
+                                resolve('retrieved data from API');
+                            } catch (e) {
+                                notify("Error in retrieving data from API", 'error');
+                                console.error(e);
                             }
-                            resolve('retrived data from API');
                         };
                         db.close();
                     };
@@ -647,12 +638,12 @@
                     let percent = Math.round((i / N) * 100);
                     console.log(torrentId)
                     if (fromTorrentPage) {
-                        getRef('loader_container').querySelector('.progress-loader').setAttribute('style', `stroke-dashoffset: ${201 - (2.01 * percent)}`)
-                        getRef('loader_container').querySelector('.progress-percent').textContent = `${percent}% done`
+                        getRef('torrent_download_button').style.setProperty('--progress', `${percent}%`)
+                        getRef('torrent_download_button').textContent = `Collecting... ${percent}%`
                     }
                     else {
-                        getRef(torrentId).querySelector('.progress-loader').setAttribute('style', `stroke-dashoffset: ${201 - (2.01 * percent)}`)
-                        getRef(torrentId).querySelector('.progress-percent').textContent = `${percent}% done`
+                        getRef(torrentId).querySelector('.torrent-card__download-button').style.setProperty('--progress', `${percent}%`)
+                        getRef(torrentId).querySelector('.torrent-card__download-button').textContent = `Collecting... ${percent}%`
                     }
                     // console.log(i, N, percent, floData.next);
                     if (!floData.next)
@@ -672,33 +663,32 @@
         }
         async function downloadTorrent(filename, txid, totalChunks, torrentId, fromTorrentPage = false) {
             console.log(txid);
-            const progressIndicator = create('div', {
-                className: 'progress-indicator flex align-center',
-                innerHTML: `
-                    <svg class="progress-loader" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="32"/></svg>
-                    <svg class="placeholder-loader" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="32"/></svg>
-                    <span class="progress-percent">0% done</span>
-                `
-            })
             if (fromTorrentPage) {
-                getRef('torrent_download_button').classList.add('hidden')
-                getRef('loader_container').append(progressIndicator)
+                getRef('torrent_download_button').setAttribute('data-collecting', '')
+                getRef('torrent_download_button').textContent = 'Collecting...'
+                getRef('torrent_download_button').disabled = true;
             }
             else {
-                getRef(torrentId).querySelector('.torrent-card__download-button').classList.add('hidden')
-                getRef(torrentId).append(progressIndicator)
+                getRef(torrentId).querySelector('.torrent-card__download-button').setAttribute('data-collecting', '')
+                getRef(torrentId).querySelector('.torrent-card__download-button').textContent = 'Collecting...'
+                getRef(torrentId).querySelector('.torrent-card__download-button').disabled = true;
             }
             getTorrentMetafromAPI(txid, 1, totalChunks, torrentId, fromTorrentPage).then(chunks => {
                 let filedata = chunks.join("");
                 // console.log(filedata);
                 download(filename, filedata);
                 setTimeout(() => {
-                    progressIndicator.remove()
                     if (fromTorrentPage) {
-                        getRef('torrent_download_button').classList.remove('hidden')
+                        getRef('torrent_download_button').removeAttribute('data-collecting')
+                        getRef('torrent_download_button').textContent = 'Get Torrent'
+                        getRef('torrent_download_button').disabled = false;
+                        getRef('torrent_download_button').style.removeProperty('--progress')
                     }
                     else {
-                        getRef(torrentId).querySelector('.torrent-card__download-button').classList.remove('hidden')
+                        getRef(torrentId).querySelector('.torrent-card__download-button').removeAttribute('data-collecting')
+                        getRef(torrentId).querySelector('.torrent-card__download-button').textContent = 'Get Torrent';
+                        getRef(torrentId).querySelector('.torrent-card__download-button').disabled = false;
+                        getRef(torrentId).querySelector('.torrent-card__download-button').style.removeProperty('--progress')
                     }
                 }, 300);
             }).catch(error => {
