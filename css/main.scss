@@ -288,12 +288,6 @@ ul {
 .observe-empty-state:not(:empty) ~ .empty-state {
   display: none;
 }
-
-.icon {
-  width: 1.5rem;
-  height: 1.5rem;
-  fill: rgba(var(--text-color), 0.9);
-}
 .button__icon {
   &--left {
     margin-right: 0.5rem;
@@ -499,6 +493,7 @@ ul {
     .icon {
       height: 1.4rem;
       width: 1.4rem;
+      fill: rgba(var(--background-color), 1);
     }
   }
   &__title {
@@ -557,9 +552,6 @@ ul {
   aspect-ratio: 1/1;
   flex-shrink: 0;
   background-color: var(--accent-color);
-  .icon {
-    fill: white;
-  }
 }
 #torrent_type_icon {
   align-self: center;
