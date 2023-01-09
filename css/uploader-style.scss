@@ -13,7 +13,7 @@ body {
   scroll-behavior: smooth;
 }
 body {
-  --accent-color: #0eaf8f;
+  --accent-color: #304ffe;
   --light-shade: rgba(var(--text-color), 0.06);
   --text-color: 17, 17, 17;
   --text-color-light: 100, 100, 100;
@@ -27,7 +27,7 @@ body {
   flex-direction: column;
 }
 body[data-theme="dark"] {
-  --accent-color: #1abc9c;
+  --accent-color: #a6b9ff;
   --green: #13ff5a;
   --text-color: 240, 240, 240;
   --text-color-light: 170, 170, 170;
@@ -308,13 +308,6 @@ ul {
 .popup__header__close {
   padding: 0.5rem;
   cursor: pointer;
-}
-
-.button--primary {
-  color: white;
-  font-weight: 500;
-  padding: 0.5rem 1.2rem;
-  background-color: var(--accent-color);
 }
 
 #confirmation_popup,
