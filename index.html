@@ -11,6 +11,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..900&display=swap" rel="stylesheet">
+    <script src="scripts/components.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6" defer></script>
+    <script src="scripts/lib.js" defer></script>
+    <script src="scripts/btcOperator.js" defer></script>
 </head>
 
 <body data-theme="">
@@ -113,7 +117,7 @@
                     <div id="torrent_tags"></div>
                     <h1 id="torrent_name"></h1>
                     <p id="torrent_description"></p>
-                    <h5 id="torrent_uploader"></h5>
+                    <p id="torrent_uploader" class="breakable"></p>
                     <a id="torrent_index_tx" target="_blank" class="flex align-center">
                         <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                             <path fill="none" d="M0 0h24v24H0z" />
@@ -316,8 +320,6 @@
             </button>
         </li>
     </template>
-    <script src="components.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6"></script>
     <script>
         const cryptocoin = "FLO";
         const mainnet = `https://flosight.duckdns.org/`;
@@ -1103,11 +1105,16 @@
                 case 'torrent':
                     currentTorrent = await getDataFromIDB(parseInt(subPageId))
                     const { id, name, description, tags, type = 'misc', size, uploader, startTx, filename, chunks } = currentTorrent
+                    const btcAddress = btcOperator.convert.legacy2bech(uploader)
                     getRef('torrent_type_icon').innerHTML = getIcon(type)
                     getRef('torrent_name').textContent = name
                     getRef('torrent_description').textContent = description
                     getRef('torrent_tags').textContent = tags.split('/').join('•')
-                    getRef('torrent_uploader').textContent = `Uploaded by ${uploader}`
+                    getRef('torrent_uploader').innerHTML = `
+                        Uploaded by 
+                        <span>FLO address: ${uploader}</span>
+                        <span>(BTC address: ${btcAddress})</span>
+                    `;
                     getRef('torrent_index_tx').href = `https://flosight.duckdns.org/tx/${startTx}`
                     break;
                 case 'browse':
