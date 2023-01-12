@@ -1096,6 +1096,8 @@
                         <span>(BTC address: ${btcAddress})</span>
                     `;
                     getRef('torrent_index_tx').href = `https://flosight.duckdns.org/tx/${startTx}`
+                    getRef('search_torrent').value = ''
+                    renderElem(getRef('search_suggestions'), html``)
                     break;
                 case 'browse':
                     const category = getRef('browse_category_selector').value
