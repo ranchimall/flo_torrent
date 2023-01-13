@@ -983,12 +983,11 @@
             category: '',
             tags: new Set()
         }
-        let lastQuery = ''
 
-        async function renderSearchResult(searchKey, shouldFilter = false) {
+        async function renderSearchResult(searchKey = '', shouldFilter = false) {
             searchKey = decodeURI(searchKey)
             if (shouldFilter) {
-                searchKey = getRef('search_torrent').value.trim() !== '' ? getRef('search_torrent').value.trim() : lastQuery
+                searchKey = getRef('search_torrent').value.trim() !== '' ? getRef('search_torrent').value.trim() : filteredSearch['query']
             }
             filteredSearch['query'] = searchKey
             let result
@@ -1005,9 +1004,9 @@
             } else {
                 result = await getFilteredTorrents(['name', 'filename', 'tags'], searchKey)
             }
-            if (result.length) {
+            if (result.length && searchKey.trim() !== '') {
                 renderElem(getRef('result_for'), html`Showing results for <strong>${searchKey}</strong>`)
-            } else {
+            } else if (!result.length) {
                 renderElem(getRef('result_for'), html`No results for <strong>${searchKey}</strong>`)
             }
 
@@ -1016,10 +1015,9 @@
                 renderElem(getRef('search_page_selector'), createPageButtons(pages))
                 renderElem(getRef('search_result'), renderTorrents(result.slice(0, 20)))
             } else {
-                renderElem(getRef('search_page_selector'), '')
+                renderElem(getRef('search_page_selector'), html``)
                 renderElem(getRef('search_result'), renderTorrents(result))
             }
-            lastQuery = searchKey
         }
 
         const categories = ['movie', 'tv series', 'video', 'music', 'software', 'game', 'image', 'audio', 'misc']
@@ -1079,8 +1077,7 @@
                     renderElem(getRef('torrent_container'), renderTorrents(allTorrents))
                     break;
                 case 'search':
-                    if (subPageId)
-                        renderSearchResult(subPageId)
+                    renderSearchResult(subPageId)
                     break;
                 case 'torrent':
                     currentTorrent = await getDataFromIDB(parseInt(subPageId))
@@ -1147,7 +1144,9 @@
                 threshold: 0.2,
             }
             const fuseSearch = new Fuse(torrents, config)
-            return fuseSearch.search(searchKey, { limit }).map(elem => elem.item)
+            if (searchKey.trim() !== '')
+                return fuseSearch.search(searchKey, { limit }).map(elem => elem.item)
+            else return torrents
         }
 
         function createPageButtons(pages) {
@@ -1266,7 +1265,7 @@
             }, 200);
         })
         getRef('search_page_selector').addEventListener('change', async e => {
-            const result = await getFilteredTorrents(['name', 'filename', 'tags'], lastQuery)
+            const result = await getFilteredTorrents(['name', 'filename', 'tags'], filteredSearch['query'])
             const startIndex = parseInt(e.target.value) * 20
             const endIndex = (parseInt(e.target.value) * 20) + 30
 
@@ -1284,6 +1283,8 @@
             getRef('tags_selector').querySelectorAll('input:checked').forEach(tag => {
                 filteredSearch['tags'].add(tag.value)
             })
+            if (appState.currentPage !== 'search')
+                location.hash = `#/search`;
             renderSelectedFilters()
             renderSearchResult('', true);
             closePopup()
