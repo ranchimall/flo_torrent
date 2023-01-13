@@ -18,7 +18,7 @@
     <script src="https://unpkg.com/uhtml@3.0.1/es.js"></script>
 </head>
 
-<body data-theme="">
+<body class="hidden">
     <sm-notifications id="notification_drawer"></sm-notifications>
     <sm-popup id="confirmation_popup">
         <h4 id="confirm_title"></h4>
@@ -820,6 +820,7 @@
         }
 
         window.addEventListener("load", () => {
+            document.body.classList.remove('hidden')
             document.addEventListener("keyup", (e) => {
             });
             document.addEventListener("pointerdown", (e) => {
