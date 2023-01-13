@@ -559,7 +559,7 @@ theme-toggle {
 .torrent-container {
   padding: 1.5rem 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
   gap: 0.8rem;
   padding-bottom: 4rem;
 }
