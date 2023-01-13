@@ -611,6 +611,11 @@ theme-toggle {
   background-color: rgba(var(--text-color), 0.1);
   margin-top: auto;
   margin: 1rem;
+  transition: background-color 0.3s, color 0.3s;
+}
+.torrent-card__download-button:hover {
+  background-color: var(--accent-color);
+  color: rgba(var(--background-color), 1);
 }
 .torrent-card__download-button[data-collecting]::after {
   content: "";
