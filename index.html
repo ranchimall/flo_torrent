@@ -841,12 +841,12 @@
             const rippleAnimation = circle.animate(
                 [
                     {
-                        transform: "scale(3)",
+                        transform: "scale(4)",
                         opacity: 0,
                     },
                 ],
                 {
-                    duration: 1000,
+                    duration: uiGlobals.prefersReducedMotion ? 0 : 600,
                     fill: "forwards",
                     easing: "ease-out",
                 }
@@ -916,7 +916,7 @@
                     <li id=${id} class="torrent-card">
                         <a class="torrent-info grid" href=${`#/torrent/${id}`}>
                             <div class="torrent-card__icon torrent-type-icon">${icon}</div>
-                            <h3 class="torrent-card__title">${filename}</h3>
+                            <h3 class="torrent-card__title breakable">${filename}</h3>
                             <p class="torrent-card__tags">${tags.replace(/[\/,]/g, ' • ')}</p>
                             <span class="torrent-card__uploader">${`by ${uploader}`}</span>
                         </a>
