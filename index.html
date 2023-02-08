@@ -912,13 +912,18 @@
                 const icon = new DOMParser().parseFromString(getIcon(type), 'image/svg+xml').querySelector('svg')
                 // remove extension from filename
                 filename = filename.split('.').slice(0, -1).join('.')
+                const btcAddress = btcOperator.convert.legacy2bech(uploader)
                 return html`
                     <li id=${id} class="torrent-card">
                         <a class="torrent-info grid" href=${`#/torrent/${id}`}>
                             <div class="torrent-card__icon torrent-type-icon">${icon}</div>
                             <h3 class="torrent-card__title breakable">${filename}</h3>
                             <p class="torrent-card__tags">${tags.replace(/[\/,]/g, ' • ')}</p>
-                            <span class="torrent-card__uploader">${`by ${uploader}`}</span>
+                            <div class="torrent-card__uploader grid breakable">
+                                Uploaded by 
+                                <span>FLO address: ${uploader}</span>
+                                <span>(BTC address: ${btcAddress})</span>
+                            </div>
                         </a>
                         <button class="torrent-card__download-button">
                             Get Torrent
@@ -1176,6 +1181,10 @@
         }
 
         async function renderSearchSuggestions(searchKey, advance = false) {
+            if (searchKey.trim() === '') {
+                renderElem(getRef('search_suggestions'), html``)
+                return
+            }
             const result = await getFilteredTorrents(['name', 'filename'], searchKey, { limit: 6 })
             const suggestions = result.map(elem => {
                 const regEx = new RegExp(`(${searchKey})`, 'gi')
