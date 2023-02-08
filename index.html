@@ -922,7 +922,7 @@
                             <div class="torrent-card__uploader grid breakable">
                                 Uploaded by 
                                 <span>FLO address: ${uploader}</span>
-                                <span>(BTC address: ${btcAddress})</span>
+                                <span>Equivalent BTC address: ${btcAddress}</span>
                             </div>
                         </a>
                         <button class="torrent-card__download-button">
@@ -1100,7 +1100,7 @@
                     getRef('torrent_uploader').innerHTML = `
                         Uploaded by 
                         <span>FLO address: ${uploader}</span>
-                        <span>(BTC address: ${btcAddress})</span>
+                        <span>Equivalent BTC address: ${btcAddress}</span>
                     `;
                     getRef('torrent_index_tx').href = `https://flosight.duckdns.org/tx/${startTx}`
                     getRef('search_torrent').value = ''
